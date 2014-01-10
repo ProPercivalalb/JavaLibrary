@@ -1,4 +1,4 @@
-package javalibrary.cipher;
+package javalibrary.cipher.wip;
 
 import javalibrary.math.MathHelper;
 
@@ -6,10 +6,10 @@ import javalibrary.math.MathHelper;
  * @author Alex Barter
  * @since 26 Nov 2013
  */
-public class Autokeyword {
+public class Alberti {
 
 	/**
-	 * Encodes plain text into cipher text encoded in Autokeyword Cipher
+	 * Encodes plain text into cipher text encoded in Vigenere Cipher
 	 * @param plainText The message you wish to encode
 	 * @param keyWord The keyword to encode and therefore decode the message
 	 * @return The Cipher Text
@@ -21,7 +21,6 @@ public class Autokeyword {
 		String cipherText = "";
 		
 		int iteration = 0;
-		int keyCount = 0;
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
 			//Converts the character to an upper case version if it has one
@@ -35,18 +34,6 @@ public class Autokeyword {
 				char newLetter = (char)(MathHelper.wrap(shift + ch - 'A', 0, 26) + 'A');
 				cipherText += newLetter;
 				
-				//Basically the same as Vigenere this is what makes it different and hard to crack
-				//if you do not know the keyword in the first place
-				if(keyWord.length() < 26) {
-					char letter = plainText.charAt(keyCount);
-					while(!Character.isAlphabetic(letter)) {
-						keyCount += 1;
-						letter = plainText.charAt(keyCount);
-					}
-					keyWord += ch;
-					keyCount += 1;
-				}
-				
 				iteration += 1; 
 			}
 		}
@@ -55,7 +42,7 @@ public class Autokeyword {
 	}
 	
 	/**
-	 * Decodes cipher text into plain text which was encoded in Autokeyword Cipher
+	 * Decodes cipher text into plain text which was encoded in Vigenere Cipher
 	 * @param cipherText The message you wish to decode
 	 * @param keyWord The keyword to encode and therefore decode the message
 	 * @return The Plain Text
@@ -80,16 +67,11 @@ public class Autokeyword {
 				char newLetter = (char)(MathHelper.wrap(shift + ch - 'a', 0, 26) + 'a');
 				plainText += newLetter;
 				
-				//Basically the same as Vigenere this is what makes it different and hard to crack
-				//if you do not know the keyword in the first place
-				if(keyWord.length() < 26)
-					keyWord += newLetter;
-				
 				iteration += 1; 
 			}
 		}
-		System.out.println(keyWord);
 		
 		return plainText;
 	}
+	
 }

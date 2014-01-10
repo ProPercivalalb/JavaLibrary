@@ -39,6 +39,7 @@ public class StringTransformer {
 	
 	//Convenience methods to make the code shorter in you main file
 	public static String removeEverythingButLetters(String target) { return removeEverythingButGivenCharacters(target, Alphabet.getAllCharacters()); }
+	public static String removeEverythingButLettersAndSpaces(String target) { return removeEverythingButGivenCharacters(target, Alphabet.getAllCharacters() + " "); }
 	public static String removeEverythingButNumbers(String target) { return removeEverythingButGivenCharacters(target, "0123456789"); }
 	public static String removeEverythingButSpaces(String target) { return removeEverythingButGivenCharacters(target, " "); }
 	

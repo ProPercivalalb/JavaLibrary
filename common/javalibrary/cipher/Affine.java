@@ -21,7 +21,7 @@ public class Affine {
 		String cipherText = "";
 		
 		String tempAlphabet = "";
-		for(int i = 'a'; i < 'z'; ++i)
+		for(int i = 'a'; i <= 'z'; ++i)
 			tempAlphabet += (char)('a' + MathHelper.wrap(a * (i - 'a') + b, 0, 26));
 		
 		//Runs through all the characters from the array
@@ -32,7 +32,7 @@ public class Affine {
 			if(!Character.isLetter(ch))
 				cipherText += ch;
 			else
-				cipherText += tempAlphabet.charAt(ch - 'A');
+				cipherText += (char)(tempAlphabet.indexOf(ch) + 'a');
 		}
 		
 		return cipherText;
@@ -52,7 +52,7 @@ public class Affine {
 		String plainText = "";
 		
 		String tempAlphabet = "";
-		for(int i = 'a'; i < 'z'; ++i)
+		for(int i = 'a'; i <= 'z'; ++i)
 			tempAlphabet += (char)('a' + MathHelper.wrap(a * (i - 'a') + b, 0, 26));
 		
 		//Runs through all the characters from the array
@@ -63,9 +63,9 @@ public class Affine {
 			if(!Character.isLetter(ch))
 				plainText += ch;
 			else
-				plainText += (char)(tempAlphabet.indexOf(ch) + 'a');
+				plainText += tempAlphabet.charAt(ch - 'a');
 		}
-		
+
 		return plainText;
 	}
 }

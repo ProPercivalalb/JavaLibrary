@@ -73,6 +73,11 @@ public class MathHelper {
 		return currentBiggest;
 	}
 	
+	public static double round(double target, int decimalPlaces) {
+		double power = Math.pow(10, decimalPlaces);
+		return Math.round(target * power) / power;
+	}
+	
 	public static int difference(int i, int j) {
 		if(i == j)
 			return 0;
@@ -90,7 +95,15 @@ public class MathHelper {
 	}
 	
 	public static int roundDownToNearest(int target, int factor) {
+		if(target % factor == 0)
+			return target;
 		return target - target % factor;
+	}
+	
+	public static int roundUpToNearest(int target, int factor) {
+		if(target % factor == 0)
+			return target;
+		return target + factor - target % factor;
 	}
 	
 	public static int wrap(int target, int lowerLimit, int upperLimit, int amountToChangeBy) {

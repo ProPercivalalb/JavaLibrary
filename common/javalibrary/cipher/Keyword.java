@@ -49,10 +49,8 @@ public class Keyword {
 		
 		String tempAlphabet = keyword.toLowerCase();
 		for(char i = 'a'; i <= 'z'; ++i)
-			if(!tempAlphabet.contains(String.valueOf(i)))
+			if(!tempAlphabet.contains("" + i))
 				tempAlphabet += (char)i;
-		
-		System.out.println(tempAlphabet);
 		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {

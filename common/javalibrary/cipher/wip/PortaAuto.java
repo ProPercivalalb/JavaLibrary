@@ -1,8 +1,9 @@
-package javalibrary.cipher;
+package javalibrary.cipher.wip;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javalibrary.cipher.VigenereAuto;
 import javalibrary.string.LetterCount;
 import javalibrary.string.StringAnalyzer;
 import javalibrary.string.StringTransformer;
