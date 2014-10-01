@@ -1,6 +1,6 @@
 package javalibrary.cipher;
 
-import javalibrary.fitness.Quadgrams;
+import javalibrary.fitness.QuadgramsStats;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -19,8 +19,9 @@ public class CaesarAuto {
 		
 		for(int i = 0; i < 26; ++i) {
 			lastText = Caesar.decode(cipherText, i);
-			currentScore = Quadgrams.scoreFitness(lastText);
+			currentScore = QuadgramsStats.scoreFitness(lastText);
 			if(currentScore > bestScore) {
+				System.out.println("Shift: " + i);
 				bestScore = currentScore;
 				plainText = lastText;
 			}

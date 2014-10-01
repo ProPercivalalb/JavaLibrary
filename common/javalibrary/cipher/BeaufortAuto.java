@@ -1,5 +1,6 @@
 package javalibrary.cipher;
 
+import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -8,11 +9,10 @@ import javalibrary.string.StringTransformer;
  */
 public class BeaufortAuto {
 
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		char[] charArray = cipherText.toCharArray();
 
 		String plainText = "";
-		int count = 0;
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
 			//Converts the character to an upper case version if it has one
@@ -22,7 +22,6 @@ public class BeaufortAuto {
 				ch = (char)('Z' - ch + 'A');
 			
 			plainText += ch;
-			count++;
 		}
 		
 		System.out.println(plainText);
@@ -32,13 +31,13 @@ public class BeaufortAuto {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText);
 		plainText = StringTransformer.removeEverythingButLetters(plainText);
-		int keyLength = VigenereAuto.findKeywordLength(plainText, minKeywordLength, maxKeywordLength);
+		int keyLength = VigenereAuto.findKeywordLength(plainText, minKeywordLength, maxKeywordLength, language);
 		System.out.println(keyLength);
 		
 		String keyword = "";
         for(int i = 0; i < keyLength; ++i) {
         	String temp = StringTransformer.getEveryNthChar(plainText, i, keyLength);
-            int shift = VigenereAuto.findBestCaesarShift(temp);
+            int shift = VigenereAuto.findBestCaesarShift(temp, language);
             if(shift == 0)
             	keyword += 'Z';
             else

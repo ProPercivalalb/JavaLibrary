@@ -18,7 +18,11 @@ public class Main {
 	public static void main(String[] args) {
 		//Timer timer = new Timer();
 		//System.out.println("" + FibonacciSequence.getSequenceUpTo(12).get(3));
-		ClassFinder.getAllClassesThatExtend(Object.class);
+		final long startTime = System.currentTimeMillis();
+		ClassFinder.getClasses("/");
+		final long endTime = System.currentTimeMillis();
+
+		System.out.println("Total execution time: " + (endTime - startTime) );
 		
 		Hashtable<String, Integer> t = StringAnalyzer.analyzeLetterCombination("d", 1, 3);
 		for(String str : t.keySet()) {

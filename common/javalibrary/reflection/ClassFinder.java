@@ -1,6 +1,7 @@
 package javalibrary.reflection;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -29,36 +30,36 @@ public class ClassFinder {
 		return finalClasses;
 	}
 	
-	/**
-	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-	 * @param packageName The base package
-	 * @return The classes in the package
-	 */
-	private static ArrayList<Class<?>> getClasses(String packageName) {
+	public static ArrayList<Class<?>> getClasses(String packageName) {
+		ArrayList<Class<?>> list = new ArrayList<Class<?>>();
+		
 		try {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		    String path = packageName.replace('.', '/');
-		    Enumeration<URL> resources = classLoader.getResources(path);
-		    List<File> dirs = new ArrayList<File>();
-		    
-		    while(resources.hasMoreElements()) {
-		        URL resource = resources.nextElement();
-		        dirs.add(new File(resource.getFile()));
-		    }
-		    
-		    ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		    for(File directory : dirs) {
-		        classes.addAll(findClasses(directory, packageName));
-		    }
-	
-		    return classes;
+			URI uri = ClassFinder.class.getResource(packageName).toURI();
+			File folder = new File(uri);
+			
+			for(File file : folder.listFiles()) {
+				if(file.isDirectory()) 
+					list.addAll(getClasses(packageName + file.getName() + File.separator));
+				else if(isClassFile(file)) {
+					String fileName = packageName.substring(1, packageName.length()) + file.getName().substring(0, file.getName().length() - 6);
+					fileName = fileName.replace(File.separator.charAt(0), '.');
+					//list.add(Class.forName(fileName));
+				}
+					
+					
+			}
 		}
-		catch (Exception e) {
+		catch(Exception e) {
 			e.printStackTrace();
-			return new ArrayList<Class<?>>();
 		}
+		
+		return list;
 	}
 
+	public static boolean isClassFile(File file) {
+		return file.getName().endsWith(".class");
+	}
+	
 	/**
 	 * Recursive method used to find all classes in a given directory and subdirs.
 	 * @param directory The base directory

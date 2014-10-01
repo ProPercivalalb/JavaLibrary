@@ -9,18 +9,18 @@ public class Playfair {
 
 
 	public static String encode(String plainText, String keySquare) {
-		plainText = StringTransformer.removeEverythingButLetters(plainText).toLowerCase();
-		keySquare = keySquare.toLowerCase();
+		plainText = StringTransformer.removeEverythingButLetters(plainText).toUpperCase();
+		keySquare = keySquare.toUpperCase();
 
 		if(plainText.length() % 2 != 0) 
-			plainText += "x";
+			plainText += "X";
 	    
 	    String cipherText = "";
 	    for(int i = 0; i < plainText.length(); i += 2) {
 	        char a = plainText.charAt(i);
 	        char b = plainText.charAt(i + 1);
 	        
-	        if(a == b) b = 'x';
+	        if(a == b) b = 'X';
 	        
 	        int row1 = keySquare.indexOf(a) / 5;
 	        int col1 = keySquare.indexOf(a) % 5;
@@ -56,7 +56,7 @@ public class Playfair {
 	        
 	        cipherText += "" + c + "" + d;
 	    }
-	    return cipherText.toUpperCase();
+	    return cipherText;
 	}
 
 	public static String decode(String cipherText, String keySquare) {

@@ -9,42 +9,109 @@ import javalibrary.string.StringTransformer;
  */
 public class Transposition {
 
-	public static String decode(String cipherText, String keyword) {
-		
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+	public static String decodeRow(String cipherText, String keyword) {
 		keyword = keyword.toUpperCase();
-		String temp = "";
-		for(int i = 0; i < keyword.length(); ++i) {
-			char ch = keyword.charAt(i);
-			if(!temp.contains("" + ch))
-				temp += ch;
-		}
-		keyword = temp;
-		System.out.println(cipherText.length() + "");
+		int[] order = new int[keyword.length()];
 		
-		String tempKeyword = "";
-		for(char ch = 'A'; ch <= 'Z'; ++ch)
-			if(keyword.contains("" + ch))
-				tempKeyword += ch;
-		
-		String finalText = "";
-		Hashtable<Character, String> strings = new Hashtable<Character, String>();
-		
-		for(int i = 0; i < tempKeyword.length(); ++i) {
-			strings.put(keyword.charAt(i), StringTransformer.getEveryNthChar(cipherText, keyword.indexOf(tempKeyword.charAt(i)), tempKeyword.length()));
-		}
-		
-		char[] charArray = new char[cipherText.length()];
-		for(int i = 0; i < keyword.length(); ++i) {
-			String str = strings.get(keyword.charAt(i));
-			if(str == null)
-				continue;
-			
-			for(int j = 0; j < str.length(); ++j) {
-				if(i + j * keyword.length() < cipherText.length())
-					charArray[i + j * keyword.length()] = str.charAt(j);
+		int i = 0;
+		for(char ch = 'A'; ch <= 'Z'; ++ch) {
+			String str = String.valueOf(ch);
+			if(keyword.contains(str)) {
+				order[keyword.indexOf(str)] = i;
+				i++;
 			}
 		}
-		return new String(charArray);
+		
+		for(int k : order)
+			System.out.println("" + k);
+			
+		return decodeRow(cipherText, order);
+	}
+	
+	public static String decodeRow(String cipherText, Integer[] order) {
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		
+		String plainText = "";
+		String[] strings = new String[order.length];
+		
+		for(int i = 0; i < order.length; ++i)
+			strings[i] = StringTransformer.getEveryNthChar(cipherText, order[i], order.length);
+		
+		int i = 0;
+		while(cipherText.length() != plainText.length()) {
+			for(String k : strings)
+				if(i < k.length())
+					plainText += k.charAt(i);
+			++i;
+		}
+		
+		return plainText;
+	}
+	
+	public static String decodeRow(String cipherText, int[] order) {
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		
+		String plainText = "";
+		String[] strings = new String[order.length];
+		
+		for(int i = 0; i < order.length; ++i)
+			strings[i] = StringTransformer.getEveryNthChar(cipherText, order[i], order.length);
+		
+		int i = 0;
+		while(cipherText.length() != plainText.length()) {
+			for(String k : strings)
+				if(i < k.length())
+					plainText += k.charAt(i);
+			++i;
+		}
+		
+		return plainText;
+	}
+	
+	
+	
+	
+	
+	public static String decodeColumn(String cipherText, String keyword) {
+		keyword = keyword.toUpperCase();
+		int[] order = new int[keyword.length()];
+		
+		int i = 0;
+		for(char ch = 'A'; ch <= 'Z'; ++ch) {
+			String str = String.valueOf(ch);
+			if(keyword.contains(str)) {
+				order[keyword.indexOf(str)] = i;
+				i++;
+			}
+		}
+		
+		for(int k : order)
+			System.out.println("" + k);
+			
+		return decodeColumn(cipherText, order);
+	}
+	
+	public static String decodeColumn(String cipherText, Integer[] order) {
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		
+		String plainText = "";
+		
+		int part = cipherText.length() / order.length;
+		
+		for(int i = 0; i < order.length; ++i)
+			plainText += cipherText.substring(order[i] * part, (order[i] + 1) * part);
+		
+		return plainText;
+	}
+	
+	public static String decodeColumn(String cipherText, int[] order) {
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		
+		String plainText = "";
+		
+		for(int i = 0; i < order.length; ++i)
+			plainText += StringTransformer.getEveryNthChar(cipherText, order[i], order.length);
+		
+		return plainText;
 	}
 }

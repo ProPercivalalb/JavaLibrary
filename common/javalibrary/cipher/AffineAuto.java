@@ -1,6 +1,6 @@
 package javalibrary.cipher;
 
-import javalibrary.fitness.Quadgrams;
+import javalibrary.fitness.QuadgramsStats;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -20,7 +20,7 @@ public class AffineAuto {
 		for(int a = 1; a < 25; a += 2) {
   			for(int b = 0; b < 26; ++b) {
 				lastText = Affine.decode(cipherText, a, b);
-				currentScore = Quadgrams.scoreFitness(lastText);
+				currentScore = QuadgramsStats.scoreFitness(lastText);
 				if(currentScore > bestScore) {
 					System.out.println("a: " + a + " b: " + b);
 					bestScore = currentScore;

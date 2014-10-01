@@ -10,7 +10,7 @@ import javalibrary.string.StringAnalyzer;
 /**
  * @author Alex Barter (10AS)
  */
-public class Quadgrams {
+public class QuadgramsStats {
 
 	public static final Hashtable<String, Double> QUADGRAMS_STATS = new Hashtable<String, Double>();
 	public static double TOTAL_QUADGRAMS = 0.0D;
@@ -18,19 +18,25 @@ public class Quadgrams {
 	
 	public static double scoreFitness(String text) {
 		Hashtable<String, Integer> quadgrams = StringAnalyzer.analyzeLetterCombination(text, 4, 4);
-		double count = 0.0F;
+		
+		double fitness = 0.0D;
+		
 		for(String gram : quadgrams.keySet()) {
+			
 			int occurrence = quadgrams.get(gram);
-			if(QUADGRAMS_STATS.keySet().contains(gram))
-				count += QUADGRAMS_STATS.get(gram) * occurrence;
-			else 
-				count += FLOOR * occurrence;
+		
+			//If the quadgram is in the language 
+			if(QUADGRAMS_STATS.containsKey(gram))
+				fitness += QUADGRAMS_STATS.get(gram) * occurrence;
+			else
+				fitness += FLOOR * occurrence;
 		}
-		return count;
+		
+		return fitness;
 	}
 	
 	static {
-		InputStream inputStream = Quadgrams.class.getResourceAsStream("/javalibrary/fitness/englishQuadgrams.txt");
+		InputStream inputStream = QuadgramsStats.class.getResourceAsStream("/javalibrary/fitness/englishQuadgrams.txt");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		
 		double total = 0.0F;

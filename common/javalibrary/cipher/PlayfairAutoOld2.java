@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import javalibrary.fitness.Quadgrams;
+import javalibrary.fitness.QuadgramsStats;
 import javalibrary.string.LetterCount;
 import javalibrary.string.StringAnalyzer;
 import javalibrary.string.StringTransformer;
@@ -35,7 +35,7 @@ public class PlayfairAutoOld2 {
 			lastAlphabet = KeySquareManipulation.modifyKey(bestAlphabet);//, "A****B****I****P****VWXYZ");
 			
 			lastText = Playfair.decode(cipherText, lastAlphabet);
-			currentScore = Quadgrams.scoreFitness(lastText);
+			currentScore = QuadgramsStats.scoreFitness(lastText);
 			if(currentScore > bestScore) {
 				bestAlphabet = lastAlphabet;
 				bestScore = currentScore;

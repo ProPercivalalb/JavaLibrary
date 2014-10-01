@@ -11,8 +11,8 @@ public class KeySquareManipulation {
 	
 	public static String exchange2letters(String keySquare){
 		char[] chars = keySquare.toCharArray();
-	    int i = rand.nextInt(100) % 25;
-	    int j = rand.nextInt(100) % 25;
+	    int i = rand.nextInt(100) % keySquare.length();
+	    int j = rand.nextInt(100) % keySquare.length();
 	    char temp = chars[i];
 	    chars[i] = chars[j];
 	    chars[j] = temp;
@@ -23,8 +23,8 @@ public class KeySquareManipulation {
 		char[] chars = keySquare.toCharArray();
 	    int i = 0;
 	    int j = 0;
-	    while(knows.charAt((i = rand.nextInt(100) % 25)) != '*');
-	    while(knows.charAt((j = rand.nextInt(100) % 25)) != '*');
+	    while(knows.charAt((i = rand.nextInt(100) % keySquare.length())) != '*');
+	    while(knows.charAt((j = rand.nextInt(100) % keySquare.length())) != '*');
 	    char temp = chars[i];
 	    chars[i] = chars[j];
 	    chars[j] = temp;
@@ -84,6 +84,18 @@ public class KeySquareManipulation {
 		while(keySquare.length() != 25) {
 			char ch = (char)((int)Math.floor(26 * Math.random()) + 'A');
 			if(ch != 'J' && !keySquare.contains("" + ch))
+				keySquare += ch;
+		}
+		
+		return keySquare;
+	}
+	
+	public static String generateRandKey() {
+		String keySquare = "";
+		
+		while(keySquare.length() != 26) {
+			char ch = (char)((int)Math.floor(26 * Math.random()) + 'A');
+			if(!keySquare.contains("" + ch))
 				keySquare += ch;
 		}
 		
