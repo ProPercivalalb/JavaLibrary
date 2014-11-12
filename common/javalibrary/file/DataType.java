@@ -11,5 +11,5 @@ public enum DataType {
 	DOUBLE(),
 	SHORT();
 	
-	#protected DataType get
+	//protected DataType get
 }

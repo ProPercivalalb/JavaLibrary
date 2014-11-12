@@ -27,10 +27,8 @@ public class Timer extends Thread {
 	
 	
 	public double getTimeRunning(Units.Time unit) {
-	
 		double timeInMilliseconds = System.currentTimeMillis() - this.startTime;
-		
-		return Units.Time.convert(timeInMilliseconds, Time.MINUTE, unit);
+		return Units.Time.convert(timeInMilliseconds, Time.MILLISECOND, unit);
 	}
 
 	@Override

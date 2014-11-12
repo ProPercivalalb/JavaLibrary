@@ -10,5 +10,5 @@ public interface ILanguage {
 
 	public double getMaxFrequency();
 	
-
+	public String getName();
 }

@@ -15,13 +15,14 @@ public class FileCompression {
 
 	public static byte[] compressTextFile(File file) {
 		ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(bytearrayoutputstream));
+        //DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(bytearrayoutputstream));
 		
         try {
-            write(par0NBTTagCompound, dataoutputstream);
+            //write(par0NBTTagCompound, dataoutputstream);
         }
         finally {
-        	dos.close();
+        	//dos.close();
         }
+        return bytearrayoutputstream.toByteArray();
 	}
 }

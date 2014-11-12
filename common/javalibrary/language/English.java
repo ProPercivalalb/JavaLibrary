@@ -26,6 +26,8 @@ public class English implements ILanguage {
 		return 12.702D;
 	}
 
-
-
+	@Override
+	public String getName() {
+		return "English";
+	}
 }

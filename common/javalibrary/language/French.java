@@ -25,4 +25,8 @@ public class French implements ILanguage {
 		return 14.715D;
 	}
 
+	@Override
+	public String getName() {
+		return "French";
+	}
 }

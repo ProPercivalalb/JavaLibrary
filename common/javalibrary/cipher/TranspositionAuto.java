@@ -11,8 +11,8 @@ import javalibrary.string.StringTransformer;
 public class TranspositionAuto {
 
 	public static String tryDecode(String cipherText) {
-		int minKeywordLength = 5;
-		int maxKeywordLength = 5;
+		int minKeywordLength = 8;
+		int maxKeywordLength = 8;
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
 	
@@ -30,11 +30,11 @@ public class TranspositionAuto {
 			
 			for(int j = 0; j < list.size(); ++j) {
 				
-				lastText = Transposition.decodeColumn(cipherText, list.get(j));
+				lastText = Transposition.decodeRow(cipherText, list.get(j));
 				currentScore = QuadgramsStats.scoreFitness(lastText);
-		
+				//System.out.println(lastText);
 				if(currentScore > bestScore) {
-					System.out.println("Shift: " + lastText);
+					System.out.println(j + "/" + list.size() + " " + lastText);
 					bestScore = currentScore;
 					plainText = lastText;
 				}
