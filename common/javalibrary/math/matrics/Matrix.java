@@ -105,6 +105,12 @@ public class Matrix {
 		
 	}
 	
+	public int size() {
+	    if(!this.isSquare())
+	        throw new MatrixDeterminateException();
+	    return this.order[0];
+	}
+	
 	public boolean isSquare() {
 		return this.order[0] == this.order[1];
 	}
@@ -191,6 +197,9 @@ public class Matrix {
 	}
 	
 	public Matrix inverse() {
+		if(!this.isSquare())
+	        throw new MatrixDeterminateException();
+		
 		float determinant = this.determinant();
 		
 		if(determinant == 0)
@@ -200,6 +209,9 @@ public class Matrix {
 	}
 	
 	public Matrix inverseMod(int mod) {
+		if(!this.isSquare())
+	        throw new MatrixDeterminateException();
+		
 		float determinant = this.determinant();
 		int multiplicativeInverse = BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValueExact();
 		
