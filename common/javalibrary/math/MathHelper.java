@@ -84,7 +84,7 @@ public class MathHelper {
 		return j - i;
 	}
 	
-	public static int wrap(int target, int lowerLimit, int upperLimit) {
+	public static float wrap(float target, int lowerLimit, int upperLimit) {
 		int difference = upperLimit - lowerLimit;
 		
 		while(target >= upperLimit)
@@ -147,14 +147,11 @@ public class MathHelper {
 	public static ArrayList<Integer[]> getMultiplicativeFactors(int mod) {
 		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
 		
-		for(int a = 1; a < mod; ++a) {
-			for(int b = 1; b < mod; ++b) {
-				int wrapped = wrap(a * b, 0, mod);
-				if(wrapped == 1) {
+		for(int a = 1; a < mod; ++a)
+			for(int b = 1; b < mod; ++b)
+				if((a * b) % mod == 1)
 					list.add(new Integer[] {a, b});
-				}
-			}
-		}
+
 		return list;
 	}
 }
