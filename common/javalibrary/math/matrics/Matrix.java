@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import javalibrary.exception.MatrixDeterminateException;
 import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
+import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.math.MathHelper;
 
 /**
@@ -107,7 +108,8 @@ public class Matrix {
 	
 	public int size() {
 	    if(!this.isSquare())
-	        throw new MatrixDeterminateException();
+	        throw new MatrixNotSquareException();
+	    
 	    return this.order[0];
 	}
 	
@@ -117,7 +119,7 @@ public class Matrix {
 	
 	public float determinant() {
 	    if(!this.isSquare())
-	        throw new MatrixDeterminateException();
+	        throw new MatrixNotSquareException();
 	    
 	    if (this.order[0] == 1 && this.order[1] == 1)
 	    	return this.matrix[0][0];
@@ -159,8 +161,8 @@ public class Matrix {
 	public Matrix adjugate() {
 		float[][] newMatrix = new float[this.order[1]][this.order[0]];
 		
-	    for (int i=0;i<this.order[0];i++)
-	        for (int j=0;j<this.order[1];j++)
+	    for (int i = 0; i < this.order[0]; i++)
+	        for (int j = 0; j < this.order[1]; j++)
 	        	newMatrix[j][i] = this.matrix[i][j];
 	    
 	    return new Matrix(newMatrix);
@@ -198,7 +200,7 @@ public class Matrix {
 	
 	public Matrix inverse() {
 		if(!this.isSquare())
-	        throw new MatrixDeterminateException();
+	        throw new MatrixNotSquareException();
 		
 		float determinant = this.determinant();
 		
@@ -210,10 +212,10 @@ public class Matrix {
 	
 	public Matrix inverseMod(int mod) {
 		if(!this.isSquare())
-	        throw new MatrixDeterminateException();
+	        throw new MatrixNotSquareException();
 		
 		float determinant = this.determinant();
-		int multiplicativeInverse = BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValueExact();
+		int multiplicativeInverse = BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValue();
 		
 		if(multiplicativeInverse == 0)
 			throw new MatrixNoInverse();

@@ -29,7 +29,7 @@ public class HillCipher {
 		int size = inverseMatrix.size();
 	    String plainText = ""; 
 	    for(int i = 0; i < cipherText.length(); i += size){
-	    	String[] let = new String[size];
+	    	int[] let = new int[size];
 	    	for(int j = 0; j < size; j++)
 	    		let[j] = ((int)cipherText.charAt(i + j) - 65);
 	    	Matrix letters = new Matrix(let);
