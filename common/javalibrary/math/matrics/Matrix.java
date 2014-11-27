@@ -2,7 +2,6 @@ package javalibrary.math.matrics;
 
 import java.math.BigInteger;
 
-import javalibrary.exception.MatrixDeterminateException;
 import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
@@ -16,29 +15,41 @@ public class Matrix {
 	public final int[] order = new int[2];
 	public final float[][] matrix;
 	
-	public Matrix(String... rows) {
-		this.matrix = new float[rows.length][rows[0].contains(",") ? rows[0].split(",").length : 1];
+	public Matrix(String... data) {
+		this.matrix = new float[data.length][data[0].contains(",") ? data[0].split(",").length : 1];
 		
-		for(int i = 0; i < rows.length; ++i) {
+		for(int i = 0; i < data.length; ++i) {
 			
 			String[] values;
-			if(!rows[i].contains(","))
-				values = new String[] {rows[i]};
+			if(!data[i].contains(","))
+				values = new String[] {data[i]};
 			else
-				values = rows[i].split(",");
+				values = data[i].split(",");
 			
 			for(int k = 0; k < values.length; ++k)
 				this.matrix[i][k] = Float.parseFloat(values[k]);
 		}
 	
-		this.order[0] = matrix.length; //Number of rows (y)
-		this.order[1] = matrix[0].length; //Number of columns (x)
+		this.order[0] = this.matrix.length; //Number of rows (y)
+		this.order[1] = this.matrix[0].length; //Number of columns (x)
 	}
 	
-	public Matrix(float[][] rows) {
-		this.matrix = rows;
-		this.order[0] = matrix.length; //Number of rows (y)
-		this.order[1] = matrix[0].length; //Number of columns (x)
+	public Matrix(float[][] data) {
+		this.matrix = data;
+		this.order[0] = this.matrix.length; //Number of rows (y)
+		this.order[1] = this.matrix[0].length; //Number of columns (x)
+	}
+	
+	public Matrix(int[][] data) {
+		this.matrix = new float[data.length][data[0].length];
+		
+		for(int y = 0; y < data.length; ++y) {
+	
+			for(int x = 0; x < data[y].length; ++x)
+				this.matrix[y][x] = new Float(data[y][x]);
+		}
+		this.order[0] = this.matrix.length; //Number of rows (y)
+		this.order[1] = this.matrix[0].length; //Number of columns (x)
 	}
 	
 	public void print() {
@@ -87,7 +98,7 @@ public class Matrix {
 	}
 	
 	public Matrix multiply(Matrix multiMatrix) {
-		if(!canMultiplyMatrixBy(multiMatrix))
+		if(!this.canMultiplyMatrixBy(multiMatrix))
 			throw new MatrixMutiplyException();
 		
 		float[][] newMatrix = new float[this.order[0]][multiMatrix.order[1]];
@@ -103,7 +114,6 @@ public class Matrix {
 		}
 		
 		return new Matrix(newMatrix);
-		
 	}
 	
 	public int size() {
