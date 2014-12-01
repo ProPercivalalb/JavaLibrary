@@ -2,7 +2,6 @@ package javalibrary.cipher;
 
 import java.util.ArrayList;
 
-import javalibrary.exception.MatrixDeterminateException;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.math.MathHelper;

@@ -220,6 +220,16 @@ public class Matrix {
 	    return this.minors().cofactor().adjugate().multiply(1.0F / determinant);
 	}
 	
+	public Matrix copy() {
+		float[][] newMatrix = new float[this.order[0]][this.order[1]];
+		
+	    for (int y = 0; y < this.order[0]; y++)
+	        for (int x = 0; x < this.order[1]; x++)
+	        	newMatrix[y][x] = this.matrix[y][x];
+	    
+	    return new Matrix(newMatrix);
+	}
+	
 	public Matrix inverseMod(int mod) {
 		if(!this.isSquare())
 	        throw new MatrixNotSquareException();

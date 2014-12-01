@@ -1,5 +1,6 @@
 package javalibrary;
 
+import javalibrary.cipher.HillCipherAuto;
 import javalibrary.math.matrics.Matrix;
 
 /**
@@ -12,14 +13,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Matrix matrix = new Matrix("15");
-		Matrix letters = new Matrix("3");
-		Matrix a = matrix.multiply(letters).modular(26);
-		a.print();
-		Matrix inverseMod = matrix.inverseMod(26);
-		Matrix back = inverseMod.multiply(a).modular(26);
-		inverseMod.print();
-		back.print();
+		HillCipherAuto.run(26, 2 * 2, 0, new int[4]);
 	}
 
 }
