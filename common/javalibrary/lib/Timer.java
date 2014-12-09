@@ -7,13 +7,11 @@ import javalibrary.math.Units.Time;
  * @author Alex Barter
  * @since 30 Oct 2013
  */
-public class Timer extends Thread {
+public class Timer {
 
-	private boolean isStopped = false;
 	private long startTime = 0;
 	
 	public Timer() {
-		this.start();
 		this.startTime = System.currentTimeMillis();
 	}
 	
@@ -29,12 +27,5 @@ public class Timer extends Thread {
 	public double getTimeRunning(Units.Time unit) {
 		double timeInMilliseconds = System.currentTimeMillis() - this.startTime;
 		return Units.Time.convert(timeInMilliseconds, Time.MILLISECOND, unit);
-	}
-
-	@Override
-	public void run() {
-		while(!this.isStopped) {
-			this.runLoop();
-		}
 	}
 }

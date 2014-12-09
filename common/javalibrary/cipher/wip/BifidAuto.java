@@ -1,9 +1,11 @@
-package javalibrary.cipher;
+package javalibrary.cipher.wip;
 
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
+import javalibrary.cipher.VigenereAuto;
+import javalibrary.language.ILanguage;
 import javalibrary.string.LetterCount;
 import javalibrary.string.StringAnalyzer;
 import javalibrary.string.StringTransformer;
@@ -15,18 +17,18 @@ public class BifidAuto {
 
 	private static Random rand = new Random();
 	
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		rand.setSeed(System.currentTimeMillis());
 		
 		String plainText = "";
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		int period = findPeriod(cipherText, 1, 15);
-		String keySquare = lookForBestKeySquare(cipherText, period);
+		String keySquare = lookForBestKeySquare(cipherText, period, language);
 		System.out.println("Period: " + period);
 		return plainText;
 	}
 	
-	public static String lookForBestKeySquare(String cipherText, int period) {
+	public static String lookForBestKeySquare(String cipherText, int period, ILanguage language) {
 		String parentKeySquare = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
 		String lastKeySquare = "";
 		String bestFit = "";
@@ -40,8 +42,8 @@ public class BifidAuto {
 			String deciphered = Bifid.decode(cipherText, lastKeySquare, period);
 			
 			List<LetterCount> charFreqs = StringAnalyzer.countLettersInSizeOrder(deciphered);
-            List<LetterCount> scaled = VigenereAuto.scale(deciphered, charFreqs);
-            double currentSum = VigenereAuto.sumResidualsSquared(deciphered, scaled);
+            List<LetterCount> scaled = VigenereAuto.scale(deciphered, charFreqs, language);
+            double currentSum = VigenereAuto.sumResidualsSquared(deciphered, scaled, language);
             if(smallestSum == -1)
                 smallestSum = currentSum;
             else if(currentSum < smallestSum) {

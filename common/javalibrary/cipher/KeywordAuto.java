@@ -1,16 +1,10 @@
 package javalibrary.cipher;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
+import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.QuadgramsStats;
-import javalibrary.string.LetterCount;
-import javalibrary.string.StringAnalyzer;
 import javalibrary.string.StringTransformer;
-import javalibrary.swing.chart.ChartData;
-import javalibrary.swing.chart.ChartList;
 
 /**
  * @author Alex Barter
@@ -28,9 +22,9 @@ public class KeywordAuto {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
 		String bestEverKey = "";
+		String plainText = "";
 		boolean running = true;
 		while(running) {
-			String plainText = "";
 			String lastText = "";
 			String parentKey = KeySquareManipulation.generateRandKey();
 		
@@ -49,6 +43,7 @@ public class KeywordAuto {
 					lastFitness = QuadgramsStats.scoreFitness(lastText);
 					double dF = lastFitness - bestFitness;
 					if(lastFitness - bestEverFitness > 0) {
+						plainText = lastText;
 			        	bestEverKey = childKey;
 			        	bestEverFitness = lastFitness;
 			        	System.out.println(bestEverKey + " " + lastFitness + " Iteration: " + iteration + " Text: " + lastText);
@@ -72,6 +67,6 @@ public class KeywordAuto {
 		}
 		System.out.println("   END " + bestEverKey);
 		
-		return "";
+		return plainText;
 	}
 }

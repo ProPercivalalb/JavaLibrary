@@ -84,7 +84,27 @@ public class MathHelper {
 		return j - i;
 	}
 	
-	public static float wrap(float target, int lowerLimit, int upperLimit) {
+	public static float wrap(float target, float lowerLimit, float upperLimit) {
+		float difference = upperLimit - lowerLimit;
+		
+		while(target >= upperLimit)
+			target -= difference;
+		while(target < lowerLimit)
+			target += difference;
+		return target;
+	}
+	
+	public static double wrap(double target, double lowerLimit, double upperLimit) {
+		double difference = upperLimit - lowerLimit;
+		
+		while(target >= upperLimit)
+			target -= difference;
+		while(target < lowerLimit)
+			target += difference;
+		return target;
+	}
+	
+	public static int wrap(int target, int lowerLimit, int upperLimit) {
 		int difference = upperLimit - lowerLimit;
 		
 		while(target >= upperLimit)

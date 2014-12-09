@@ -1,4 +1,4 @@
-package javalibrary.cipher;
+package javalibrary.cipher.wip;
 
 import javalibrary.string.StringTransformer;
 

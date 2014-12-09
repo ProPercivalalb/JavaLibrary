@@ -1,6 +1,7 @@
 package javalibrary.cipher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javalibrary.fitness.QuadgramsStats;
 import javalibrary.string.StringTransformer;
@@ -8,11 +9,11 @@ import javalibrary.string.StringTransformer;
 /**
  * @author Alex Barter (10AS)
  */
-public class TranspositionAuto {
+public class AMSCOTranspositionAuto {
 
 	public static String tryDecode(String cipherText) {
-		int minKeywordLength = 8;
-		int maxKeywordLength = 8;
+		int minKeywordLength = 5;
+		int maxKeywordLength = 5;
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
 	
@@ -26,15 +27,15 @@ public class TranspositionAuto {
 			for(int k = 0; k < i; ++k)
 				defaultStr += k;
 			
-			ArrayList<Integer[]> list = permutation(defaultStr);
+			ArrayList<int[]> list = permutation(defaultStr);
 			
 			for(int j = 0; j < list.size(); ++j) {
 				
-				lastText = Transposition.decodeRow(cipherText, list.get(j));
+				lastText = AMSCOTransposition.decode(cipherText, list.get(j));
 				currentScore = QuadgramsStats.scoreFitness(lastText);
 				//System.out.println(lastText);
 				if(currentScore > bestScore) {
-					System.out.println(j + "/" + list.size() + " " + lastText);
+					System.out.println(j + "/" + list.size() + " "  + Arrays.toString(list.get(j)) + " " + lastText);
 					bestScore = currentScore;
 					plainText = lastText;
 				}
@@ -43,20 +44,19 @@ public class TranspositionAuto {
 			System.out.println("Length: " + i);
 		}
 		
-		return "";
+		return plainText;
 	}
 	
-	
-	public static ArrayList<Integer[]> permutation(String str) {
-		ArrayList<Integer[]> list = new ArrayList<Integer[]>();
+	public static ArrayList<int[]> permutation(String str) {
+		ArrayList<int[]> list = new ArrayList<int[]>();
 	    permutation("", str, list);
 	    return list;
 	}
 
-	private static void permutation(String prefix, String str, ArrayList<Integer[]> list) {
+	private static void permutation(String prefix, String str, ArrayList<int[]> list) {
 	    int n = str.length();
 	    if (n == 0) {
-	    	Integer[] intList = new Integer[prefix.length()];
+	    	int[] intList = new int[prefix.length()];
 	    	for(int i = 0; i < prefix.length(); ++i) 
 	    		intList[i] = Integer.parseInt("" + prefix.charAt(i));
 	    	list.add(intList);
@@ -65,30 +65,5 @@ public class TranspositionAuto {
 	        for (int i = 0; i < n; i++)
 	            permutation(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, n), list);
 	    }
-	}
-	
-	public static void runThroughtAllWords(String cipherText, String prefix, int length) {
-	     if (prefix.length() < length) {
-	        for (char c = 'A'; c <= 'Z'; c++) {
-				String text = prefix + c;
-				System.out.println(text);
-				
-				runThroughtAllWords(cipherText, text, length);
-	        }
-	    }
-	}
-	
-	private static void getPermeratation(String cipherText, int keyLength) {
-		int defaultValue = 0;
-		String defaultStr = "";
-		int[] order = new int[keyLength];
-		for(int i = 0; i < order.length; ++i) {
-			order[i] = i;
-			defaultStr += i;
-		}
-		
-		defaultValue = Integer.valueOf(defaultStr);
-		
-		//for(int i = 0; i < )
 	}
 }

@@ -1,10 +1,7 @@
 package javalibrary.cipher;
 
-import java.util.ArrayList;
-
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
-import javalibrary.math.MathHelper;
 import javalibrary.math.matrics.Matrix;
 
 /**
@@ -12,19 +9,9 @@ import javalibrary.math.matrics.Matrix;
  */
 public class HillCipher {
 
-	public static String decode(String cipherText, Matrix keyMatrix) { 
+	public static String decode(String cipherText, Matrix keyMatrix) throws MatrixNotSquareException, MatrixNoInverse { 
 	    Matrix inverseMatrix;
-		
-		try {
-			inverseMatrix = keyMatrix.inverseMod(26);
-			
-		}
-		catch(MatrixNoInverse e) {
-			return "";
-		}
-		catch(MatrixNotSquareException e) {
-			return "";
-		}
+		inverseMatrix = keyMatrix.inverseMod(26);
 		
 		int size = inverseMatrix.size();
 	    String plainText = ""; 

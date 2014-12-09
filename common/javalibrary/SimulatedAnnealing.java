@@ -1,7 +1,7 @@
 package javalibrary;
 
-import javalibrary.cipher.KeySquareManipulation;
-import javalibrary.cipher.Playfair;
+import javalibrary.cipher.wip.KeySquareManipulation;
+import javalibrary.cipher.wip.Playfair;
 import javalibrary.fitness.QuadgramsStats;
 
 /**

@@ -1,5 +1,7 @@
 package javalibrary.cipher;
 
+import javalibrary.exception.MatrixNoInverse;
+import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.fitness.QuadgramsStats;
 import javalibrary.math.matrics.Matrix;
 import javalibrary.string.StringTransformer;
@@ -13,73 +15,68 @@ public class HillCipherAuto {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
-		String lastText = "";
-		String plainText = cipherText;
-		double bestScore = Integer.MIN_VALUE;
-		double currentScore = 0;
 		int matrixSize = 2;
 		
+		HillCipherTask hct = new HillCipherTask(cipherText);
+		run(hct, 0, 25, (int)Math.pow(matrixSize, 2), matrixSize, matrixSize, 0, new int[(int) Math.pow(matrixSize, 2)]);
 		
-		for(int x = 0; x < matrixSize; ++x) {
-			for(int y = 0; y < matrixSize; ++y) {
-				for(int k = 0; k < 26; ++k) {
-					for(int l = 0; l < 26; ++l) {
-						
-						
-						lastText = HillCipher.decode(cipherText, i, j, k, l);
-						if(lastText.equals(""))
-							continue;
-						currentScore = QuadgramsStats.scoreFitness(lastText);
-						if(currentScore > bestScore) {
-							System.out.println(i + " " + j + " " + k + " " + l +  " " + lastText);
-							bestScore = currentScore;
-							plainText = lastText;
-						}
-					}
-				}
-			}
+		return hct.plainText;
+	}
+	
+	public static class HillCipherTask implements MatrixCreation {
+
+		public String cipherText;
+		
+		public HillCipherTask(String cipherText) {
+			this.cipherText = cipherText;
 		}
 		
-		return plainText;
+		public String lastText = "";
+		public String plainText = "";
+		public double bestScore = Integer.MIN_VALUE;
+		public double currentScore = 0;
+			
+		@Override
+		public void onMatrixCreate(Matrix matrix) {
+			try {
+				this.lastText = HillCipher.decode(this.cipherText, matrix);
+					
+			}
+			catch(MatrixNoInverse e) {
+				return;
+			}
+			catch(MatrixNotSquareException e) {
+				return;
+			}
+				
+			this.currentScore = QuadgramsStats.scoreFitness(lastText);
+			if(this.currentScore > this.bestScore) {
+				
+				System.out.println(this.lastText);
+				matrix.print();
+				this.bestScore = this.currentScore;
+				this.plainText = this.lastText;
+			}
+				
+		}
+
 	}
 	
-	public static everyMatrixXxY(int max, int orderY, int orderX) {
-		
+	public interface MatrixCreation {
+		public void onMatrixCreate(Matrix matrix);
 	}
-	
-	public static void run(int max, int no, int time, int[] array) {
-		
-		for(int i = 0; i < max; i++) {
+
+	public static void run(MatrixCreation task, int range_low, int range_high, int no, int rows, int columns, int time, int[] array) {
+		for(int i = range_low; i <= range_high; i++) {
 			array[time] = i;
+			
 			if(time + 1 >= no) {
-				for(int j : array) 
-					System.out.print(j + ", ");
-				System.out.println("");
+				Matrix matrix = new Matrix(array, rows, columns);
+				task.onMatrixCreate(matrix);
 				continue;
 			}
 			
-			run(max, no, time + 1, array);
-		}
-	}
-	
-	
-	public static void everyMatrix(int matrixSize, Matrix matrix, int maxValue, int currentCoordX, int currentCoordY) {
-		if(matrix.matrix[currentCoordY][currentCoordX] == maxValue) {
-			
-			
-		}
-		else {
-			Matrix newMatrix = matrix.copy();
-			newMatrix.matrix[currentCoordY][currentCoordX] += 1;
-			newMatrix.print();
-			for(int x = 0; x < matrix.order[1]; x++) {
-				for(int y = 0; y < matrix.order[0]; y++) {
-					if(currentCoordX != x && currentCoordY != y)
-						everyMatrix(matrixSize, matrix, maxValue, x, y);
-				}
-			}
-			
-			everyMatrix(matrixSize, newMatrix, maxValue, currentCoordX, currentCoordY);
+			run(task, range_low, range_high, no, rows, columns, time + 1, array);
 		}
 	}
 }
