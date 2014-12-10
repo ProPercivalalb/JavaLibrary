@@ -33,7 +33,7 @@ public class AMSCOTranspositionAuto {
 				
 				lastText = AMSCOTransposition.decode(cipherText, list.get(j));
 				currentScore = QuadgramsStats.scoreFitness(lastText);
-				//System.out.println(lastText);
+				
 				if(currentScore > bestScore) {
 					System.out.println(j + "/" + list.size() + " "  + Arrays.toString(list.get(j)) + " " + lastText);
 					bestScore = currentScore;

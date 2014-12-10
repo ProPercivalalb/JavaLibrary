@@ -22,9 +22,9 @@ public class BifidAuto {
 		
 		String plainText = "";
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
-		int period = findPeriod(cipherText, 1, 15);
-		String keySquare = lookForBestKeySquare(cipherText, period, language);
+		int period = findPeriod(cipherText, 0, 15);
 		System.out.println("Period: " + period);
+		String keySquare = lookForBestKeySquare(cipherText, period, language);
 		return plainText;
 	}
 	

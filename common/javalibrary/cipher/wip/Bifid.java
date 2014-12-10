@@ -9,6 +9,9 @@ import javalibrary.string.StringTransformer;
 public class Bifid {
 
 	public static String decode(String cipherText, String keySquare, int period) {
+		if(period == 0)
+			period = cipherText.length();
+		
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		keySquare = keySquare.toUpperCase();
 		
