@@ -15,8 +15,8 @@ import javalibrary.string.StringTransformer;
 public class VigenereAuto {
 
 	public static String tryDecode(String cipherText, ILanguage language) {
-		int minKeywordLength = 1;
-		int maxKeywordLength = 15;
+		int minKeywordLength = 7;
+		int maxKeywordLength = 7;
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
 		int keyLength = findKeywordLength(cipherText, minKeywordLength, maxKeywordLength, language);

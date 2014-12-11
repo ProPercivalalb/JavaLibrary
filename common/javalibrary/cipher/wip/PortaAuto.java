@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javalibrary.cipher.VigenereAuto;
+import javalibrary.language.ILanguage;
 import javalibrary.string.LetterCount;
 import javalibrary.string.StringAnalyzer;
 import javalibrary.string.StringTransformer;
@@ -14,12 +15,12 @@ import javalibrary.string.StringTransformer;
  */
 public class PortaAuto {
 
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		int minKeywordLength = 1;
 		int maxKeywordLength = 11;
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
-		int keyLength = VigenereAuto.findKeywordLength(cipherText, minKeywordLength, maxKeywordLength);
+		int keyLength = VigenereAuto.findKeywordLength(cipherText, minKeywordLength, maxKeywordLength, language);
 		System.out.println(keyLength);
 		
 		String keyword = "";
