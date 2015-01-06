@@ -42,8 +42,7 @@ public class CadenusTranspositionAuto {
 			this.lastText = CadenusTransposition.decode(this.cipherText, key);
 				
 			this.currentScore = QuadgramsStats.scoreFitness(lastText);
-			if(key.endsWith("EASY"))
-				System.out.println(key + "  " + this.currentScore + "   " + this.lastText);	
+	
 			if(this.currentScore > this.bestScore) {
 				System.out.println(key + "  " + this.currentScore + "   " + this.lastText);	
 				this.bestScore = this.currentScore;
