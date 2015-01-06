@@ -4,12 +4,16 @@ import java.util.ArrayList;
 
 import javalibrary.cipher.AMSCOTransposition;
 import javalibrary.cipher.AMSCOTranspositionAuto;
+import javalibrary.cipher.CadenusTransposition;
+import javalibrary.cipher.CadenusTranspositionAuto;
 import javalibrary.cipher.HillCipherAuto;
 import javalibrary.cipher.VigenereAuto;
 import javalibrary.cipher.wip.BifidAuto;
 import javalibrary.cipher.wip.PortaAuto;
+import javalibrary.fitness.FReader;
 import javalibrary.language.Languages;
 import javalibrary.lib.Timer;
+import javalibrary.math.MathHelper;
 import javalibrary.math.Units.Time;
 import javalibrary.math.matrics.Matrix;
 import javalibrary.util.Permunation;
@@ -25,7 +29,10 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Timer timer = new Timer();
-		VigenereAuto.tryDecode("kwocxpcnpptddnrvrerjsruptltlkexqrtpldpniperlqplmfesjwxltkxrpctvflohoewkwomhtfjtnqfewnpzptndfcouxcterosolwnnolymfywovtxlndymizrijfetlpujixmemnlzxjwtipwtmdppthtjtpkertqtjamhstqmmtjwxanwxdexieomheouxypjxilufcjxyxrwesmhumztpthseqtopmehwnvmyewnrxdantemmhxepttjwxuxidjzxjnnejtlupespxhsxkmdenturcievmnlodentznjzmrfoerelapxexdvahmutjexcdfljwxepxnopbewnlmtsmgnpvmhveqtpcihmoertapqutxfblernmtvmoneeentrfnkohhxkwjwxspkertamakwosodeqtpxldegnxxhetbevtaetiertolencitvexflsdifcyxfwxcenijrnpcwrjtldeqtipstaimztmdxjcoaxpenspmlpnuertvwpipzexcdjmjwxrxgwocatikuecawtwqegxanwxdexierd", Languages.english);
+
+		//System.out.println(CadenusTransposition.decode("SYSTRETOMTATTLUSOATLEEESFIYHEASDFNMSCHBHNEUVSNPMTOFARENUSEIEEIELTARLMENTIEETOGEVESITFAISLTNGEEUVOWUL", "EASY"));
+		CadenusTranspositionAuto.tryDecode("RVOGIEIYWSSDGPVOIAISAOAEOAEDRNITRNXEIGRPSSHADHDTOIPAATEXENNESAGROBTLESRNROIRYPBGEDCLLIWALALEENIGRRNWYRLIMLPSTOLEFTRDMUARIEEEIIAOLNEWSAOHRTLSTOBETNSLVFIVDOVTPOAEEISCIOHIPSEVEED");
+		
 		System.out.println("Seconds: " + timer.getTimeRunning(Time.SECOND));
 	}
 

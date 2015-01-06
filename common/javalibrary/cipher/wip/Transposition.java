@@ -21,16 +21,11 @@ public class Transposition {
 				i++;
 			}
 		}
-		
-		for(int k : order)
-			System.out.println("" + k);
 			
 		return decodeRow(cipherText, order);
 	}
 	
 	public static String decodeRow(String cipherText, Integer[] order) {
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
-		
 		String plainText = "";
 		String[] strings = new String[order.length];
 		
@@ -49,8 +44,6 @@ public class Transposition {
 	}
 	
 	public static String decodeRow(String cipherText, int[] order) {
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
-		
 		String plainText = "";
 		String[] strings = new String[order.length];
 		
