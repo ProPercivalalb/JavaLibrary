@@ -15,6 +15,10 @@ public class Timer {
 		this.startTime = System.currentTimeMillis();
 	}
 	
+	public void restart() {
+		this.startTime = System.currentTimeMillis();
+	}
+	
 	public void pause() {
 		
 	}
@@ -23,6 +27,9 @@ public class Timer {
 		
 	}
 	
+	public void displayTime() {
+		System.out.println("Milliseconds: " + this.getTimeRunning(Time.MILLISECOND));
+	}
 	
 	public double getTimeRunning(Units.Time unit) {
 		double timeInMilliseconds = System.currentTimeMillis() - this.startTime;

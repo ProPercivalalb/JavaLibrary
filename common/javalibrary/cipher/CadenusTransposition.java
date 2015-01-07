@@ -1,6 +1,5 @@
 package javalibrary.cipher;
 
-import javalibrary.cipher.wip.Transposition;
 import javalibrary.math.MathHelper;
 
 /**
@@ -11,38 +10,29 @@ public class CadenusTransposition {
 	public static String decode(String cipherText, String key) {
 		int keyLength = key.length();
 
-		String columnSorted = Transposition.decodeRow(cipherText, key);
+		int[] order = new int[keyLength];
+		
+		int p = 0;
+		for(char ch = 'A'; ch <= 'Z'; ++ch) {
+			int index = key.indexOf(ch);
+			if(index != -1)
+				order[p++] = index;
+		}
 		
 		//Creates grid
-		char[][] start_grid = new char[25][keyLength];
-		char[][] temp_grid = new char[25][keyLength];
-		int index = 0;
-		for(int x = 0; x < 25; x++) {
-			for(int y = 0; y < keyLength; y++) {
-				start_grid[x][y] = columnSorted.charAt(index);
-				temp_grid[x][y] = columnSorted.charAt(index);
-				index += 1;
-			}
-		}
-				
-		for(int i = 0; i < keyLength; i++) {
-			int value = charValue(key.charAt(i));
-			int move = MathHelper.wrap(25 - value, 0, 25);
-			for(int j = 0; j < 25; j++) {
+		char[] start_grid = cipherText.toCharArray();
+		char[] temp_grid = new char[cipherText.length()];
+		
+		for(int j = 0; j < 25; j++) {
+			for(int i = 0; i < keyLength; i++) {
+				int newColumn = order[i];
+				int move = MathHelper.wrap(25 - charValue(key.charAt(newColumn)), 0, 25);
 				int newIndex = MathHelper.wrap(j + move, 0, 25);
-				temp_grid[newIndex][i] = start_grid[j][i];
+				temp_grid[newIndex * keyLength + newColumn] = start_grid[j * keyLength + i];
 			}
 		}
-		
-		String plainText = "";
-		
-		for(int x = 0; x < 25; x++) {
-			for(int y = 0; y < keyLength; y++) {
-				plainText += temp_grid[x][y];
-			}
-		}
-		
-		return plainText;
+
+		return new String(temp_grid);
 	}
 	
 	public static int charValue(char character) {

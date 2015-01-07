@@ -1,9 +1,5 @@
 package javalibrary.cipher;
 
-import java.util.ArrayList;
-
-import javalibrary.exception.MatrixNoInverse;
-import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.fitness.QuadgramsStats;
 import javalibrary.string.StringTransformer;
 
@@ -16,12 +12,13 @@ public class CadenusTranspositionAuto {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
-		int size = 4;
+		int size = 7;
+		String startText = "F";
 		
 		CadenusTranspositionTask ctt = new CadenusTranspositionTask(cipherText);
-		run(ctt, 'A', 'Z', size, 0, "");
+		run(ctt, new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z'}, size - startText.length(), 0, startText);
 		
-		return "";
+		return ctt.plainText;
 	}
 	
 	public static class CadenusTranspositionTask implements KeyCreation {
@@ -41,13 +38,17 @@ public class CadenusTranspositionAuto {
 		public void onKeyCreate(String key) {
 			this.lastText = CadenusTransposition.decode(this.cipherText, key);
 				
-			this.currentScore = QuadgramsStats.scoreFitness(lastText);
-	
-			if(this.currentScore > this.bestScore) {
-				System.out.println(key + "  " + this.currentScore + "   " + this.lastText);	
+			this.currentScore = QuadgramsStats.scoreFitness(this.lastText);
+			
+			
+			if(this.currentScore >= this.bestScore) {
+				System.out.println("BEST: " + key + "  " + this.currentScore + "   " + this.lastText);	
 				this.bestScore = this.currentScore;
 				this.plainText = this.lastText;
 			}
+			
+			else if(this.currentScore > -900)
+				System.out.println(key + "  " + this.currentScore + "   " + this.lastText);	
 			
 		}
 
@@ -57,10 +58,10 @@ public class CadenusTranspositionAuto {
 		public void onKeyCreate(String key);
 	}
 	
-	public static void run(KeyCreation task, char range_low, char range_high, int no, int time, String key) {
-		for(int i = range_low; i <= range_high; i++) {
+	public static void run(KeyCreation task, char[] characters, int no, int time, String key) {
+		for(char character : characters) {
 			String backup = key;
-			backup += (char)i;
+			backup += character;
 			
 			if(time + 1 >= no) {
 				boolean end = false;
@@ -75,7 +76,7 @@ public class CadenusTranspositionAuto {
 				continue;
 			}
 			
-			run(task, range_low, range_high, no, time + 1, backup);
+			run(task, characters, no, time + 1, backup);
 		}
 	}
 }

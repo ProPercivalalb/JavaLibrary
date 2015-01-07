@@ -3,9 +3,8 @@ package javalibrary.fitness;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Hashtable;
-
-import javalibrary.string.StringAnalyzer;
 
 /**
  * @author Alex Barter (10AS)
@@ -17,20 +16,18 @@ public class QuadgramsStats {
 	public static double FLOOR = 0.0D;
 	
 	public static double scoreFitness(String text) {
-		Hashtable<String, Integer> quadgrams = StringAnalyzer.analyzeLetterCombination(text, 4, 4);
 		
 		double fitness = 0.0D;
-		
-		for(String gram : quadgrams.keySet()) {
-			
-			int occurrence = quadgrams.get(gram);
-		
-			//If the quadgram is in the language 
-			if(QUADGRAMS_STATS.containsKey(gram))
-				fitness += QUADGRAMS_STATS.get(gram) * occurrence;
+		char[] characters = text.toCharArray();
+
+		for(int k = 0; k < (text.length() - 4 + 1); k++) {
+			String s = new String(characters, k, 4);
+			if(QUADGRAMS_STATS.containsKey(s))
+				fitness += QUADGRAMS_STATS.get(s);
 			else
-				fitness += FLOOR * occurrence;
+				fitness += FLOOR;
 		}
+
 		
 		return fitness;
 	}
@@ -51,7 +48,7 @@ public class QuadgramsStats {
 					continue;
 				int count = Integer.valueOf(str[1]);
 				total += count;
-				QUADGRAMS_STATS.put(str[0].toLowerCase(), (double)count);
+				QUADGRAMS_STATS.put(str[0], (double)count);
 			}
 			
 			TOTAL_QUADGRAMS = total;
