@@ -12,8 +12,8 @@ public class CadenusTranspositionAuto {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
-		int size = 7;
-		String startText = "F";
+		int size = 4;
+		String startText = "";
 		
 		CadenusTranspositionTask ctt = new CadenusTranspositionTask(cipherText);
 		run(ctt, new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z'}, size - startText.length(), 0, startText);
@@ -47,8 +47,7 @@ public class CadenusTranspositionAuto {
 				this.plainText = this.lastText;
 			}
 			
-			else if(this.currentScore > -900)
-				System.out.println(key + "  " + this.currentScore + "   " + this.lastText);	
+
 			
 		}
 

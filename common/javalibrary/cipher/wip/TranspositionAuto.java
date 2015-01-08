@@ -56,10 +56,9 @@ public class TranspositionAuto {
 	private static void permutation(String prefix, String str, ArrayList<Integer[]> list) {
 	    int n = str.length();
 	    if (n == 0) {
-	    	Integer[] intList = new Integer[prefix.length()];
-	    	for(int i = 0; i < prefix.length(); ++i) 
-	    		intList[i] = Integer.parseInt("" + prefix.charAt(i));
-	    	list.add(intList);
+	    	//for(int i = 0; i < prefix.length(); ++i) 
+	    	//	System.out.print(prefix.charAt(i));
+	    	//System.out.println();
 	    }
 	    else {
 	        for (int i = 0; i < n; i++)

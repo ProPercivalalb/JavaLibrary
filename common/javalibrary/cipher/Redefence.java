@@ -3,33 +3,22 @@ package javalibrary.cipher;
 /**
  * @author Alex Barter (10AS)
  */
-public class TranspositionFence {
+public class Redefence {
 
-	public static String encode(String plainText, int rows) {
+	public static String decode(String cipherText, String key, int rows) {
+		int[] order = new int[key.length()];
 		
-		StringBuilder[] cipherText = new StringBuilder[rows];
-		for(int i = 0; i < rows; ++i)
-			cipherText[i] = new StringBuilder();
-		
-		int no_per_ite = rows * 2 - 2;
-		
-		for(int i = 0; i < plainText.length(); ++i) {
-			char character = plainText.charAt(i);
-			int index_in_ite = i % no_per_ite;
-			if(index_in_ite < rows)
-				cipherText[index_in_ite].append(character);
-			else
-				cipherText[rows - (index_in_ite - rows) - 2].append(character);
+		int p = 0;
+		for(char ch = 'A'; ch <= 'Z'; ++ch) {
+			int keyindex = key.indexOf(ch);
+			if(keyindex != -1)
+				order[p++] = keyindex + 1;
 		}
 		
-		String last = "";
-		
-		for(StringBuilder text : cipherText)
-			last += text.toString();
-		return last;
+		return decode(cipherText, order, rows);
 	}
 	
-	public static String decode(String cipherText, int rows) {
+	public static String decode(String cipherText, int[] order, int rows) {
 		char[] plainText = new char[cipherText.length()];
 		int index = 0;
 		int no_per_ite = rows * 2 - 2;
@@ -37,7 +26,9 @@ public class TranspositionFence {
 		int total_ite = (int)Math.floor(total);
 		int total_left = (int)((total - total_ite) * no_per_ite);
 		
-		for(int c_row = 1; c_row <= rows; c_row++) {
+		for(int k = 0; k < rows; k++) {
+			int c_row = order[k];
+			
 			if(index >= cipherText.length())
 				break;
 			
