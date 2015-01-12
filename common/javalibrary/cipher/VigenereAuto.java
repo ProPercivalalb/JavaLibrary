@@ -18,7 +18,7 @@ public class VigenereAuto {
 		int minKeywordLength = 7;
 		int maxKeywordLength = 7;
 		//Removes all characters except letters
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		int keyLength = findKeywordLength(cipherText, minKeywordLength, maxKeywordLength, language);
 		System.out.println(keyLength);
 		

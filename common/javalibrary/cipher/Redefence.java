@@ -5,7 +5,8 @@ package javalibrary.cipher;
  */
 public class Redefence {
 
-	public static String decode(String cipherText, String key, int rows) {
+	public static String decode(String cipherText, String key) {
+		
 		int[] order = new int[key.length()];
 		
 		int p = 0;
@@ -15,10 +16,12 @@ public class Redefence {
 				order[p++] = keyindex + 1;
 		}
 		
-		return decode(cipherText, order, rows);
+		return decode(cipherText, order);
 	}
 	
-	public static String decode(String cipherText, int[] order, int rows) {
+	public static String decode(String cipherText, int[] order) {
+		int rows = order.length;
+		
 		char[] plainText = new char[cipherText.length()];
 		int index = 0;
 		int no_per_ite = rows * 2 - 2;

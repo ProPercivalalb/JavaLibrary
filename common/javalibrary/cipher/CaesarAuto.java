@@ -10,7 +10,7 @@ public class CaesarAuto {
 
 	public static String tryDecode(String cipherText) {
 		//Removes all characters except letters
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
 		String lastText = "";
 		String plainText = "";

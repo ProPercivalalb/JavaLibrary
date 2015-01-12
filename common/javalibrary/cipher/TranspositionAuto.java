@@ -9,26 +9,26 @@ import javalibrary.string.StringTransformer;
 /**
  * @author Alex Barter (10AS)
  */
-public class RedefenceAuto {
+public class TranspositionAuto {
 
 	public static String tryDecode(String cipherText) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
-		int size = 4;
+		int size = 6;
 		
-		RedefenceTask rt = new RedefenceTask(cipherText);
-		permutation(rt, ArrayHelper.range(1, size + 1), 0);
+		TranspositionTask tt = new TranspositionTask(cipherText);
+		permutation(tt, ArrayHelper.range(0, size), 0);
 		
-		return rt.plainText;
+		return tt.plainText;
 	}
 	
 
-	public static class RedefenceTask implements PermutationTask {
+	public static class TranspositionTask implements PermutationTask {
 
 		public String cipherText;
 		
-		public RedefenceTask(String cipherText) {
+		public TranspositionTask(String cipherText) {
 			this.cipherText = cipherText;
 		}
 		
@@ -39,8 +39,8 @@ public class RedefenceAuto {
 			
 		@Override
 		public void onPermutation(int[] order) {
-			this.lastText = Redefence.decode(this.cipherText, order);
-				
+			this.lastText = Transposition.decode(this.cipherText, order);
+			
 			this.currentScore = QuadgramsStats.scoreFitness(this.lastText);
 			
 			if(this.currentScore > this.bestScore) {

@@ -3,7 +3,7 @@ package javalibrary.cipher;
 /**
  * @author Alex Barter (10AS)
  */
-public class TranspositionFence {
+public class RailFence {
 
 	public static String encode(String plainText, int rows) {
 		

@@ -46,9 +46,6 @@ public class CadenusTranspositionAuto {
 				this.bestScore = this.currentScore;
 				this.plainText = this.lastText;
 			}
-			
-
-			
 		}
 
 	}

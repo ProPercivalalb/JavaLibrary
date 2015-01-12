@@ -6,11 +6,11 @@ import javalibrary.string.StringTransformer;
 /**
  * @author Alex Barter (10AS)
  */
-public class TranspositionFenceAuto {
+public class RailFenceAuto {
 
 	public static String tryDecode(String cipherText) {
 		//Removes all characters except letters
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
 		int minRows = 2;
 		int maxRows = 15;
@@ -20,7 +20,7 @@ public class TranspositionFenceAuto {
 		double currentScore = 0;
 		
 		for(int i = minRows; i <= maxRows; ++i) {
-			lastText = TranspositionFence.decode(cipherText, i);
+			lastText = RailFence.decode(cipherText, i);
 			currentScore = QuadgramsStats.scoreFitness(lastText);
 		
 			if(currentScore > bestScore) {

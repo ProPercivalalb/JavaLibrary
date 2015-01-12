@@ -3,9 +3,9 @@ package javalibrary.cipher;
 /**
  * @author Alex Barter (10AS)
  */
-public class AMSCOTransposition {
+public class AMSCO {
 
-	public static String decode(String cipherText, String keyword) {
+	public static String decode(String cipherText, boolean reversed, String keyword) {
 		keyword = keyword.toUpperCase();
 		int[] order = new int[keyword.length()];
 		
@@ -18,10 +18,10 @@ public class AMSCOTransposition {
 			}
 		}
 		
-		return decode(cipherText, order);
+		return decode(cipherText, reversed, order);
 	}
 	
-	public static String decode(String cipherText, int[] order) {
+	public static String decode(String cipherText, boolean reversed, int[] order) {
 		String plainText = "";
 		int index = 0;
 		int no_column = order.length;
@@ -30,13 +30,12 @@ public class AMSCOTransposition {
 		for(int i = 0; i < no_column; i++)
 			reversedOrder[order[i]] = i;
 		
-		boolean reversed = true;
 		int[] size = calcualteTotalSize(cipherText, reversed, no_column);
 		
 		String[][] grid = new String[size[0]][no_column];
 
 		for(int column = 0; column < no_column; column++) {
-		for(int row = 0; row < size[0]; row++) {
+			for(int row = 0; row < size[0]; row++) {
 				int trueColumn = reversedOrder[column];
 				
 				for(int i = 0; i < (((row - trueColumn) % 2 == 0) ? reversed ? 2 : 1 : reversed ? 1 : 2); i++) {
@@ -67,7 +66,6 @@ public class AMSCOTransposition {
 
 		return plainText;
 	}
-	
 
 	/**
 	 * @param cipherText The cipher text that is trying to be decrypted
@@ -78,10 +76,8 @@ public class AMSCOTransposition {
 		int column = 0;
 		while(true) {
 			int cb = charactersBefore(reversed, true, no_columns, row, column);
-			if(cipherText.length() <= cb) {
-				//System.out.println("EAew" + (row + 1) + "  " + + (column + 1));
+			if(cipherText.length() <= cb)
 				return new int[] {row + 1, column + 1};
-			}
 			
 			column += 1;
 			if(column >= no_columns)  {

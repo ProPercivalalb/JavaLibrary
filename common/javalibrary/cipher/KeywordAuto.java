@@ -20,7 +20,7 @@ public class KeywordAuto {
 	
 	public static String tryDecode(String cipherText) {
 		//Removes all characters except letters
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toLowerCase();
+		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		String bestEverKey = "";
 		String plainText = "";
 		boolean running = true;

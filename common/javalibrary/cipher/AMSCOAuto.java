@@ -9,27 +9,30 @@ import javalibrary.string.StringTransformer;
 /**
  * @author Alex Barter (10AS)
  */
-public class RedefenceAuto {
+public class AMSCOAuto {
 
 	public static String tryDecode(String cipherText) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
-		int size = 4;
+		int size = 5;
+		boolean reversed = false;
 		
-		RedefenceTask rt = new RedefenceTask(cipherText);
-		permutation(rt, ArrayHelper.range(1, size + 1), 0);
+		AMSCOTask amscot = new AMSCOTask(cipherText, reversed);
+		permutation(amscot, ArrayHelper.range(0, size), 0);
 		
-		return rt.plainText;
+		return amscot.plainText;
 	}
 	
 
-	public static class RedefenceTask implements PermutationTask {
+	public static class AMSCOTask implements PermutationTask {
 
 		public String cipherText;
+		public boolean reversed;
 		
-		public RedefenceTask(String cipherText) {
+		public AMSCOTask(String cipherText, boolean reversed) {
 			this.cipherText = cipherText;
+			this.reversed = reversed;
 		}
 		
 		public String lastText = "";
@@ -39,8 +42,8 @@ public class RedefenceAuto {
 			
 		@Override
 		public void onPermutation(int[] order) {
-			this.lastText = Redefence.decode(this.cipherText, order);
-				
+			this.lastText = AMSCO.decode(this.cipherText, this.reversed, order);
+			
 			this.currentScore = QuadgramsStats.scoreFitness(this.lastText);
 			
 			if(this.currentScore > this.bestScore) {
