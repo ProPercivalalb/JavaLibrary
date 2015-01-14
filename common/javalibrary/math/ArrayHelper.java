@@ -1,5 +1,7 @@
 package javalibrary.math;
 
+import java.lang.reflect.Array;
+
 /**
  * @author Alex Barter (10AS)
  */
@@ -9,6 +11,13 @@ public class ArrayHelper {
 	    int[] arr = new int[end - start];
 	    for(int i = 0; i < end - start; i++)
 	        arr[i] = start + i;
+	    return arr;
+	}
+	
+	public static <T> T[] filled(T filler, int length){
+	    T[] arr = (T[])new Object[length];
+	    for(int i = 0; i < length; i++)
+	        arr[i] = filler;
 	    return arr;
 	}
 }

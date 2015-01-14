@@ -17,12 +17,12 @@ public class AffineAuto {
 		double bestScore = Integer.MIN_VALUE;
 		double currentScore = 0;
 		
-		for(int a = 1; a < 25; a += 2) {
+		for(int a : new int[] {1,3,5,7,9,11,15,17,19,21,23,25}) {
   			for(int b = 0; b < 26; ++b) {
 				lastText = Affine.decode(cipherText, a, b);
 				currentScore = QuadgramsStats.scoreFitness(lastText);
 				if(currentScore > bestScore) {
-					System.out.println("a: " + a + " b: " + b);
+					System.out.println("a: " + a + " b: " + b + " " + lastText);
 					bestScore = currentScore;
 					plainText = lastText;
 				}

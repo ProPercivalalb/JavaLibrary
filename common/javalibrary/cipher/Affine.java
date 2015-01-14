@@ -1,71 +1,69 @@
 package javalibrary.cipher;
 
+import java.math.BigInteger;
+import java.util.Random;
+
+import javalibrary.EncryptionData;
+import javalibrary.ICipher;
+import javalibrary.exception.MatrixNoInverse;
+import javalibrary.lib.EncryptionKeys;
 import javalibrary.math.MathHelper;
 
 /**
  * @author Alex Barter
- * @since 26 Nov 2013
  */
-public class Affine {
+public class Affine implements ICipher {
 
-	/**
-	 * Encodes plain text into cipher text encoded in Affine Cipher
-	 * @param plainText The message you wish to encode
-	 * @param a An integer to replace a in the Affine formula
-	 * @param b An integer to replace b in the Affine formula
-	 * @return The Cipher Text
-	 */
 	public static String encode(String plainText, int a, int b) {
 		char[] charArray = plainText.toCharArray();
 		
 		String cipherText = "";
 		
 		String tempAlphabet = "";
-		for(int i = 'a'; i <= 'z'; ++i)
-			tempAlphabet += (char)('a' + MathHelper.wrap(a * (i - 'a') + b, 0, 26));
+		for(int i = 'A'; i <= 'Z'; ++i)
+			tempAlphabet += (char)('A' + MathHelper.wrap(a * (i - 'A') + b, 0, 26));
 		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toUpperCase(ch);
 				
 			if(!Character.isLetter(ch))
 				cipherText += ch;
 			else
-				cipherText += (char)(tempAlphabet.indexOf(ch) + 'a');
+				cipherText += (char)(tempAlphabet.indexOf(ch) + 'A');
 		}
 		
 		return cipherText;
 	}
 	
-	/**
-	 * Decodes cipher text into plain text which was encoded in Affine Cipher
-	 * @param cipherText The message you wish to decode
-	 * @param shift The alphabetic shift used to encode the plain text
-	 * @param a An integer to replace a in the Affine formula
-	 * @param b An integer to replace b in the Affine formula
-	 * @return The Plain Text
-	 */
 	public static String decode(String cipherText, int a, int b) {
 		char[] charArray = cipherText.toCharArray();
 		
 		String plainText = "";
 		
-		String tempAlphabet = "";
-		for(int i = 'a'; i <= 'z'; ++i)
-			tempAlphabet += (char)('a' + MathHelper.wrap(a * (i - 'a') + b, 0, 26));
-		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toLowerCase(ch);
-				
-			if(!Character.isLetter(ch))
-				plainText += ch;
-			else
-				plainText += tempAlphabet.charAt(ch - 'a');
+			int multiplicativeInverse = 0;
+			multiplicativeInverse = BigInteger.valueOf((int)a).modInverse(BigInteger.valueOf(26)).intValue();
+			
+			plainText += (char)(MathHelper.wrap(multiplicativeInverse * (ch - 'A' - b), 0, 26) + 'A');
 		}
 
 		return plainText;
+	}
+
+	@Override
+	public String encode(String plainText, EncryptionData data) {
+		return encode(plainText, data.getData(EncryptionKeys.AFFINE_A, Integer.TYPE), data.getData(EncryptionKeys.AFFINE_B, Integer.TYPE));
+	}
+
+	@Override
+	public String decode(String cipherText, EncryptionData data) {
+		return decode(cipherText, data.getData(EncryptionKeys.AFFINE_A, Integer.TYPE), data.getData(EncryptionKeys.AFFINE_B, Integer.TYPE));
+	}
+
+	@Override
+	public EncryptionData getRandomEncryptionData(Random rand) {
+		//int a = rand.
+		return new EncryptionData();
 	}
 }
