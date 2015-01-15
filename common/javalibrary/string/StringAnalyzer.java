@@ -105,60 +105,27 @@ public class StringAnalyzer {
 	 */
 	public static Hashtable<String, Integer> analyzeLetterCombination(String orginalStr, int minimumLength, int maximumLength) {
 		Hashtable<String, Integer> table = new Hashtable<String, Integer>();
-		
-		//Bounds the min and max length relative to 0 and the min value
-		minimumLength = Bound.bound(minimumLength, 1, Integer.MAX_VALUE);
-		maximumLength = Bound.bound(maximumLength, minimumLength, Integer.MAX_VALUE);
-		
-		//Removes all characters except letters
-		orginalStr = StringTransformer.removeEverythingButLetters(orginalStr).toLowerCase();
+
+		orginalStr = StringTransformer.removeEverythingButLetters(orginalStr).toUpperCase();
 		
 		//If there are enough characters analyze the string using a recursing method
-		if(orginalStr.length() >= minimumLength)
-			analyzeLetterCombination(table, orginalStr, minimumLength, maximumLength, 0, minimumLength);
+		if(orginalStr.length() >= minimumLength) {
+			char[] characters = orginalStr.toCharArray();
+
+			for(int length = minimumLength; length <= maximumLength; ++length) {
+				for(int k = 0; k < (orginalStr.length() - length + 1); k++) {
+					String s = new String(characters, k, length);
+					
+					if(table.containsKey(s)) {
+						table.put(s, table.get(s) + 1);
+					}
+					else {
+						table.put(s, 1);
+					}
+				}
+			}
+		}
 		
 		return table;
 	}
-	
-	/**
-	 * This is a recursive method, do not call directly. Use {@link #analyzeLetterCombination(String, int, int)} to avoid errors
-	 * @param table The {@link Hashtable} that will contain all the different string variations
-	 * @param orginalStr The string that is about to be analyzed
-	 * @param minimumLength The minimum length of a string to add to the {@link Hashtable}
-	 * @param maximumLength The maximum length of a string to add to the {@link Hashtable}
-	 * @param currentCount The start index of the next string
-	 * @param currentLength The length of the next string
-	 */
-	private static void analyzeLetterCombination(Hashtable<String, Integer> table, String orginalStr, int minimumLength, int maximumLength, int currentCount, int currentLength) {
-		//Gets the substring for this iteration
-		String subString = orginalStr.substring(currentCount, currentCount + currentLength);
-		currentLength += 1; //Plus one the the length of the next substring
-		
-		//Tries to add the substring to the table
-		if(subString != null && subString.length() >= minimumLength) {
-			if(table.keySet().contains(subString)) {
-				table.put(subString, table.get(subString) + 1);
-			}
-			else {
-				table.put(subString, 1);
-			}
-		}
-		
-		//If the length means in total it exceeds the end of the string OR
-		//If the length is greater than 16 because we don't need to look at letter combinations greater than 16
-		//THEN increase the base count, reset the length to the minimum length and check to see whether it is complete
-		if(orginalStr.length() < currentCount + currentLength || currentLength > maximumLength) {
-			currentCount += 1; //Plus one the the index of the of the next substring
-			currentLength = minimumLength;
-			
-			//Checks to see whether the count is nearly the length of the original text and if so terminates it recursive method
-			if(currentCount > orginalStr.length() - minimumLength)
-				return;
-		
-		}
-		
-		//Runs another iteration with slightly different variables
-		analyzeLetterCombination(table, orginalStr, minimumLength, maximumLength, currentCount, currentLength);
-	}
-	
 }

@@ -42,7 +42,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Timer timer = new Timer();
-		AffineAuto.tryDecode("SXDK LDKB,UMDQBP CVK UMX GDUXPU KXAVKU CKVL UMX VQ-PRUX UXDL. RU PMVJP UMDU UMX PMRAIVDKS HAP PTPUXL JDP NVLAGXUXGT PNKDLIGXS PV JX DKX QVU HVRQH UV IX DIGX UV UKDNX MXK LVEXLXQUP CKVL UMDU. SV JX MDEX DQT VSS UKDNXP CKVL VQPMVKX KDSDK UMDU HREX D MRQU VC JMXKX PMX LRHMU MDEX IXXQ? UMX NVLLXQU RQ UMX GDPU LXPPDHX UMDU UMX ARKDUXP NVLAGXUXS UMX PZKEXT XEXQ UMVZHM UMXT MDS LVEXS PVZUM UV DEVRS SXUXNURVQ PMVZGS MDEX UVGS LX UMDU UMX PZKEXT JDP QVU HXVHKDAMRN. DU CRKPU R UMVZHMU RU LRHMU MDEX IXXQ KXCXKKRQH UV D UXGXNVLP PZKEXT PRQNX TVZ LXQURVQXS UMX GVQH DXKRDG, IZU DNUZDGGT UMX DUUDNMXS LXPPDHX RP EXKT KXEXDGRQH. PURGG QVU PZKX JMDU UMX PZKEXT JDP CVK UMVZHM, DQS MVJ UMDU RP NVQQXNUXS UV UMX LRPPRQH PZAXKPUKZNUZKX. NDQ TVZ HXU LX DQT ARNUZKXP? MDKKT ");
+		BifidAuto.findPeriod("waeewlwmnhlbpmteabgnnyirsarealnbrsptcmrpacxaqbwaxenmnkesfwrthafghwaxauzfluhyumxpdweleflmqvbcueghcaghcwegenziptbylmmuqxphfaewnkhrcplrfsebbritbmlpeybgpgkzytivtopenhxkwkhfcmarwxdllfprttirmiatrinhicgovwppakcuttiwmsabwithccghfxoupimrcttdnvmyxeehahlrcbbktgbntrslswgsewegenmnkeslecpwagetvweqpkndirbxfrnvfshalbwgnltnzwwttnzsalasywexehzopwfydnfxgpmrlufghwylewnnqictynrcpaigghhcppukzqtweserkgeoccwegelakpydfearkucspwmicsmzcttwyseeliflwainligbgspwngazylbwcuuznxnpttlaqskpyuokatbiysuslhhvwataazmlihlwrvtibstiuyzmzpawesbpsprksegwalewtewrdacobpfwbublcogabslppybhktweserkgeosyiolrzpwtlksbwswnxergkoppkhhcgvwoqhfywspybwfxhubhgugxmpihecpntnzpzzlrimzgtcacewplwmnhlywpdzetishxbpmmalilflmqvbcvegqbbpilbmspevwrpvncgtknhicyzpptbakbzarwxdlap", 0, 6);
 		timer.displayTime();
 	}
 

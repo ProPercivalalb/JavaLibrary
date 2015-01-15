@@ -1,8 +1,5 @@
 package javalibrary.cipher.wip;
 
-import javalibrary.string.StringTransformer;
-
-
 /**
  * @author Alex Barter (10AS)
  */
@@ -11,9 +8,6 @@ public class Bifid {
 	public static String decode(String cipherText, String keySquare, int period) {
 		if(period == 0)
 			period = cipherText.length();
-		
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
-		keySquare = keySquare.toUpperCase();
 		
 	    String numberText = "";
 	    for(int i = 0; i < cipherText.length(); i++){
@@ -43,6 +37,7 @@ public class Bifid {
 	    	int column = Integer.parseInt("" + numberColumnText.charAt(i));
 	    	plainText += keySquare.charAt(row * 5 + column);
 	    }
+	    
 	    return plainText;
 	}
 }

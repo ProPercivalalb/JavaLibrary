@@ -1,5 +1,6 @@
 package javalibrary.cipher.wip;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -59,48 +60,48 @@ public class BifidAuto {
 	}
 	
 	public static int findPeriod(String cipherText, int minLength, int maxLength) {
+		cipherText = cipherText.toUpperCase();
 		int step = minLength;
 		double smallestSquaredDiff = -1;
 		
-		for(int length = minLength; length < maxLength; ++length) {
-			Hashtable<String, Integer> counts = new Hashtable<String, Integer>();
+		for(int length = minLength; length <= maxLength; ++length) {
+			System.out.println("Period: " + length);
 			
-			for(int i = 0; i < cipherText.length(); ++i) {
+			
+			HashMap<String, Integer> counts = new HashMap<String, Integer>();
+			
+			for(int i = 0; i < cipherText.length() - length - 1; ++i) {
 				if(i + length >= cipherText.length())
 					continue;
 				
-				String digram = "" + cipherText.charAt(i) + cipherText.charAt(i + length);
-				if(!counts.keySet().contains(digram))
+				String digram = "" + cipherText.charAt(i) + cipherText.charAt(i + length + 1);
+				//System.out.println(digram);
+				if(!counts.containsKey(digram))
 					counts.put(digram, 1);
 				else
 					counts.put(digram, counts.get(digram) + 1);
 			}
 			
-			double average = 0.0D;
-			int count = 0;
+			float count = 0.0F;
 			
-			for(String str : counts.keySet()) {
+			for(String str : counts.keySet())
 				count += counts.get(str);
-			}
 			
-			average = count / counts.size();
-			System.out.println("Average: " + average);
+			float mean = count / counts.size();
 			
-			double total = 0.0D;
-			for(String str : counts.keySet()) {
-				double currentSquaredDiff = Math.pow((average - counts.get(str)), 2);
-				total += currentSquaredDiff;
-			}
+			System.out.println("Average: " + mean);
+			
+			float total = 0.0F;
+			for(String str : counts.keySet())
+				total += (float)Math.pow(counts.get(str) - mean, 2);
+			
+			total = total / counts.size();
+			
 			System.out.println("Total: " + total);
-			if(smallestSquaredDiff == -1)
-				smallestSquaredDiff = total;
-			if(total > smallestSquaredDiff) {
-				step = length;
-			    smallestSquaredDiff = total;
-			}
+			System.out.println("");
 			
 		}
 		
-		return step * 2;
+		return step;
 	}
 }
