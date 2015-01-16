@@ -1,14 +1,17 @@
 package javalibrary.language;
 
+import javalibrary.fitness.NGramData;
+import javalibrary.fitness.QuadgramStats;
+
 /**
  * @author Alex Barter
  */
 public class English implements ILanguage {
 
+	public static NGramData quadgramData;
 	
 	@Override
 	public double getFrequencyOfLetter(char character) {
-		character = Character.toUpperCase(character);
 		if(character == 'A') return 8.167D; if(character == 'B') return 1.492D;  if(character == 'C') return 2.782D; 
 		if(character == 'D') return 4.253D; if(character == 'E') return 12.702D; if(character == 'F') return 2.228D; 
 		if(character == 'G') return 2.015D; if(character == 'H') return 6.094D;  if(character == 'I') return 6.996D; 
@@ -24,6 +27,14 @@ public class English implements ILanguage {
 	@Override
 	public double getMaxFrequency() {
 		return 12.702D;
+	}
+	
+	@Override
+	public NGramData getQuadgramData() {
+		if(quadgramData == null)
+			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/english_quadgrams.txt");
+		
+		return quadgramData;
 	}
 
 	@Override

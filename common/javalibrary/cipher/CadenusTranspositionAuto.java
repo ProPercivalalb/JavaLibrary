@@ -1,6 +1,7 @@
 package javalibrary.cipher;
 
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
+import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -8,14 +9,14 @@ import javalibrary.string.StringTransformer;
  */
 public class CadenusTranspositionAuto {
 
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
 		int size = 4;
 		String startText = "";
 		
-		CadenusTranspositionTask ctt = new CadenusTranspositionTask(cipherText);
+		CadenusTranspositionTask ctt = new CadenusTranspositionTask(cipherText, language);
 		run(ctt, new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z'}, size - startText.length(), 0, startText);
 		
 		return ctt.plainText;
@@ -24,9 +25,11 @@ public class CadenusTranspositionAuto {
 	public static class CadenusTranspositionTask implements KeyCreation {
 
 		public String cipherText;
+		public ILanguage language;
 		
-		public CadenusTranspositionTask(String cipherText) {
+		public CadenusTranspositionTask(String cipherText, ILanguage language) {
 			this.cipherText = cipherText;
+			this.language = language;
 		}
 		
 		public String lastText = "";
@@ -38,8 +41,7 @@ public class CadenusTranspositionAuto {
 		public void onKeyCreate(String key) {
 			this.lastText = CadenusTransposition.decode(this.cipherText, key);
 				
-			this.currentScore = QuadgramsStats.scoreFitness(this.lastText);
-			
+			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
 			
 			if(this.currentScore >= this.bestScore) {
 				System.out.println("BEST: " + key + "  " + this.currentScore + "   " + this.lastText);	

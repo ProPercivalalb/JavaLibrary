@@ -3,7 +3,7 @@ package javalibrary.cipher.wip;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -55,13 +55,13 @@ public class PlayfairAutoOld {
 	    double bestscore;
 	    maxKey = bestKey;
 	    String deciphered = Playfair.decode(cipherText, maxKey);
-	    maxscore = QuadgramsStats.scoreFitness(deciphered);
+	    maxscore = QuadgramStats.scoreFitness(deciphered);
 	    bestscore = maxscore;
 	    for(t = TEMP; t >= 0; t -= STEP){
 	        for(count = 0; count < COUNT; count++){ 
 	        	testKey = KeySquareManipulation.modifyKey(maxKey);    
 	        	deciphered = Playfair.decode(cipherText, testKey);
-	            score = QuadgramsStats.scoreFitness(deciphered);
+	            score = QuadgramStats.scoreFitness(deciphered);
 	            dF = score - maxscore;
 	            if (dF >= 0){
 	                maxscore = score;

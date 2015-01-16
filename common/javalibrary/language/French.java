@@ -1,10 +1,15 @@
 package javalibrary.language;
 
+import javalibrary.fitness.NGramData;
+import javalibrary.fitness.QuadgramStats;
+
 /**
  * @author Alex Barter
  */
 public class French implements ILanguage {
 
+	public static NGramData quadgramData;
+	
 	@Override
 	public double getFrequencyOfLetter(char character) {
 		character = Character.toUpperCase(character);
@@ -23,6 +28,14 @@ public class French implements ILanguage {
 	@Override
 	public double getMaxFrequency() {
 		return 14.715D;
+	}
+	
+	@Override
+	public NGramData getQuadgramData() {
+		if(quadgramData == null)
+			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/french_quadgrams.txt");
+		
+		return quadgramData;
 	}
 
 	@Override

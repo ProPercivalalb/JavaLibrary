@@ -2,7 +2,8 @@ package javalibrary.cipher;
 
 import java.util.Arrays;
 
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
+import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
 import javalibrary.string.StringTransformer;
 
@@ -11,27 +12,28 @@ import javalibrary.string.StringTransformer;
  */
 public class AMSCOAuto {
 
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
 		int size = 5;
 		boolean reversed = false;
 		
-		AMSCOTask amscot = new AMSCOTask(cipherText, reversed);
+		AMSCOTask amscot = new AMSCOTask(cipherText, language, reversed);
 		permutation(amscot, ArrayHelper.range(0, size), 0);
 		
 		return amscot.plainText;
 	}
-	
 
 	public static class AMSCOTask implements PermutationTask {
 
 		public String cipherText;
+		public ILanguage language;
 		public boolean reversed;
 		
-		public AMSCOTask(String cipherText, boolean reversed) {
+		public AMSCOTask(String cipherText, ILanguage language, boolean reversed) {
 			this.cipherText = cipherText;
+			this.language = language;
 			this.reversed = reversed;
 		}
 		
@@ -44,7 +46,7 @@ public class AMSCOAuto {
 		public void onPermutation(int[] order) {
 			this.lastText = AMSCO.decode(this.cipherText, this.reversed, order);
 			
-			this.currentScore = QuadgramsStats.scoreFitness(this.lastText);
+			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
 			
 			if(this.currentScore > this.bestScore) {
 				System.out.println("BEST: " + Arrays.toString(order) + "  " + this.currentScore + "   " + this.lastText);	

@@ -1,6 +1,6 @@
 package javalibrary.cipher.wip;
 
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -24,7 +24,7 @@ public class PlayfairAuto {
 		String lastText = "";
 		String parentKey = KeySquareManipulation.generateRandKeySquare();
 		
-		double bestFitness = QuadgramsStats.scoreFitness(Playfair.decode(cipherText, parentKey));
+		double bestFitness = QuadgramStats.scoreFitness(Playfair.decode(cipherText, parentKey));
 		double bestEverFitness = bestFitness;
 		double lastFitness = 0.0D;
 		int iteration = 0;
@@ -34,7 +34,7 @@ public class PlayfairAuto {
 					
 				String childKey = KeySquareManipulation.modifyKey(parentKey);
 				lastText = Playfair.decode(cipherText, childKey);
-				lastFitness = QuadgramsStats.scoreFitness(lastText);
+				lastFitness = QuadgramStats.scoreFitness(lastText);
 				double dF = lastFitness - bestFitness;
 				if(lastFitness - bestEverFitness > 0) {
 			        	bestEverKey = childKey;

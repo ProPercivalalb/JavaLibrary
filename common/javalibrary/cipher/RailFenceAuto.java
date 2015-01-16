@@ -1,6 +1,7 @@
 package javalibrary.cipher;
 
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
+import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -8,7 +9,7 @@ import javalibrary.string.StringTransformer;
  */
 public class RailFenceAuto {
 
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
@@ -21,7 +22,7 @@ public class RailFenceAuto {
 		
 		for(int i = minRows; i <= maxRows; ++i) {
 			lastText = RailFence.decode(cipherText, i);
-			currentScore = QuadgramsStats.scoreFitness(lastText);
+			currentScore = QuadgramStats.scoreFitness(lastText, language);
 		
 			if(currentScore > bestScore) {
 				System.out.println(lastText);

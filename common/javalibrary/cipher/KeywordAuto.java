@@ -3,7 +3,8 @@ package javalibrary.cipher;
 import java.util.Random;
 
 import javalibrary.cipher.wip.KeySquareManipulation;
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
+import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -18,7 +19,7 @@ public class KeywordAuto {
 	public static final int COUNT_VALUE = 50000;
 	public static final Random rand = new Random();
 	
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		String bestEverKey = "";
@@ -29,7 +30,7 @@ public class KeywordAuto {
 			String parentKey = KeySquareManipulation.generateRandKey();
 		
 			
-			double bestFitness = QuadgramsStats.scoreFitness(Keyword.decode(cipherText, parentKey));
+			double bestFitness = QuadgramStats.scoreFitness(Keyword.decode(cipherText, parentKey), language);
 			double bestEverFitness = bestFitness;
 			double lastFitness = 0.0D;
 			
@@ -40,7 +41,7 @@ public class KeywordAuto {
 					String childKey = KeySquareManipulation.exchange2letters(parentKey);
 		
 					lastText = Keyword.decode(cipherText, childKey);
-					lastFitness = QuadgramsStats.scoreFitness(lastText);
+					lastFitness = QuadgramStats.scoreFitness(lastText, language);
 					double dF = lastFitness - bestFitness;
 					if(lastFitness - bestEverFitness > 0) {
 						plainText = lastText;

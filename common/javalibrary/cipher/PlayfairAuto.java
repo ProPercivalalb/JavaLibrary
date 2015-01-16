@@ -1,7 +1,8 @@
 package javalibrary.cipher;
 
 import javalibrary.cipher.wip.KeySquareManipulation;
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
+import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
 /**
@@ -15,7 +16,7 @@ public class PlayfairAuto {
 	public static final double STEP_VALUE = 0.1D;
 	public static final int COUNT_VALUE = 50000;
 	
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		boolean running = true;
@@ -25,7 +26,7 @@ public class PlayfairAuto {
 		String lastText = "";
 		String parentKey = KeySquareManipulation.generateRandKeySquare();
 		
-		double bestFitness = QuadgramsStats.scoreFitness(Playfair.decode(cipherText, parentKey));
+		double bestFitness = QuadgramStats.scoreFitness(Playfair.decode(cipherText, parentKey), language);
 		double bestEverFitness = bestFitness;
 		double lastFitness = 0.0D;
 		int iteration = 0;
@@ -35,7 +36,7 @@ public class PlayfairAuto {
 					
 				String childKey = KeySquareManipulation.modifyKey(parentKey);
 				lastText = Playfair.decode(cipherText, childKey);
-				lastFitness = QuadgramsStats.scoreFitness(lastText);
+				lastFitness = QuadgramStats.scoreFitness(lastText, language);
 				double dF = lastFitness - bestFitness;
 				if(lastFitness - bestEverFitness > 0) {
 			        	bestEverKey = childKey;

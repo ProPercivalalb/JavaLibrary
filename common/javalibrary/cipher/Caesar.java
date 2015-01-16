@@ -21,8 +21,6 @@ public class Caesar {
 		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toUpperCase(ch);
 			
 			if(!Character.isAlphabetic(ch))
 				cipherText += ch;
@@ -48,13 +46,11 @@ public class Caesar {
 		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toLowerCase(ch);
 			
 			if(!Character.isAlphabetic(ch))
 				plainText += ch;
 			else {
-				char newLetter = (char)(MathHelper.wrap(-shift + ch - 'a', 0, 26) + 'a');
+				char newLetter = (char)(MathHelper.wrap(-shift + ch - 'A', 0, 26) + 'A');
 				plainText += newLetter;
 			}
 		}

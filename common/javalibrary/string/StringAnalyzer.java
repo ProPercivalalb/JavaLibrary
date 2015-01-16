@@ -76,19 +76,13 @@ public class StringAnalyzer {
   		return sortedItems;
 	}
 	
-	private static Hashtable<Character, LetterCount> countLetters(String text) {
+	public static Hashtable<Character, LetterCount> countLetters(String text) {
 		Hashtable<Character, LetterCount> letters = new Hashtable<Character, LetterCount>();
 		
-  		for(int i = 0; i < text.length(); ++i) {
-  			//Converts the character to uppercase
-  			char cha = Character.toUpperCase(text.charAt(i));
-  			
-  			//If it is not a letter continue the loop
-  			if(!Character.isAlphabetic(cha))
-  				continue;
+  		for(char cha : text.toCharArray()) {
   			
   			if(!letters.keySet().contains(cha))
-  	  			letters.put(cha, new LetterCount(cha, 1));
+  	  			letters.put(cha, new LetterCount(cha, 0));
   			
   			letters.get(cha).increment();
   		}

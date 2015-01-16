@@ -1,10 +1,15 @@
 package javalibrary.language;
 
+import javalibrary.fitness.NGramData;
+import javalibrary.fitness.QuadgramStats;
+
 /**
  * @author Alex Barter
  */
 public class German implements ILanguage {
-
+	
+	public static NGramData quadgramData;
+	
 	@Override
 	public double getFrequencyOfLetter(char character) {
 		character = Character.toUpperCase(character);
@@ -23,6 +28,14 @@ public class German implements ILanguage {
 	@Override
 	public double getMaxFrequency() {
 		return 16.396D;
+	}
+	
+	@Override
+	public NGramData getQuadgramData() {
+		if(quadgramData == null)
+			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/german_quadgrams.txt");
+		
+		return quadgramData;
 	}
 
 	@Override

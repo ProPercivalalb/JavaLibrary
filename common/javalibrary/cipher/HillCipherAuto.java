@@ -2,7 +2,8 @@ package javalibrary.cipher;
 
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
-import javalibrary.fitness.QuadgramsStats;
+import javalibrary.fitness.QuadgramStats;
+import javalibrary.language.ILanguage;
 import javalibrary.math.matrics.Matrix;
 import javalibrary.string.StringTransformer;
 
@@ -11,13 +12,13 @@ import javalibrary.string.StringTransformer;
  */
 public class HillCipherAuto {
 
-	public static String tryDecode(String cipherText) {
+	public static String tryDecode(String cipherText, ILanguage language) {
 		//Removes all characters except letters
 		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
 		
 		int matrixSize = 2;
 		
-		HillCipherTask hct = new HillCipherTask(cipherText);
+		HillCipherTask hct = new HillCipherTask(cipherText, language);
 		run(hct, 0, 25, (int)Math.pow(matrixSize, 2), matrixSize, matrixSize, 0, new int[(int) Math.pow(matrixSize, 2)]);
 		
 		return hct.plainText;
@@ -26,9 +27,11 @@ public class HillCipherAuto {
 	public static class HillCipherTask implements MatrixCreation {
 
 		public String cipherText;
+		public ILanguage language;
 		
-		public HillCipherTask(String cipherText) {
+		public HillCipherTask(String cipherText, ILanguage language) {
 			this.cipherText = cipherText;
+			this.language = language;
 		}
 		
 		public String lastText = "";
@@ -49,7 +52,7 @@ public class HillCipherAuto {
 				return;
 			}
 				
-			this.currentScore = QuadgramsStats.scoreFitness(lastText);
+			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
 			if(this.currentScore > this.bestScore) {
 				
 				System.out.println(this.lastText);
