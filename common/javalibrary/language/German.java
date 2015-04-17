@@ -42,4 +42,14 @@ public class German implements ILanguage {
 	public String getName() {
 		return "German";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/german_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0.0762D;
+	}
 }

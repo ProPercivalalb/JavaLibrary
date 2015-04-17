@@ -42,4 +42,14 @@ public class French implements ILanguage {
 	public String getName() {
 		return "French";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/french_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0.0778D;
+	}
 }

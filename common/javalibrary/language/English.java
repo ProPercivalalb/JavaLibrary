@@ -38,7 +38,17 @@ public class English implements ILanguage {
 	}
 
 	@Override
+	public double getNormalCoincidence() {
+		return 0.0667D;
+	}
+	
+	@Override
 	public String getName() {
 		return "English";
+	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/english_flag.png";
 	}
 }

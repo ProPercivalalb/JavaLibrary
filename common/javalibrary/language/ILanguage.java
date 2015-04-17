@@ -13,5 +13,9 @@ public interface ILanguage {
 	
 	public NGramData getQuadgramData();
 	
+	public double getNormalCoincidence();
+	
 	public String getName();
+	
+	public String getImagePath();
 }

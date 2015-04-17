@@ -42,4 +42,14 @@ public class Spanish implements ILanguage {
 	public String getName() {
 		return "Spanish";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/spanish_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0.0770D;
+	}
 }

@@ -42,4 +42,14 @@ public class Finnish implements ILanguage {
 	public String getName() {
 		return "Finnish";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/finnish_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0;
+	}
 }

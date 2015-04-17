@@ -1,6 +1,5 @@
 package javalibrary.cipher.wip;
 
-import javalibrary.math.MathHelper;
 
 /**
  * @author Alex Barter (10AS)

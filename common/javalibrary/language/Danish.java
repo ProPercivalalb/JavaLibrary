@@ -41,4 +41,14 @@ public class Danish implements ILanguage {
 	public String getName() {
 		return "Danish";
 	}
+
+	@Override
+	public String getImagePath() {
+		return "/image/danish_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0;
+	}
 }

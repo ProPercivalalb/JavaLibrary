@@ -1,6 +1,5 @@
 package javalibrary.math;
 
-import java.lang.reflect.Array;
 
 /**
  * @author Alex Barter (10AS)

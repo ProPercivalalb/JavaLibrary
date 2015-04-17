@@ -89,10 +89,10 @@ public class JBarChart extends JChartBase {
 	    		barTall = 4;
 	    	}
 	    	
-	    	graphics.setColor(this.barFillColor);
-	    	graphics.fillRect(barX, barY, barWidth - (barGap / 2), barTall);
 	    	graphics.setColor(this.barOutlineColor);
-	    	graphics.drawRect(barX, barY, barWidth - (barGap / 2), barTall);
+	    	graphics.fillRect(barX, barY, barWidth - (barGap / 2), barTall);
+	    	graphics.setColor(this.barFillColor);
+	    	graphics.fillRect(barX + 1, barY + 1, barWidth - (barGap / 2) - 2, barTall - 2);
 	    
 	    	if(this.hasBarText) {
 	    		graphics.setFont(labelFont);

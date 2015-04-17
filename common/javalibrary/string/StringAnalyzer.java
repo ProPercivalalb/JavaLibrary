@@ -4,17 +4,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import javalibrary.math.Bound;
-
 /**
  * @author Alex Barter
  * @since 23 Oct 2013
  */
 public class StringAnalyzer {
 
-	public static ArrayList<LetterCount> countLettersInSizeOrder(String text) {
-		Hashtable<Character, LetterCount> letters = countLetters(text);
-		
+	public static ArrayList<LetterCount> sizeOrder(Hashtable<Character, LetterCount> letters) {
 		ArrayList<LetterCount> sortedItems = new ArrayList<LetterCount>();
 		
   		while(letters.size() > 0) {
@@ -46,8 +42,11 @@ public class StringAnalyzer {
   		return sortedItems;
 	}
 	
-	public static ArrayList<LetterCount> countLettersInAlphabeticOrder(String text) {
-		Hashtable<Character, LetterCount> letters = countLetters(text);
+	public static ArrayList<LetterCount> countLettersInSizeOrder(String text) {
+		return sizeOrder(countLetters(text));
+	}
+	
+	public static ArrayList<LetterCount> alphabeticOrder(Hashtable<Character, LetterCount> letters) {
 	
 		ArrayList<LetterCount> sortedItems = new ArrayList<LetterCount>();
   		
@@ -74,6 +73,10 @@ public class StringAnalyzer {
   		}
   		
   		return sortedItems;
+	}
+	
+	public static ArrayList<LetterCount> countLettersInAlphabeticOrder(String text) {
+		return alphabeticOrder(countLetters(text));
 	}
 	
 	public static Hashtable<Character, LetterCount> countLetters(String text) {

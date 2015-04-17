@@ -16,11 +16,7 @@ public class Keyword {
 		char[] charArray = plainText.toCharArray();
 		
 		String cipherText = "";
-		
-		String tempAlphabet = keyword.toUpperCase();
-		for(int i = 'A'; i <= 'Z'; ++i)
-			if(!tempAlphabet.contains(String.valueOf((char)i)))
-				tempAlphabet += (char)i;
+	
 		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
@@ -30,7 +26,7 @@ public class Keyword {
 			if(!Character.isLetter(ch))
 				cipherText += ch;
 			else
-				cipherText += tempAlphabet.charAt(ch - 'A');
+				cipherText += keyword.charAt(ch - 'A');
 		}
 		
 		return cipherText;
@@ -46,21 +42,15 @@ public class Keyword {
 		char[] charArray = cipherText.toCharArray();
 		
 		String plainText = "";
-		
-		String tempAlphabet = keyword.toLowerCase();
-		for(char i = 'a'; i <= 'z'; ++i)
-			if(!tempAlphabet.contains("" + i))
-				tempAlphabet += (char)i;
+
 		
 		//Runs through all the characters from the array
 		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toLowerCase(ch);
 				
 			if(!Character.isLetter(ch))
 				plainText += ch;
 			else
-				plainText += (char)(tempAlphabet.indexOf(ch) + 'a');
+				plainText += (char)(keyword.indexOf(ch) + 'A');
 		}
 		
 		return plainText;

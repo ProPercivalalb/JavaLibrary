@@ -42,4 +42,14 @@ public class Polish implements ILanguage {
 	public String getName() {
 		return "Polish";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/polish_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0;
+	}
 }

@@ -257,4 +257,9 @@ public class Matrix {
 		
 	    return this.minors().cofactor().adjugate().modular(mod).multiply(multiplicativeInverse).modular(mod);
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Order %d, %d", this.order[0], this.order[1]);
+	}
  }

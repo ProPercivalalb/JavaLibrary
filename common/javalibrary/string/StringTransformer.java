@@ -1,5 +1,6 @@
 package javalibrary.string;
 
+import javalibrary.language.ILanguage;
 import javalibrary.lib.Alphabet;
 
 /**
@@ -94,4 +95,9 @@ public class StringTransformer {
         }
         return accumulator;
     }
+    
+    public static String rotateRight(String text, int n, ILanguage language) {
+		int cuttingPoint = text.length() - (n % text.length());
+	    return text.substring(cuttingPoint, text.length()) + text.substring(0, cuttingPoint);
+	}
 }

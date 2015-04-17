@@ -1,6 +1,5 @@
 package javalibrary.cipher;
 
-import javalibrary.string.StringTransformer;
 
 /**
  * @author Alex Barter (10AS)

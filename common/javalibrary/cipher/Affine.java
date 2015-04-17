@@ -5,7 +5,6 @@ import java.util.Random;
 
 import javalibrary.EncryptionData;
 import javalibrary.ICipher;
-import javalibrary.exception.MatrixNoInverse;
 import javalibrary.lib.EncryptionKeys;
 import javalibrary.math.MathHelper;
 

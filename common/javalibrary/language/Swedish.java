@@ -42,4 +42,14 @@ public class Swedish implements ILanguage {
 	public String getName() {
 		return "Swedish";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/swedish_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0;
+	}
 }

@@ -42,4 +42,14 @@ public class Icelandic implements ILanguage {
 	public String getName() {
 		return "Icelandic";
 	}
+	
+	@Override
+	public String getImagePath() {
+		return "/image/icelandic_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0;
+	}
 }

@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Hashtable;
-
-import javalibrary.string.StringAnalyzer;
 
 /**
  * @author Alex Barter (10AS)
