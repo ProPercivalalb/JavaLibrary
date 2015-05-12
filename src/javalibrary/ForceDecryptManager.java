@@ -3,9 +3,9 @@ package javalibrary;
 import java.util.ArrayList;
 import java.util.List;
 
-import javalibrary.cipher.BeaufortAuto;
 import javalibrary.cipher.auto.AMSCOAuto;
 import javalibrary.cipher.auto.AffineAuto;
+import javalibrary.cipher.auto.BeaufortAuto;
 import javalibrary.cipher.auto.CadenusTranspositionAuto;
 import javalibrary.cipher.auto.CaesarAuto;
 import javalibrary.cipher.auto.HillCipherAuto;

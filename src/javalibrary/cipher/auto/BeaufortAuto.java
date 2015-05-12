@@ -1,9 +1,10 @@
-package javalibrary.cipher;
+package javalibrary.cipher.auto;
 
 import javalibrary.EncryptionData;
 import javalibrary.ForceDecryptManager;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
+import javalibrary.cipher.Beaufort;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 

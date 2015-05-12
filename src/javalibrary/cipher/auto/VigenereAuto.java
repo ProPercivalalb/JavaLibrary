@@ -1,7 +1,5 @@
 package javalibrary.cipher.auto;
 
-import java.util.ArrayList;
-
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;

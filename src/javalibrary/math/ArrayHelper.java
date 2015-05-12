@@ -13,7 +13,7 @@ public class ArrayHelper {
 	    return arr;
 	}
 	
-	public static <T> T[] filled(T filler, int length){
+	public static <T> T[] fill(T filler, int length){
 	    T[] arr = (T[])new Object[length];
 	    for(int i = 0; i < length; i++)
 	        arr[i] = filler;

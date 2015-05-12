@@ -21,4 +21,8 @@ public class EncryptionData {
 			return (T)x;
 		return null;
 	}
+
+	public static EncryptionData createNew() {
+		return new EncryptionData();
+	}
 }

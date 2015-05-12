@@ -1,17 +1,11 @@
 package javalibrary.cipher.auto;
 
-import java.util.Arrays;
-
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.AMSCO;
 import javalibrary.cipher.Affine;
-import javalibrary.cipher.auto.AMSCOAuto.AMSCOTask;
-import javalibrary.cipher.auto.AMSCOAuto.PermutationTask;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
-import javalibrary.math.ArrayHelper;
 
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
