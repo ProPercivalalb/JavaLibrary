@@ -115,7 +115,7 @@ public class JBarChart extends JChartBase {
 		    	
 		    	if(this.mouseX >= barX && this.mouseX < barX + barWidth - (barGap / 2) && this.mouseY >= barY && this.mouseY < barY + barTall) {
 		    		graphics.setColor(Color.white);
-		    		int labelWidth = toolTipFontMetrics.stringWidth(this.values.get(i).getToolTip() + " [" + (int)(double)values.get(i).getValue() + "]");
+		    		int labelWidth = toolTipFontMetrics.stringWidth(this.values.get(i).getToolTip() + " [" + this.values.get(i).getValue() + "]");
 		    		int offSet = 0;
 		    		
 		    		if(graphWidth <= this.mouseX + labelWidth + 6)
@@ -124,7 +124,7 @@ public class JBarChart extends JChartBase {
 		    		graphics.fillRect(this.mouseX + 7 + offSet, this.mouseY - 10, labelWidth + 6, toolTipFontMetrics.getHeight() + 2);
 		    		graphics.setColor(Color.black);
 		    		graphics.setFont(toolTipFont);
-		    		graphics.drawString(this.values.get(i).getToolTip() + " [" + (int)(double)this.values.get(i).getValue() + "]", this.mouseX + 10 + offSet, this.mouseY + 2);
+		    		graphics.drawString(this.values.get(i).getToolTip() + " [" + this.values.get(i).getValue() + "]", this.mouseX + 10 + offSet, this.mouseY + 2);
 		    	}
 	    	}
 	    }

@@ -1,6 +1,7 @@
 package javalibrary.string;
 
-import javalibrary.language.ILanguage;
+import java.util.List;
+
 import javalibrary.lib.Alphabet;
 
 /**
@@ -96,8 +97,16 @@ public class StringTransformer {
         return accumulator;
     }
     
-    public static String rotateRight(String text, int n, ILanguage language) {
+    public static String rotateRight(String text, int n) {
 		int cuttingPoint = text.length() - (n % text.length());
 	    return text.substring(cuttingPoint, text.length()) + text.substring(0, cuttingPoint);
 	}
+    
+    public static <T> String joinWith(List<T> strings, String joiner) {
+    	String total = "";
+		for(int i = 0; i < strings.size(); ++i)
+			total += (T)strings.get(i) + (i == strings.size() - 1 ? "" : joiner);
+		
+		return total;
+    }
 }

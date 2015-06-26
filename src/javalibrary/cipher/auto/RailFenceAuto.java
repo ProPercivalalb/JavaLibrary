@@ -1,10 +1,13 @@
 package javalibrary.cipher.auto;
 
+import java.util.List;
+
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.RailFence;
 import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
@@ -55,5 +58,10 @@ public class RailFenceAuto implements IForceDecrypt {
 	@Override
 	public JPanel getVarsPanel() {
 		return new JPanel();
+	}
+	
+	@Override
+	public List<StatisticRange> getStatistics() {
+		return null;
 	}
 }

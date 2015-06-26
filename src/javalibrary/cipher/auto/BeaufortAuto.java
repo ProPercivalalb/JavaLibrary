@@ -1,10 +1,13 @@
 package javalibrary.cipher.auto;
 
+import java.util.List;
+
 import javalibrary.EncryptionData;
 import javalibrary.ForceDecryptManager;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Beaufort;
+import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
@@ -89,5 +92,10 @@ public class BeaufortAuto implements IForceDecrypt {
 		panel.add(range);
 		panel.add(rangeBox);
 		return panel;
+	}
+	
+	@Override
+	public List<StatisticRange> getStatistics() {
+		return null;
 	}
 }

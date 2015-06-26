@@ -1,12 +1,14 @@
 package javalibrary.cipher.auto;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.AMSCO;
 import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
 import javalibrary.math.MathHelper;
@@ -137,5 +139,10 @@ public class AMSCOAuto implements IForceDecrypt {
 		panel.add(reverse);
 		panel.add(comboBox);
 		return panel;
+	}
+	
+	@Override
+	public List<StatisticRange> getStatistics() {
+		return null;
 	}
 }

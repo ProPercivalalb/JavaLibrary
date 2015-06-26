@@ -26,29 +26,4 @@ public class SystemProperties {
 	public static final String USER_HOME_DIR = System.getProperty("user.home");
 	/** User account name **/
 	public static final String USER_NAME = System.getProperty("user.name");
-	
-	/**
-	 * Gets the folder where most application data is kept
-	 * @return The folder location of the appdata folder
-	 */
-	public static File getAppdataFolder() {
-        File localFile;
-        switch(EnumOSHelper.getPlatform()) {
-        	case LINUX:
-        	case SOLARIS:
-        		localFile = new File(USER_HOME_DIR);
-        		break;
-	        case WINDOWS:
-	        	String appdata = System.getenv("APPDATA");
-	        	String finalPath = appdata != null ? appdata : USER_HOME_DIR;
-	        	localFile = new File(finalPath);
-	        	break;
-	        case MACOS:
-	        	localFile = new File(USER_HOME_DIR, "Library/Application Support");
-	        	break;
-	        default:
-	        	localFile = new File(USER_HOME_DIR);
-        }
-        return localFile;
-    }
 }

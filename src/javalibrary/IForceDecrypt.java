@@ -1,5 +1,8 @@
 package javalibrary;
 
+import java.util.List;
+
+import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 
 import javax.swing.JPanel;
@@ -17,4 +20,6 @@ public interface IForceDecrypt {
 	public EncryptionData getEncryptionData();
 	
 	public JPanel getVarsPanel();
+	
+	public List<StatisticRange> getStatistics();
 }

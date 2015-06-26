@@ -1,11 +1,14 @@
 package javalibrary.cipher.auto;
 
+import java.util.List;
+
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Caesar;
 import javalibrary.cipher.Vigenere;
 import javalibrary.fitness.ChiSquared;
+import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 
@@ -50,7 +53,7 @@ public class VigenereAuto implements IForceDecrypt {
 	    double smallestDifference = Double.MAX_VALUE;
 	    for(int i = minLength; i <= maxLength; ++i) {
 	    	double total = 0;
-	    	String temp = StringTransformer.rotateRight(text, i, language);
+	    	String temp = StringTransformer.rotateRight(text, i);
 		    for(int j = 0; j < text.length(); ++j)
 		       if(temp.charAt(j) == text.charAt(j))
 		    	   total += 1;
@@ -118,5 +121,10 @@ public class VigenereAuto implements IForceDecrypt {
 		panel.add(range);
 		panel.add(rangeBox);
 		return panel;
+	}
+	
+	@Override
+	public List<StatisticRange> getStatistics() {
+		return null;
 	}
 }

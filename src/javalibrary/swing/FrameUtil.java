@@ -39,4 +39,9 @@ public class FrameUtil {
 		Dimension windowDim = frame.getSize();
 		frame.setLocation(SCREEN_DIM.width - windowDim.width, SCREEN_DIM.height - windowDim.height);
 	}
+	
+	public static void show(JFrame frame) {
+		frame.pack();
+		frame.setVisible(true);
+	}
 }
