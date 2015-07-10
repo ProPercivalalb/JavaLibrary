@@ -1,8 +1,10 @@
 package javalibrary.string;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javalibrary.lib.Alphabet;
+import javalibrary.math.Bound;
 
 /**
  * @author Alex Barter
@@ -108,5 +110,19 @@ public class StringTransformer {
 			total += (T)strings.get(i) + (i == strings.size() - 1 ? "" : joiner);
 		
 		return total;
+    }
+    
+    public static String repeat(String repeat, int times) {
+    	String total = "";
+    	for(int i = 0; i < times; i++)
+    		total += repeat;
+    	return total;
+    }
+    
+    public static List<String> splitInto(String text, int size) {
+    	List<String> list = new ArrayList<String>();
+    	for(int i = 0; i < text.length(); i += size)
+    		list.add(text.substring(i, Bound.bound(i + size, 0, text.length())));
+    	return list;
     }
 }

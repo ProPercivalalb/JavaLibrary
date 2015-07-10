@@ -1,6 +1,5 @@
 package javalibrary.streams;
 
-import java.io.BufferedReader;
 
 public class InputHelper {
 

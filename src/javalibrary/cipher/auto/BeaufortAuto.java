@@ -1,5 +1,6 @@
 package javalibrary.cipher.auto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javalibrary.EncryptionData;
@@ -7,14 +8,15 @@ import javalibrary.ForceDecryptManager;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Beaufort;
-import javalibrary.fitness.StatisticRange;
+import javalibrary.cipher.stats.StatisticRange;
+import javalibrary.cipher.stats.StatisticType;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
+import javalibrary.util.ProgressValue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 /**
@@ -24,7 +26,7 @@ import javax.swing.JTextField;
 public class BeaufortAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, JProgressBar progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
 		char[] charArray = cipherText.toCharArray();
 
 		String invervedText = "";
@@ -42,7 +44,7 @@ public class BeaufortAuto implements IForceDecrypt {
 		
 		int keyLength = ForceDecryptManager.vigenere.findKeywordLength(invervedText, minKeywordLength, maxKeywordLength, language);
 		
-		progressBar.setMaximum(keyLength * 26);
+		progressBar.addMaxValue(keyLength * 26);
 		
 		String keyword = "";
         for(int i = 0; i < keyLength; ++i) {
@@ -96,6 +98,26 @@ public class BeaufortAuto implements IForceDecrypt {
 	
 	@Override
 	public List<StatisticRange> getStatistics() {
+		List<StatisticRange> list = new ArrayList<StatisticRange>();
+		list.add(new StatisticRange(StatisticType.INDEX_OF_COINCIDENCE, 42.0D, 3.0D));
+		list.add(new StatisticRange(StatisticType.MAX_IOC, 72.0D, 9.0D));
+		list.add(new StatisticRange(StatisticType.MAX_KAPPA, 78.0D, 17.0D));
+		list.add(new StatisticRange(StatisticType.DIGRAPHIC_IOC, 23.0D, 5.0D));
+		list.add(new StatisticRange(StatisticType.EVEN_DIGRAPHIC_IOC, 23.0D, 9.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_3, 9.0D, 4.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_ODD, 50.0D, 10.0D));
+		list.add(new StatisticRange(StatisticType.LOG_DIGRAPH, 443.0D, 32.0D));
+		list.add(new StatisticRange(StatisticType.SINGLE_LETTER_DIGRAPH, 113.0D, 15.0D));
 		return null;
+	}
+	
+	@Override
+	public boolean canDictionaryAttack() {
+		return false;
+	}
+
+	@Override
+	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
+		
 	}
 }

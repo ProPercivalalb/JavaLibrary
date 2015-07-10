@@ -16,18 +16,9 @@ public class Keyword {
 		char[] charArray = plainText.toCharArray();
 		
 		String cipherText = "";
-	
 		
-		//Runs through all the characters from the array
-		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toUpperCase(ch);
-				
-			if(!Character.isLetter(ch))
-				cipherText += ch;
-			else
-				cipherText += keyword.charAt(ch - 'A');
-		}
+		for(char ch : charArray)
+			cipherText += keyword.charAt(ch - 'A');
 		
 		return cipherText;
 	}
@@ -43,16 +34,9 @@ public class Keyword {
 		
 		String plainText = "";
 
-		
-		//Runs through all the characters from the array
-		for(char ch : charArray) {
-				
-			if(!Character.isLetter(ch))
-				plainText += ch;
-			else
-				plainText += (char)(keyword.indexOf(ch) + 'A');
-		}
-		
+		for(char ch : charArray)
+			plainText += (char)(keyword.indexOf(ch) + 'A');
+
 		return plainText;
 	}
 }

@@ -2,18 +2,18 @@ package javalibrary;
 
 import java.util.List;
 
-import javalibrary.fitness.StatisticRange;
+import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.language.ILanguage;
+import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 
 /**
  * @author Alex Barter (10AS)
  */
 public interface IForceDecrypt {
 	
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, JProgressBar progressBar);
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar);
 	
 	public String getName();
 
@@ -22,4 +22,8 @@ public interface IForceDecrypt {
 	public JPanel getVarsPanel();
 	
 	public List<StatisticRange> getStatistics();
+
+	public boolean canDictionaryAttack();
+
+	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output outputObj, ProgressValue progressBar);
 }

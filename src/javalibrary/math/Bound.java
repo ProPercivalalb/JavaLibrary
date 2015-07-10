@@ -22,4 +22,11 @@ public class Bound {
 			target = upperBound;
 		return target;
 	}
+	
+	public static int upper(int target, int upperBound) {
+		//If the target is bigger that the upper bound set it to that vaue
+		if(target > upperBound)
+			target = upperBound;
+		return target;
+	}
 }

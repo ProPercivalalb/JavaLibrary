@@ -1,19 +1,22 @@
 package javalibrary.cipher.auto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
+import javalibrary.cipher.Keyword;
 import javalibrary.cipher.Playfair;
+import javalibrary.cipher.stats.StatisticRange;
+import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.QuadgramStats;
-import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
-import javalibrary.string.StringTransformer;
+import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 
 /**
  * @author Alex Barter
@@ -24,54 +27,65 @@ public class PlayfairAuto implements IForceDecrypt {
 	//20 for 200-300 words 10 for lower
 	public static double TEMP_VALUE = 20.0D;
 	public static final double STEP_VALUE = 0.1D;
-	public static final int COUNT_VALUE = 50000;
+	public static final int COUNT_VALUE = 500;
 	
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, JProgressBar progressBar) {
-		//Removes all characters except letters
-		cipherText = StringTransformer.removeEverythingButLetters(cipherText).toUpperCase();
-		boolean running = true;
-		String bestEverKey = "";
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+		progressBar.addMaxValue((int)(TEMP_VALUE / STEP_VALUE) * COUNT_VALUE);
 
-		String plainText = "";
-		String lastText = "";
-		String parentKey = KeySquareManipulation.generateRandKeySquare();
+		Random rand = new Random(System.currentTimeMillis());
 		
-		double bestFitness = QuadgramStats.scoreFitness(Playfair.decode(cipherText, parentKey), language);
-		double bestEverFitness = bestFitness;
-		double lastFitness = 0.0D;
-		int iteration = 0;
+		double bestFitnessFinal = -99e99;
 		
-		for(double TEMP = TEMP_VALUE; TEMP >= 0; TEMP = TEMP - STEP_VALUE) {
-			for (int COUNT = COUNT_VALUE; COUNT > 0; COUNT--) {
+		while(true) {
+			progressBar.setValue(0);
+			String bestKey = KeySquareManipulation.generateRandKeySquare();
+			String bestText = Playfair.decode(cipherText, bestKey);
+			double maxscore = QuadgramStats.scoreFitness(bestText, language);
+			
+			String bestEverKey = bestKey;
+			String bestEverText = bestText;
+			double bestscore = maxscore;
+			
+			int iteration = 0;
+			for(double TEMP = TEMP_VALUE; TEMP >= 0; TEMP -= STEP_VALUE) {
+				for(int count = 0; count < COUNT_VALUE; count++){ 
+						
+					String lastKey = KeySquareManipulation.modifyKey(bestKey);
+			
+					String lastText = Playfair.decode(cipherText, lastKey);
+					double score = QuadgramStats.scoreFitness(lastText, language);
+					double dF = score - maxscore;
 					
-				String childKey = KeySquareManipulation.modifyKey(parentKey);
-				lastText = Playfair.decode(cipherText, childKey);
-				lastFitness = QuadgramStats.scoreFitness(lastText, language);
-				double dF = lastFitness - bestFitness;
-				if(lastFitness - bestEverFitness > 0) {
-			        	bestEverKey = childKey;
-			        	bestEverFitness = lastFitness;
-			        	System.out.println(bestEverKey + " " + lastFitness + " Iteration: " + iteration);
+				    if(dF >= 0) {
+				        maxscore = score;
+				        bestKey = lastKey;
+				    }
+				    else if(TEMP > 0) { 
+				    	double prob = Math.exp(dF / TEMP);
+				        if(prob > rand.nextDouble()) {
+				        	maxscore = score;
+					        bestKey = lastKey;
+				        }
 					}
-					
-			        if(dF > 0) {
-			        	bestFitness = lastFitness;
-			        	parentKey = childKey;
-			        }
-			        else if(dF < 0) { 
-			        	double prob = Math.exp(dF / TEMP);
-			        	if(prob > Math.random()) {
-			        		bestFitness = lastFitness;
-				        	parentKey = childKey;
-			        	}
+				    
+				    if(maxscore > bestscore) {
+				        bestEverKey = lastKey;
+				        bestEverText = lastText;
+				        bestscore = maxscore;
+				        //output.println("Fitness: %f, Key: %s, Plaintext: %s", score, bestEverKey, lastText);
 					}
-			        
-			        ++iteration;
+				    
+				    progressBar.addValue(1);
 				}
 			}
-		return "";
-		//return plainText;
+			
+			if(bestscore > bestFitnessFinal) {
+				bestFitnessFinal = bestscore;
+				System.out.println(String.format("Best Fitness: %f, Key: %s, Plaintext: %s", bestscore, bestEverKey, bestEverText));
+				output.println("Best Fitness: %f, Key: %s, Plaintext: %s", bestscore, bestEverKey, bestEverText);
+			}
+		}
 	}
 	
 	@Override
@@ -91,6 +105,72 @@ public class PlayfairAuto implements IForceDecrypt {
 	
 	@Override
 	public List<StatisticRange> getStatistics() {
-		return null;
+		List<StatisticRange> list = new ArrayList<StatisticRange>();
+		list.add(new StatisticRange(StatisticType.INDEX_OF_COINCIDENCE, 66.0D, 3.0D));
+		list.add(new StatisticRange(StatisticType.MAX_IOC, 68.0D, 3.0D));
+		list.add(new StatisticRange(StatisticType.MAX_KAPPA, 81.0D, 9.0D));
+		list.add(new StatisticRange(StatisticType.DIGRAPHIC_IOC, 77.0D, 7.0D));
+		list.add(new StatisticRange(StatisticType.EVEN_DIGRAPHIC_IOC, 77.0D, 7.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_3, 24.0D, 2.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_ODD, 50.0D, 2.0D));
+		list.add(new StatisticRange(StatisticType.LOG_DIGRAPH, 428.0D, 58.0D));
+		list.add(new StatisticRange(StatisticType.SINGLE_LETTER_DIGRAPH, 109.0D, 22.0D));
+		return list;
+	}
+	
+	@Override
+	public boolean canDictionaryAttack() {
+		return false;
+	}
+
+	@Override
+	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
+		
+		
+		progressBar.addMaxValue(words.size());
+		
+		String lastText = "";
+		double bestScore = Integer.MIN_VALUE;
+
+		
+		for(String word : words) {
+			//Normal order alphabet
+			/**
+			String change = "";
+			if("")
+			for(char i : word.toCharArray()) {
+				if(!change.contains("" + i))
+					change += i;
+			}
+			
+			for(char i = 'A'; i <= 'Z'; ++i) {
+				if(!change.contains("" + i))
+					change += i;
+			}**/
+			
+			//Half alphabet after
+			String change = "";
+			for(char i : word.toCharArray()) {
+				if(!change.contains("" + i))
+					change += i;
+			}
+			
+			for(char i : "NOPQRSTUVWXYZABCDEFGHIJKLM".toCharArray()) {
+				if(!change.contains("" + i))
+					change += i;
+			}
+			
+			//System.out.println(word + " " + change);
+			lastText = Keyword.decode(cipherText, change);
+			
+			progressBar.addValue(1);
+			
+			double currentScore = QuadgramStats.scoreFitness(lastText, language);
+			if(currentScore > bestScore) {
+				
+				output.println("Fitness: %f, Word: %s, Plaintext: %s", currentScore, word + " ---> " + change, lastText);
+				bestScore = currentScore;
+			}
+		}
 	}
 }

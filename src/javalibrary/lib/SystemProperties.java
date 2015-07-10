@@ -1,6 +1,5 @@
 package javalibrary.lib;
 
-import java.io.File;
 
 /**
  * @author Alex

@@ -30,4 +30,9 @@ public class LetterCount {
 	public int hashCode() {
 		return new Character(this.ch).hashCode();
 	}
+	
+	@Override
+	public String toString() {
+		return ch + " " + count;
+	}
 }

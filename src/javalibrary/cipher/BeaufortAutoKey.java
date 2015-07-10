@@ -6,17 +6,13 @@ import javalibrary.math.MathHelper;
  * @author Alex Barter (10AS)
  */
 public class BeaufortAutoKey {
-
+	
 	public static String encode(String plainText, String key) {
 		String autoKey = key + plainText;
 		String cipherText = "";
 		
-		int index = 0;
-		for(char ch : plainText.toCharArray()) {
-			char newCh = (char)(MathHelper.wrap((autoKey.charAt(index) - 'A') - (ch - 'A'), 0, 26) + 'A');
-			cipherText += newCh;
-			index += 1;
-		}
+		for(int index = 0; index < plainText.length(); index++)
+			cipherText += (char)(MathHelper.mod(autoKey.charAt(index) - plainText.charAt(index), 26) + 'A');
 		
 		return cipherText;
 	}
@@ -25,12 +21,10 @@ public class BeaufortAutoKey {
 		String autoKey = key;
 		String plainText = "";
 		
-		int index = 0;
-		for(char ch : cipherText.toCharArray()) {
-			char newCh = (char)(MathHelper.wrap((autoKey.charAt(index) - 'A') - (ch - 'A'), 0, 26) + 'A');
+		for(int index = 0; index < cipherText.length(); index++) {
+			char newCh = (char)(MathHelper.mod(autoKey.charAt(index) - cipherText.charAt(index), 26) + 'A');
 			plainText += newCh;
 			autoKey += newCh;
-			index += 1;
 		}
 		
 		return plainText;

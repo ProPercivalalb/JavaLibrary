@@ -1,9 +1,8 @@
 package javalibrary.fitness;
 
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 import javalibrary.language.ILanguage;
-import javalibrary.string.LetterCount;
 import javalibrary.string.StringAnalyzer;
 
 /**
@@ -12,13 +11,13 @@ import javalibrary.string.StringAnalyzer;
 public class ChiSquared {
 
 	public static double calculate(String text, ILanguage language) {
-		Hashtable<Character, LetterCount> test = StringAnalyzer.countLetters(text);
+		TreeMap<String, Integer> letters = StringAnalyzer.getEmbeddedStrings(text, 1, 1);
 		
 		double total = 0.0D;
 		
-		for(char ch : test.keySet()) {
-			double count = test.get(ch).count;
-			double expectedCount = language.getFrequencyOfLetter(ch) * text.length() / 100;
+		for(String letter : letters.keySet()) {
+			double count = letters.get(letter);
+			double expectedCount = language.getFrequencyOfLetter(letter.charAt(0)) * text.length() / 100;
 			
 			double sum = Math.pow(count - expectedCount, 2) / expectedCount;
 			total += sum;

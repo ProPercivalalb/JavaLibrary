@@ -80,11 +80,6 @@ public class Matrix {
 		System.out.println("");
 	}
 	
-	/**
-	 * 
-	 * @param multiMatrix The matrix you wish to test if multiplication is possible
-	 * @return If the 
-	 */
 	public boolean canMultiplyMatrixBy(Matrix multiMatrix) {
 		return this.order[1] == multiMatrix.order[0];
 	}
@@ -149,7 +144,7 @@ public class Matrix {
 	    if (this.order[0] == 2 && this.order[1] == 2)
 	        return this.matrix[0][0] * this.matrix[1][1] - this.matrix[0][1] * this.matrix[1][0];
 	    
-	    double sum = 0.0F;
+	    double sum = 0.0D;
 	    for (int i = 0; i < this.order[1]; i++)
 	        sum += this.changeSign(i) * this.matrix[0][i] * createSubMatrix(0, i).determinant();
 	    
@@ -169,13 +164,13 @@ public class Matrix {
 	            continue;
 	        
 	        int newColumn = 0;
-	        for(int j = 0; j < this.order[1];j++) {
+	        for(int j = 0; j < this.order[1]; j++) {
 	            if (j == excluding_col)
 	                continue;
 	            newMatrix[newRow][newColumn] = this.matrix[i][j];
-	            newRow += 1;
 	            newColumn += 1;
 	        }
+            newRow += 1;
 	    }
 	    return new Matrix(newMatrix);
 	} 
@@ -232,16 +227,6 @@ public class Matrix {
 	    return this.minors().cofactor().adjugate().multiply(1.0F / determinant);
 	}
 	
-	public Matrix copy() {
-		double[][] newMatrix = new double[this.order[0]][this.order[1]];
-		
-	    for (int y = 0; y < this.order[0]; y++)
-	        for (int x = 0; x < this.order[1]; x++)
-	        	newMatrix[y][x] = this.matrix[y][x];
-	    
-	    return new Matrix(newMatrix);
-	}
-	
 	public Matrix inverseMod(int mod) throws MatrixNotSquareException, MatrixNoInverse {
 		if(!this.isSquare())
 	        throw new MatrixNotSquareException();
@@ -255,11 +240,52 @@ public class Matrix {
 			throw new MatrixNoInverse();
 		}
 		
+		if(this.order[0] == 1 && this.order[1] == 1) {
+			return new Matrix(new double[][] {{multiplicativeInverse}});
+		}
+		
 	    return this.minors().cofactor().adjugate().modular(mod).multiply(multiplicativeInverse).modular(mod);
+	}
+	
+	
+	@Override
+	public Matrix clone() {
+		double[][] newMatrix = new double[this.order[0]][this.order[1]];
+		
+	    for (int y = 0; y < this.order[0]; y++)
+	        for (int x = 0; x < this.order[1]; x++)
+	        	newMatrix[y][x] = this.matrix[y][x];
+	    
+	    return new Matrix(newMatrix);
+	}
+	
+	public int[] toArray() {
+		int[] array = new int[this.order[0] * this.order[1]];
+		
+		for(int y = 0; y < this.order[0]; ++y) {
+			
+			for(int x = 0; x < this.order[1]; ++x)
+				array[y * this.order[0] + x] = (int)this.matrix[y][x];
+		}
+		
+		return array;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("Order %d, %d", this.order[0], this.order[1]);
+		String total = "[";
+		for(int i = 0; i < this.order[0]; ++i) {
+			String str = "";
+			for(int k = 0; k < this.matrix[i].length; ++k) {
+				str += (int)this.matrix[i][k];
+				if(k != this.matrix[i].length - 1)
+					str += ",";
+				else if(i != this.order[1] - 1)
+					str += " ";
+			}
+			total += str;
+		}
+		
+		return total + "]";
 	}
  }

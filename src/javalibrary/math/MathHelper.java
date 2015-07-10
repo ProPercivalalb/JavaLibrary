@@ -1,5 +1,6 @@
 package javalibrary.math;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,5 +181,30 @@ public class MathHelper {
 	    for (int i = 1; i <= n; i++) 
 	    	fact *= i;
 	    return fact;
+	}
+	
+	public static BigInteger factorialBig(int n) {
+		BigInteger fact = BigInteger.ONE;
+	    for (int i = 1; i <= n; i++) 
+	    	fact = fact.multiply(BigInteger.valueOf(i));
+	    return fact;
+	}
+
+	public static int sum(Iterable<Integer> values) {
+		int sum = 0;
+		for(int i : values)
+			sum += i;
+		return sum;
+	}
+	
+	public static int product(Iterable<Integer> values) {
+		int product = 0;
+		for(int i : values)
+			product *= i;
+		return product;
+	}
+	
+	public static int mod(int number, int mod) {
+		return ((number % mod) + mod) % mod;
 	}
 }

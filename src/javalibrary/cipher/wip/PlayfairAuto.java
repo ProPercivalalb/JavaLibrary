@@ -10,7 +10,7 @@ import javalibrary.string.StringTransformer;
 public class PlayfairAuto {
 
 	//20 for 200-300 words 10 for lower
-	public static double TEMP_VALUE = 20.0D;
+	public static double TEMP_VALUE = 10.0D;
 	public static final double STEP_VALUE = 0.1D;
 	public static final int COUNT_VALUE = 50000;
 	

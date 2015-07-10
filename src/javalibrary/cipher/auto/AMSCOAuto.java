@@ -1,5 +1,8 @@
 package javalibrary.cipher.auto;
 
+import java.awt.Dimension;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,17 +10,18 @@ import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.AMSCO;
+import javalibrary.cipher.stats.StatisticRange;
+import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.QuadgramStats;
-import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
 import javalibrary.math.MathHelper;
+import javalibrary.util.ProgressValue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 /**
@@ -26,15 +30,13 @@ import javax.swing.JTextField;
 public class AMSCOAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, JProgressBar progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
 		int minKeyLength = data.getData("minkeylength", Integer.class);
 		int maxKeyLength = data.getData("maxkeylength", Integer.class);
 		boolean reversed = data.getData("first", Boolean.class);
 		
-		int total = 0;
 		for(int keyLength = minKeyLength; keyLength <= maxKeyLength; ++keyLength)
-			total += MathHelper.factorial(keyLength);
-		progressBar.setMaximum(total);
+			progressBar.addMaxValue(MathHelper.factorialBig(keyLength));
 		
 		AMSCOTask amscot = new AMSCOTask(cipherText, language, output, progressBar, reversed);
 		for(int keyLength = minKeyLength; keyLength <= maxKeyLength; ++keyLength)
@@ -48,10 +50,10 @@ public class AMSCOAuto implements IForceDecrypt {
 		public String cipherText;
 		public ILanguage language;
 		public Output output;
-		public JProgressBar progressBar;
+		public ProgressValue progressBar;
 		public boolean reversed;
 		
-		public AMSCOTask(String cipherText, ILanguage language, Output output, JProgressBar progressBar, boolean reversed) {
+		public AMSCOTask(String cipherText, ILanguage language, Output output, ProgressValue progressBar, boolean reversed) {
 			this.cipherText = cipherText;
 			this.language = language;
 			this.output = output;
@@ -76,7 +78,7 @@ public class AMSCOAuto implements IForceDecrypt {
 				this.plainText = this.lastText;
 			}
 			
-			this.progressBar.setValue(this.progressBar.getValue() + 1);
+			this.progressBar.addValue(1);
 		}
 	}
 	
@@ -132,8 +134,9 @@ public class AMSCOAuto implements IForceDecrypt {
 	public JPanel getVarsPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		JLabel range = new JLabel("Keyword length range:   ");
-		JLabel reverse = new JLabel("    Type?   ");
+		JLabel range = new JLabel("Keyword length range:  ");
+		JLabel reverse = new JLabel("  Type?  ");
+		range.setMaximumSize(new Dimension(200, 100));
 		panel.add(range);
 		panel.add(rangeBox);
 		panel.add(reverse);
@@ -143,6 +146,26 @@ public class AMSCOAuto implements IForceDecrypt {
 	
 	@Override
 	public List<StatisticRange> getStatistics() {
+		List<StatisticRange> list = new ArrayList<StatisticRange>();
+		list.add(new StatisticRange(StatisticType.INDEX_OF_COINCIDENCE, 63.0D, 5.0D));
+		list.add(new StatisticRange(StatisticType.MAX_IOC, 72.0D, 10.0D));
+		list.add(new StatisticRange(StatisticType.MAX_KAPPA, 94.0D, 19.0D));
+		list.add(new StatisticRange(StatisticType.DIGRAPHIC_IOC, 44.0D, 10.0D));
+		list.add(new StatisticRange(StatisticType.EVEN_DIGRAPHIC_IOC, 43.0D, 13.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_3, 11.0D, 4.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_ODD, 50.0D, 8.0D));
+		list.add(new StatisticRange(StatisticType.LOG_DIGRAPH, 688.0D, 15.0D));
+		list.add(new StatisticRange(StatisticType.SINGLE_LETTER_DIGRAPH, 188.0D, 17.0D));
 		return null;
+	}
+	
+	@Override
+	public boolean canDictionaryAttack() {
+		return false;
+	}
+
+	@Override
+	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
+		
 	}
 }

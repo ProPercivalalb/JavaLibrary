@@ -6,19 +6,14 @@ import javalibrary.math.MathHelper;
  * @author Alex Barter (10AS)
  */
 public class VigenereAutoKey {
-
+	
 	public static String encode(String plainText, String key) {
 		String autoKey = key + plainText;
 		String cipherText = "";
 		
-		int index = 0;
-		for(char ch : plainText.toCharArray()) {
-			char newCh = (char)(MathHelper.wrap((ch - 'A') + (autoKey.charAt(index) - 'A'), 0, 26) + 'A');
-			cipherText += newCh;
-			index += 1;
-		}
+		for(int index = 0; index < plainText.length(); index++)
+			cipherText += (char)(MathHelper.mod(plainText.charAt(index) + autoKey.charAt(index), 26) + 'A');
 		
-		System.out.println(cipherText);
 		return cipherText;
 	}
 	
@@ -26,15 +21,12 @@ public class VigenereAutoKey {
 		String autoKey = key;
 		String plainText = "";
 		
-		int index = 0;
-		for(char ch : cipherText.toCharArray()) {
-			char newCh = (char)(MathHelper.wrap((ch - 'A') - (autoKey.charAt(index) - 'A'), 0, 26) + 'A');
+		for(int index = 0; index < cipherText.length(); index++) {
+			char newCh = (char)(MathHelper.mod(cipherText.charAt(index) - autoKey.charAt(index), 26) + 'A');
 			plainText += newCh;
 			autoKey += newCh;
-			index += 1;
 		}
 		
-		System.out.println(plainText);
 		return plainText;
 	}
 }

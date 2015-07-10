@@ -42,7 +42,7 @@ public class Redefence {
 			if(total_left >= c_row)
 				times += 1;
 			
-			if(c_row != rows && rows - c_row <= total_left - rows) // 16 - 4 <= 11
+			if(c_row != rows && rows - c_row <= total_left - rows)
 				times += 1;
 			
 			for(int i = 0; i < times; i++) {

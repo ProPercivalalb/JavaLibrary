@@ -1,5 +1,6 @@
 package javalibrary.cipher.auto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javalibrary.EncryptionData;
@@ -7,15 +8,16 @@ import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Caesar;
 import javalibrary.cipher.Vigenere;
+import javalibrary.cipher.stats.StatisticRange;
+import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.ChiSquared;
-import javalibrary.fitness.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
+import javalibrary.util.ProgressValue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 /**
@@ -25,13 +27,13 @@ import javax.swing.JTextField;
 public class VigenereAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, JProgressBar progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
 		int minKeywordLength = data.getData("minkeylength", Integer.class);
 		int maxKeywordLength = data.getData("maxkeylength", Integer.class);
 		
 		int keyLength = this.findKeywordLength(cipherText, minKeywordLength, maxKeywordLength, language);
 		
-		progressBar.setMaximum(keyLength * 26);
+		progressBar.addMaxValue(keyLength * 26);
 		
 		String keyword = "";
         for(int i = 0; i < keyLength; ++i) {
@@ -70,7 +72,7 @@ public class VigenereAuto implements IForceDecrypt {
 	    return bestLength;
 	}	
 
-    public int findBestCaesarShift(String text, ILanguage language, JProgressBar progressBar) {
+    public int findBestCaesarShift(String text, ILanguage language, ProgressValue progressBar) {
         int best = 0;
         double smallestSum = Double.MAX_VALUE;
         for(int shift = 0; shift < 26; ++shift) {
@@ -82,7 +84,7 @@ public class VigenereAuto implements IForceDecrypt {
                 smallestSum = currentSum;
             }
             
-            progressBar.setValue(progressBar.getValue() + 1);
+            progressBar.addValue(1);
         }
         return best;
     }
@@ -125,6 +127,26 @@ public class VigenereAuto implements IForceDecrypt {
 	
 	@Override
 	public List<StatisticRange> getStatistics() {
-		return null;
+		List<StatisticRange> list = new ArrayList<StatisticRange>();
+		list.add(new StatisticRange(StatisticType.INDEX_OF_COINCIDENCE, 42.0D, 2.0D));
+		list.add(new StatisticRange(StatisticType.MAX_IOC, 65.0D, 8.0D));
+		list.add(new StatisticRange(StatisticType.MAX_KAPPA, 74.0D, 15.0D));
+		list.add(new StatisticRange(StatisticType.DIGRAPHIC_IOC, 22.0D, 6.0D));
+		list.add(new StatisticRange(StatisticType.EVEN_DIGRAPHIC_IOC, 26.0D, 11.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_3, 8.0D, 4.0D));
+		list.add(new StatisticRange(StatisticType.LONG_REPEAT_ODD, 42.0D, 13.0D));
+		list.add(new StatisticRange(StatisticType.LOG_DIGRAPH, 438.0D, 33.0D));
+		list.add(new StatisticRange(StatisticType.SINGLE_LETTER_DIGRAPH, 106.0D, 16.0D));
+		return list;
+	}
+	
+	@Override
+	public boolean canDictionaryAttack() {
+		return false;
+	}
+
+	@Override
+	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
+		
 	}
 }
