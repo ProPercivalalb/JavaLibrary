@@ -2,6 +2,7 @@ package javalibrary.util;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -14,6 +15,14 @@ public class MapHelper {
 			comparator = Collections.reverseOrder(comparator);
 		SortedMap<T, X> sortedData = new TreeMap<T, X>(comparator);
 		sortedData.putAll(map);
+		return sortedData;
+	}
+	
+	public static <T extends Comparable<T>, X extends Comparable<X>> Map<T, X> createMapSortedByValue(boolean lowestUp) {
+		Comparator<T> comparator = new ValueComparer<T, X>(new HashMap<T, X>());
+		if(!lowestUp)
+			comparator = Collections.reverseOrder(comparator);
+		SortedMap<T, X> sortedData = new TreeMap<T, X>(comparator);
 		return sortedData;
 	}
 	

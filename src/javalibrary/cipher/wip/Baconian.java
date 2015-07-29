@@ -1,56 +1,21 @@
 package javalibrary.cipher.wip;
 
-
-/**
- * @author Alex Barter (10AS)
- */
 public class Baconian {
 
-	/**
-	 * Encodes plain text into cipher text encoded in Autokeyword Cipher
-	 * @param plainText The message you wish to encode
-	 * @param keyWord The keyword to encode and therefore decode the message
-	 * @return The Cipher Text
-	 */
-	public static String encode(String plainText, String keyWord) {
-		char[] charArray = plainText.toCharArray();
-		keyWord = keyWord.toUpperCase();
+	public static String encode(String plainText) {
 		
-		String cipherText = "";
-		
-		int iteration = 0;
-		int keyCount = 0;
-		//Runs through all the characters from the array
-		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toUpperCase(ch);
-			
-		}
-		
-		return cipherText;
+		return "";
 	}
 	
-	/**
-	 * Decodes cipher text into plain text which was encoded in Autokeyword Cipher
-	 * @param cipherText The message you wish to decode
-	 * @param keyWord The keyword to encode and therefore decode the message
-	 * @return The Plain Text
-	 */
-	public static String decode(String cipherText, String keyWord) {
-		char[] charArray = cipherText.toCharArray();
-		keyWord = keyWord.toLowerCase();
-		
+	public static String decode(String cipherText) {
 		String plainText = "";
-
-		//Runs through all the characters from the array
-		for(char ch : charArray) {
-			//Converts the character to an upper case version if it has one
-			ch = Character.toLowerCase(ch);
-			
-			
+		for(int i = 0; i < cipherText.length(); i ++) {
+			char ch = cipherText.charAt(i);
+			if(ch == 'A')
+				plainText += 0;
+			else if(ch == 'B')
+				plainText += 1;
 		}
-		System.out.println(keyWord);
-		
 		return plainText;
 	}
 }

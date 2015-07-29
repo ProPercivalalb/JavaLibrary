@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 public class VariantAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {		
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {		
 		int minKeywordLength = data.getData("minkeylength", Integer.class);
 		int maxKeywordLength = data.getData("maxkeylength", Integer.class);
 

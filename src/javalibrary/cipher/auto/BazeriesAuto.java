@@ -14,6 +14,7 @@ import javalibrary.language.ILanguage;
 import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * @author Alex Barter (10AS)
@@ -21,7 +22,7 @@ import javax.swing.JPanel;
 public class BazeriesAuto implements IForceDecrypt {
 	
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		progressBar.addMaxValue(1000000);
 		BazeriesTask bt = new BazeriesTask(cipherText, language, output, progressBar);
 		this.iterate(bt);

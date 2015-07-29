@@ -40,7 +40,7 @@ public class AMSCO {
 				
 				for(int i = 0; i < (((row - trueColumn) % 2 == 0) ? reversed ? 2 : 1 : reversed ? 1 : 2); i++) {
 					if(charactersBefore(reversed, false, no_column, row, trueColumn) >= cipherText.length())
-						break;
+						continue; //break;
 					
 					if(index >= cipherText.length())
 						break;

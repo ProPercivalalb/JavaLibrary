@@ -33,7 +33,7 @@ public class Keyword {
 		char[] charArray = cipherText.toCharArray();
 		
 		String plainText = "";
-
+		
 		for(char ch : charArray)
 			plainText += (char)(keyword.indexOf(ch) + 'A');
 

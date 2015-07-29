@@ -7,13 +7,14 @@ import javalibrary.language.ILanguage;
 import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * @author Alex Barter (10AS)
  */
 public interface IForceDecrypt {
 	
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar);
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely);
 	
 	public String getName();
 

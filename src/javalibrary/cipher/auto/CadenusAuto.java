@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 public class CadenusAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {		
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {		
 		
 		int minSize = data.getData("minsize", Integer.class);
 		int maxSize = data.getData("maxsize", Integer.class);

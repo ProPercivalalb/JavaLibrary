@@ -1,33 +1,33 @@
 package javalibrary.cipher.auto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.Keyword;
+import javalibrary.cipher.ADFGVX;
+import javalibrary.cipher.ColumnarRow;
+import javalibrary.cipher.auto.RedefenceAuto.PermutationTask;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
+import javalibrary.math.ArrayHelper;
 import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**
- * @author Alex Barter
- * @since 27 Nov 2013
- */
-public class KeywordAuto implements IForceDecrypt {
+public class ADFGVXAuto implements IForceDecrypt {
 
 	//20 for 200-300 words 10 for lower
 	public static double TEMP_VALUE = 20.0D;
 	public static final double STEP_VALUE = 0.1D;
-	public static final int COUNT_VALUE = 100;
+	public static final int COUNT_VALUE = 10000;
 	
 	@Override
 	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
@@ -37,10 +37,15 @@ public class KeywordAuto implements IForceDecrypt {
 		
 		double bestFitnessFinal = -99e99;
 		
+		//int[] order = new int[] {3, 1, 4, 0, 5, 2};
+		//String untransformedText = ColumnarRow.decode(cipherText, order);
+		
 		while(true) {
 			progressBar.setValue(0);
-			String bestKey = KeySquareManipulation.generateRandKey();
-			String bestText = Keyword.decode(cipherText, bestKey);
+			String bestKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			int[] bestArray = new int[] {0, 1, 2, 3, 4};//ArrayHelper.range(0, 6);
+			System.out.println(Arrays.toString(bestArray));
+			String bestText = ADFGVX.decode(cipherText, bestKey, bestArray);
 			double maxscore = QuadgramStats.scoreFitness(bestText, language);
 			
 			String bestEverKey = bestKey;
@@ -50,10 +55,14 @@ public class KeywordAuto implements IForceDecrypt {
 			int iteration = 0;
 			for(double TEMP = TEMP_VALUE; TEMP >= 0; TEMP -= STEP_VALUE) {
 				for(int count = 0; count < COUNT_VALUE; count++){ 
-						
-					String lastKey = KeySquareManipulation.exchange2letters(bestKey);
-			
-					String lastText = Keyword.decode(cipherText, lastKey);
+	
+					String lastKey = bestKey;
+					//if(count % 4 == 0)
+						lastKey = KeySquareManipulation.exchange2letters(bestKey);
+					//else
+					//	bestArray = KeySquareManipulation.exchangeOrder(bestArray);
+					
+					String lastText = ADFGVX.decode(cipherText, lastKey, bestArray);
 					double score = QuadgramStats.scoreFitness(lastText, language);
 					double dF = score - maxscore;
 					
@@ -88,9 +97,25 @@ public class KeywordAuto implements IForceDecrypt {
 		}
 	}
 	
+	public void permutate(PermutationTask task, int[] arr, int pos) {
+	    if(arr.length - pos == 1)
+	    	task.onPermutation(arr);
+	    else
+	        for(int i = pos; i < arr.length; i++) {
+	            int h = arr[pos];
+	            int j = arr[i];
+	            arr[pos] = j;
+	            arr[i] = h;
+	            
+	            permutate(task, arr, pos + 1);
+	            arr[pos] = h;
+	    	    arr[i] = j;
+	        }
+	}
+	
 	@Override
 	public String getName() {
-		return "Keyword";
+		return "ADFGVX";
 	}
 	
 	@Override
@@ -120,57 +145,11 @@ public class KeywordAuto implements IForceDecrypt {
 	
 	@Override
 	public boolean canDictionaryAttack() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
 		
-		
-		progressBar.addMaxValue(words.size());
-		
-		String lastText = "";
-		double bestScore = Integer.MIN_VALUE;
-
-		
-		for(String word : words) {
-			//Normal order alphabet
-			/**
-			String change = "";
-			if("")
-			for(char i : word.toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			for(char i = 'A'; i <= 'Z'; ++i) {
-				if(!change.contains("" + i))
-					change += i;
-			}**/
-			
-			//Half alphabet after
-			String change = "";
-			for(char i : word.toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			for(char i : "NOPQRSTUVWXYZABCDEFGHIJKLM".toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			//System.out.println(word + " " + change);
-			lastText = Keyword.decode(cipherText, change);
-			
-			progressBar.addValue(1);
-			
-			double currentScore = QuadgramStats.scoreFitness(lastText, language);
-			if(currentScore > bestScore) {
-				
-				output.println("Fitness: %f, Word: %s, Plaintext: %s", currentScore, word + " ---> " + change, lastText);
-				bestScore = currentScore;
-			}
-		}
 	}
 }

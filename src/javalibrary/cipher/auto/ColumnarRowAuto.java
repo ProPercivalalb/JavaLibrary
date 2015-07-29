@@ -1,6 +1,5 @@
 package javalibrary.cipher.auto;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +7,8 @@ import java.util.List;
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.AMSCO;
+import javalibrary.cipher.Columnar;
+import javalibrary.cipher.ColumnarRow;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.QuadgramStats;
@@ -18,7 +18,6 @@ import javalibrary.math.MathHelper;
 import javalibrary.util.ProgressValue;
 
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -26,38 +25,35 @@ import javax.swing.JTextField;
 /**
  * @author Alex Barter (10AS)
  */
-public class AMSCOAuto implements IForceDecrypt {
+public class ColumnarRowAuto implements IForceDecrypt {
 
 	@Override
 	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		int minKeyLength = data.getData("minkeylength", Integer.class);
 		int maxKeyLength = data.getData("maxkeylength", Integer.class);
-		boolean reversed = data.getData("first", Boolean.class);
 		
 		for(int keyLength = minKeyLength; keyLength <= maxKeyLength; ++keyLength)
 			progressBar.addMaxValue(MathHelper.factorialBig(keyLength));
 		
-		AMSCOTask amscot = new AMSCOTask(cipherText, language, output, progressBar, reversed);
+		ColumnarRowTask tt = new ColumnarRowTask(cipherText, language, output, progressBar);
 		for(int keyLength = minKeyLength; keyLength <= maxKeyLength; ++keyLength)
-			this.permutate(amscot, ArrayHelper.range(0, keyLength), 0);
+			this.permutate(tt, ArrayHelper.range(0, keyLength), 0);
 		
-		return amscot.plainText;
+		return tt.plainText;
 	}
 
-	public static class AMSCOTask implements PermutationTask {
+	public static class ColumnarRowTask implements PermutationTask {
 
 		public String cipherText;
 		public ILanguage language;
 		public Output output;
 		public ProgressValue progressBar;
-		public boolean reversed;
 		
-		public AMSCOTask(String cipherText, ILanguage language, Output output, ProgressValue progressBar, boolean reversed) {
+		public ColumnarRowTask(String cipherText, ILanguage language, Output output, ProgressValue progressBar) {
 			this.cipherText = cipherText;
 			this.language = language;
 			this.output = output;
 			this.progressBar = progressBar;
-			this.reversed = reversed;
 		}
 		
 		public String lastText = "";
@@ -67,7 +63,7 @@ public class AMSCOAuto implements IForceDecrypt {
 			
 		@Override
 		public void onPermutation(int[] order) {
-			this.lastText = AMSCO.decode(this.cipherText, this.reversed, order);
+			this.lastText = ColumnarRow.decode(this.cipherText, order);
 			
 			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
 			
@@ -103,7 +99,7 @@ public class AMSCOAuto implements IForceDecrypt {
 
 	@Override
 	public String getName() {
-		return "AMSCO";
+		return "Columnar Row";
 	}
 	
 	@Override
@@ -122,39 +118,23 @@ public class AMSCOAuto implements IForceDecrypt {
 		}
 		data.putData("minkeylength", Math.min(minlength, maxlength));
 		data.putData("maxkeylength", Math.max(maxlength, maxlength));
-		data.putData("first", comboBox.getSelectedIndex() == 0);
 		return data;
 	}
 	
 	private JTextField rangeBox = new JTextField("2-8");
-	private JComboBox comboBox = new JComboBox(new String[] {"** | *  | ** - First", " * | ** | *  - Second"});
 	
 	@Override
 	public JPanel getVarsPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		JLabel range = new JLabel("Keyword length range:  ");
-		JLabel reverse = new JLabel("  Type?  ");
-		range.setMaximumSize(new Dimension(200, 100));
+		JLabel range = new JLabel("Keyword length range:   ");
 		panel.add(range);
 		panel.add(rangeBox);
-		panel.add(reverse);
-		panel.add(comboBox);
 		return panel;
 	}
 	
 	@Override
 	public List<StatisticRange> getStatistics() {
-		List<StatisticRange> list = new ArrayList<StatisticRange>();
-		list.add(new StatisticRange(StatisticType.INDEX_OF_COINCIDENCE, 63.0D, 5.0D));
-		list.add(new StatisticRange(StatisticType.MAX_IOC, 72.0D, 10.0D));
-		list.add(new StatisticRange(StatisticType.MAX_KAPPA, 94.0D, 19.0D));
-		list.add(new StatisticRange(StatisticType.DIGRAPHIC_IOC, 44.0D, 10.0D));
-		list.add(new StatisticRange(StatisticType.EVEN_DIGRAPHIC_IOC, 43.0D, 13.0D));
-		list.add(new StatisticRange(StatisticType.LONG_REPEAT_3, 11.0D, 4.0D));
-		list.add(new StatisticRange(StatisticType.LONG_REPEAT_ODD, 50.0D, 8.0D));
-		list.add(new StatisticRange(StatisticType.LOG_DIGRAPH, 688.0D, 15.0D));
-		list.add(new StatisticRange(StatisticType.SINGLE_LETTER_DIGRAPH, 188.0D, 17.0D));
 		return null;
 	}
 	

@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 public class BeaufortAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		char[] charArray = cipherText.toCharArray();
 
 		String invervedText = "";

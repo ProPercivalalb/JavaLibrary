@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 public class HillAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		int minMatrixSize = data.getData("minmatrixsize", Integer.class);
 		int maxMatrixSize = data.getData("maxmatrixsize", Integer.class);
 

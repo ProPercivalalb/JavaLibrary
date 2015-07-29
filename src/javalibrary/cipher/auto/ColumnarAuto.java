@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 public class ColumnarAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		int minKeyLength = data.getData("minkeylength", Integer.class);
 		int maxKeyLength = data.getData("maxkeylength", Integer.class);
 		
@@ -76,11 +76,11 @@ public class ColumnarAuto implements IForceDecrypt {
 		}
 	}
 	
-	public interface PermutationTask {
+	public static interface PermutationTask {
 		public void onPermutation(int[] order);
 	}
 	
-	public void permutate(PermutationTask task, int[] arr, int pos) {
+	public static void permutate(PermutationTask task, int[] arr, int pos) {
 	    if(arr.length - pos == 1)
 	    	task.onPermutation(arr);
 	    else
@@ -98,7 +98,7 @@ public class ColumnarAuto implements IForceDecrypt {
 
 	@Override
 	public String getName() {
-		return "Transposition";
+		return "Columnar";
 	}
 	
 	@Override

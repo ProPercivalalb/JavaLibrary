@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 public class RailFenceAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		int minRows = data.getData("minrows", Integer.class);
 		int maxRows = data.getData("maxrows", Integer.class);
 

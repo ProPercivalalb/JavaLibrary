@@ -17,6 +17,7 @@ import javalibrary.language.ILanguage;
 import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * @author Alex Barter
@@ -25,12 +26,12 @@ import javax.swing.JPanel;
 public class PlayfairAuto implements IForceDecrypt {
 
 	//20 for 200-300 words 10 for lower
-	public static double TEMP_VALUE = 20.0D;
+	public static double TEMP_VALUE = 10.0D;
 	public static final double STEP_VALUE = 0.1D;
 	public static final int COUNT_VALUE = 500;
 	
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		progressBar.addMaxValue((int)(TEMP_VALUE / STEP_VALUE) * COUNT_VALUE);
 
 		Random rand = new Random(System.currentTimeMillis());
@@ -73,6 +74,7 @@ public class PlayfairAuto implements IForceDecrypt {
 				        bestEverKey = lastKey;
 				        bestEverText = lastText;
 				        bestscore = maxscore;
+				        mostLikely.setText(lastText);
 				        //output.println("Fitness: %f, Key: %s, Plaintext: %s", score, bestEverKey, lastText);
 					}
 				    
@@ -126,51 +128,5 @@ public class PlayfairAuto implements IForceDecrypt {
 	@Override
 	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
 		
-		
-		progressBar.addMaxValue(words.size());
-		
-		String lastText = "";
-		double bestScore = Integer.MIN_VALUE;
-
-		
-		for(String word : words) {
-			//Normal order alphabet
-			/**
-			String change = "";
-			if("")
-			for(char i : word.toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			for(char i = 'A'; i <= 'Z'; ++i) {
-				if(!change.contains("" + i))
-					change += i;
-			}**/
-			
-			//Half alphabet after
-			String change = "";
-			for(char i : word.toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			for(char i : "NOPQRSTUVWXYZABCDEFGHIJKLM".toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			//System.out.println(word + " " + change);
-			lastText = Keyword.decode(cipherText, change);
-			
-			progressBar.addValue(1);
-			
-			double currentScore = QuadgramStats.scoreFitness(lastText, language);
-			if(currentScore > bestScore) {
-				
-				output.println("Fitness: %f, Word: %s, Plaintext: %s", currentScore, word + " ---> " + change, lastText);
-				bestScore = currentScore;
-			}
-		}
 	}
 }

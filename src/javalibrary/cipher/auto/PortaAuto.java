@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 public class PortaAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {		
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {		
 		int minKeywordLength = data.getData("minkeylength", Integer.class);
 		int maxKeywordLength = data.getData("maxkeylength", Integer.class);
 
@@ -63,7 +63,7 @@ public class PortaAuto implements IForceDecrypt {
 			
 		@Override
 		public void onKeyCreate(String key) {
-			this.lastText = Porta.decode(this.cipherText, key);
+			this.lastText = Porta.decode(this.cipherText, key, true);
 				
 			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
 			

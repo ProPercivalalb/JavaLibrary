@@ -7,7 +7,7 @@ import java.util.Random;
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.Keyword;
+import javalibrary.cipher.TwoSquare;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
@@ -18,16 +18,12 @@ import javalibrary.util.ProgressValue;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**
- * @author Alex Barter
- * @since 27 Nov 2013
- */
-public class KeywordAuto implements IForceDecrypt {
+public class TwoSquareAuto implements IForceDecrypt {
 
 	//20 for 200-300 words 10 for lower
 	public static double TEMP_VALUE = 20.0D;
 	public static final double STEP_VALUE = 0.1D;
-	public static final int COUNT_VALUE = 100;
+	public static final int COUNT_VALUE = 500;
 	
 	@Override
 	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
@@ -39,11 +35,13 @@ public class KeywordAuto implements IForceDecrypt {
 		
 		while(true) {
 			progressBar.setValue(0);
-			String bestKey = KeySquareManipulation.generateRandKey();
-			String bestText = Keyword.decode(cipherText, bestKey);
+			String bestKey1 = KeySquareManipulation.generateRandKeySquare();
+			String bestKey2 = KeySquareManipulation.generateRandKeySquare();
+			String bestText = TwoSquare.decode(cipherText, bestKey1, bestKey2);
 			double maxscore = QuadgramStats.scoreFitness(bestText, language);
 			
-			String bestEverKey = bestKey;
+			String bestEverKey1 = bestKey1;
+			String bestEverKey2 = bestKey2;
 			String bestEverText = bestText;
 			double bestscore = maxscore;
 			
@@ -51,29 +49,39 @@ public class KeywordAuto implements IForceDecrypt {
 			for(double TEMP = TEMP_VALUE; TEMP >= 0; TEMP -= STEP_VALUE) {
 				for(int count = 0; count < COUNT_VALUE; count++){ 
 						
-					String lastKey = KeySquareManipulation.exchange2letters(bestKey);
-			
-					String lastText = Keyword.decode(cipherText, lastKey);
+					String lastKey1 = bestKey1;
+					String lastKey2 = bestKey2;
+					
+					if(count % 2 == 0)
+						lastKey1 = KeySquareManipulation.exchange2letters(lastKey1);
+					else
+						lastKey2 = KeySquareManipulation.exchange2letters(lastKey2);
+					
+					String lastText = TwoSquare.decode(cipherText, lastKey1, lastKey2);
 					double score = QuadgramStats.scoreFitness(lastText, language);
 					double dF = score - maxscore;
 					
 				    if(dF >= 0) {
 				        maxscore = score;
-				        bestKey = lastKey;
+				        bestKey1 = lastKey1;
+				        bestKey2 = lastKey2;
 				    }
 				    else if(TEMP > 0) { 
 				    	double prob = Math.exp(dF / TEMP);
 				        if(prob > rand.nextDouble()) {
 				        	maxscore = score;
-					        bestKey = lastKey;
+				        	bestKey1 = lastKey1;
+						    bestKey2 = lastKey2;
 				        }
 					}
 				    
 				    if(maxscore > bestscore) {
-				        bestEverKey = lastKey;
+				        bestEverKey1 = lastKey1;
+				        bestEverKey2 = lastKey2;
 				        bestEverText = lastText;
 				        bestscore = maxscore;
 				        mostLikely.setText(lastText);
+				        //output.println("Fitness: %f, Key: %s, Plaintext: %s", score, bestEverKey, lastText);
 					}
 				    
 				    progressBar.addValue(1);
@@ -82,15 +90,15 @@ public class KeywordAuto implements IForceDecrypt {
 			
 			if(bestscore > bestFitnessFinal) {
 				bestFitnessFinal = bestscore;
-				System.out.println(String.format("Best Fitness: %f, Key: %s, Plaintext: %s", bestscore, bestEverKey, bestEverText));
-				output.println("Best Fitness: %f, Key: %s, Plaintext: %s", bestscore, bestEverKey, bestEverText);
+				System.out.println(String.format("Best Fitness: %f, Key: %s %s, Plaintext: %s", bestscore, bestEverKey1, bestEverKey2, bestEverText));
+				output.println("Best Fitness: %f, Key: %s %s, Plaintext: %s", bestscore, bestEverKey1, bestEverKey2, bestEverText);
 			}
 		}
 	}
 	
 	@Override
 	public String getName() {
-		return "Keyword";
+		return "Two Square";
 	}
 	
 	@Override
@@ -120,57 +128,11 @@ public class KeywordAuto implements IForceDecrypt {
 	
 	@Override
 	public boolean canDictionaryAttack() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public void tryDictionaryAttack(String cipherText, List<String> words, ILanguage language, Output output, ProgressValue progressBar) {
 		
-		
-		progressBar.addMaxValue(words.size());
-		
-		String lastText = "";
-		double bestScore = Integer.MIN_VALUE;
-
-		
-		for(String word : words) {
-			//Normal order alphabet
-			/**
-			String change = "";
-			if("")
-			for(char i : word.toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			for(char i = 'A'; i <= 'Z'; ++i) {
-				if(!change.contains("" + i))
-					change += i;
-			}**/
-			
-			//Half alphabet after
-			String change = "";
-			for(char i : word.toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			for(char i : "NOPQRSTUVWXYZABCDEFGHIJKLM".toCharArray()) {
-				if(!change.contains("" + i))
-					change += i;
-			}
-			
-			//System.out.println(word + " " + change);
-			lastText = Keyword.decode(cipherText, change);
-			
-			progressBar.addValue(1);
-			
-			double currentScore = QuadgramStats.scoreFitness(lastText, language);
-			if(currentScore > bestScore) {
-				
-				output.println("Fitness: %f, Word: %s, Plaintext: %s", currentScore, word + " ---> " + change, lastText);
-				bestScore = currentScore;
-			}
-		}
 	}
 }

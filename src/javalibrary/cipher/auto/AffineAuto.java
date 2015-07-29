@@ -14,6 +14,7 @@ import javalibrary.language.ILanguage;
 import javalibrary.util.ProgressValue;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * @author Alex Barter (10AS)
@@ -21,7 +22,7 @@ import javax.swing.JPanel;
 public class AffineAuto implements IForceDecrypt {
 	
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar) {
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
 		progressBar.addMaxValue(12 * 26);
 		AffineTask at = new AffineTask(cipherText, language, output, progressBar);
 		this.iterate(at);

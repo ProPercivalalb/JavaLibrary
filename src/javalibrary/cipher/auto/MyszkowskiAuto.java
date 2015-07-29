@@ -1,13 +1,14 @@
 package javalibrary.cipher.auto;
 
-import java.awt.Dimension;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.VigenereAutoKey;
+import javalibrary.cipher.Myszkowski;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
@@ -21,39 +22,37 @@ import javax.swing.JTextField;
 /**
  * @author Alex Barter (10AS)
  */
-public class VigenereAutokeyAuto implements IForceDecrypt {
+public class MyszkowskiAuto implements IForceDecrypt {
 
 	@Override
-	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {		
-		int minKeywordLength = data.getData("minkeylength", Integer.class);
-		int maxKeywordLength = data.getData("maxkeylength", Integer.class);
-
+	public String tryDecode(String cipherText, EncryptionData data, ILanguage language, Output output, ProgressValue progressBar, JTextField mostLikely) {
+		int minKeyLength = data.getData("minkeylength", Integer.class);
+		int maxKeyLength = data.getData("maxkeylength", Integer.class);
+		
 		BigInteger TWENTY_SIX = BigInteger.valueOf(26);
 		
-		for(int length = minKeywordLength; length <= maxKeywordLength; length++)
+		for(int length = minKeyLength; length <= maxKeyLength; ++length)
 			progressBar.addMaxValue(TWENTY_SIX.pow(length));
 		
-		String startText = "";
-		VigenereAutoKeyTask ctt = new VigenereAutoKeyTask(cipherText, language, output, progressBar);
+		MyszkowskiTask mt = new MyszkowskiTask(cipherText, language, output, progressBar);
+		for(int length = minKeyLength; length <= maxKeyLength; ++length)
+			this.run(mt, length, 0, "");
 		
-		for(int length = minKeywordLength; length <= maxKeywordLength; length++)
-			this.run(ctt, length - startText.length(), 0, startText);
-		
-		return ctt.plainText;
+		return mt.plainText;
 	}
-	
-	public static class VigenereAutoKeyTask implements KeyCreation {
+
+	public static class MyszkowskiTask implements KeyCreation {
 
 		public String cipherText;
 		public ILanguage language;
 		public Output output;
-		public ProgressValue value;
+		public ProgressValue progressBar;
 		
-		public VigenereAutoKeyTask(String cipherText, ILanguage language, Output output, ProgressValue value) {
+		public MyszkowskiTask(String cipherText, ILanguage language, Output output, ProgressValue progressBar) {
 			this.cipherText = cipherText;
 			this.language = language;
 			this.output = output;
-			this.value = value;
+			this.progressBar = progressBar;
 		}
 		
 		public String lastText = "";
@@ -63,19 +62,18 @@ public class VigenereAutokeyAuto implements IForceDecrypt {
 			
 		@Override
 		public void onKeyCreate(String key) {
-			this.lastText = VigenereAutoKey.decode(this.cipherText, key);
-				
+			this.lastText = Myszkowski.decode(this.cipherText, key);
+			
 			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
 			
-			if(this.currentScore >= this.bestScore) {
-				this.output.println("Fitness: %f, Key: %s, Plaintext: %s", this.currentScore, key, this.lastText);
+			if(this.currentScore > this.bestScore) {
+				this.output.println("Fitness: %f, Key: %s, Plaintext: %s", this.currentScore, key, this.lastText);	
 				this.bestScore = this.currentScore;
 				this.plainText = this.lastText;
 			}
 			
-			this.value.addValue(1);
+			this.progressBar.addValue(1);
 		}
-
 	}
 	
 	public interface KeyCreation {
@@ -83,9 +81,8 @@ public class VigenereAutokeyAuto implements IForceDecrypt {
 	}
 	
 	public void run(KeyCreation task, int no, int time, String key) {
-		for(char i = 'A'; i <= 'Z'; ++i) {
+		for(char i = 'A'; i <= 'Z'; i++) {
 			String backup = key;
-			
 			backup += i;
 			
 			if(time + 1 >= no) {
@@ -96,10 +93,10 @@ public class VigenereAutokeyAuto implements IForceDecrypt {
 			run(task, no, time + 1, backup);
 		}
 	}
-	
+
 	@Override
 	public String getName() {
-		return "Vigenere Autokey";
+		return "Myszkowski";
 	}
 	
 	@Override
@@ -121,14 +118,13 @@ public class VigenereAutokeyAuto implements IForceDecrypt {
 		return data;
 	}
 	
-	private JTextField rangeBox = new JTextField("2-5");
+	private JTextField rangeBox = new JTextField("2-8");
 	
 	@Override
 	public JPanel getVarsPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		JLabel range = new JLabel("Keyword length range:  ");
-		range.setMaximumSize(new Dimension(200, 100));
+		JLabel range = new JLabel("Keyword length range:   ");
 		panel.add(range);
 		panel.add(rangeBox);
 		return panel;

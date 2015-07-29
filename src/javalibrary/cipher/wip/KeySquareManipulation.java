@@ -19,6 +19,15 @@ public class KeySquareManipulation {
 	    return new String(chars);
 	}
 	
+	public static int[] exchangeOrder(int[] order){
+	    int i = rand.nextInt(100) % order.length;
+	    int j = rand.nextInt(100) % order.length;
+	    int temp = order[i];
+	    order[i] = order[j];
+	    order[j] = temp;
+	    return order;
+	}
+	
 	public static String exchange2lettersWithKnows(String keySquare, String knows){
 		char[] chars = keySquare.toCharArray();
 	    int i = 0;
