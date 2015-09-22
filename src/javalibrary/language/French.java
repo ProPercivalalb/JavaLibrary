@@ -29,15 +29,18 @@ public class French implements ILanguage {
 	public double getMaxFrequency() {
 		return 14.715D;
 	}
+
+
+	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/french_quadgrams.txt");
+	}
 	
 	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/french_quadgrams.txt");
-		
 		return quadgramData;
 	}
-
+	
 	@Override
 	public String getName() {
 		return "French";

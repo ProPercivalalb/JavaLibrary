@@ -31,13 +31,15 @@ public class Spanish implements ILanguage {
 	}
 	
 	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/spanish_quadgrams.txt");
+	}
+	
+	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/spanish_quadgrams.txt");
-		
 		return quadgramData;
 	}
-
+	
 	@Override
 	public String getName() {
 		return "Spanish";

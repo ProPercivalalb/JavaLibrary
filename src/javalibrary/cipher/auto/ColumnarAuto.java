@@ -14,7 +14,7 @@ import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
 import javalibrary.math.MathHelper;
-import javalibrary.util.ProgressValue;
+import javalibrary.swing.ProgressValue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;

@@ -31,13 +31,15 @@ public class German implements ILanguage {
 	}
 	
 	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/german_quadgrams.txt");
+	}
+	
+	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/german_quadgrams.txt");
-		
 		return quadgramData;
 	}
-
+	
 	@Override
 	public String getName() {
 		return "German";

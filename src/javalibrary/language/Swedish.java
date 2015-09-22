@@ -31,10 +31,12 @@ public class Swedish implements ILanguage {
 	}
 	
 	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/swedish_quadgrams.txt");
+	}
+	
+	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/swedish_quadgrams.txt");
-		
 		return quadgramData;
 	}
 

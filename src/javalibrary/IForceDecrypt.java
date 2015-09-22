@@ -4,7 +4,7 @@ import java.util.List;
 
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.language.ILanguage;
-import javalibrary.util.ProgressValue;
+import javalibrary.swing.ProgressValue;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;

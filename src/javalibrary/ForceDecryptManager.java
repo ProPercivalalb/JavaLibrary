@@ -22,6 +22,7 @@ import javalibrary.cipher.auto.PlayfairAuto;
 import javalibrary.cipher.auto.PortaAuto;
 import javalibrary.cipher.auto.RailFenceAuto;
 import javalibrary.cipher.auto.RedefenceAuto;
+import javalibrary.cipher.auto.RouteAuto;
 import javalibrary.cipher.auto.ColumnarAuto;
 import javalibrary.cipher.auto.TwoSquareAuto;
 import javalibrary.cipher.auto.VariantAuto;
@@ -54,6 +55,7 @@ public class ForceDecryptManager {
 	public static PortaAuto porta = new PortaAuto();
 	public static RailFenceAuto railfence = new RailFenceAuto();
 	public static RedefenceAuto redefence = new RedefenceAuto();
+	public static RouteAuto route  = new RouteAuto();
 	public static TwoSquareAuto twoSquare = new TwoSquareAuto();
 	public static VariantAuto variant = new VariantAuto();
 	public static VigenereAuto vigenere = new VigenereAuto();
@@ -95,6 +97,7 @@ public class ForceDecryptManager {
 		ciphers.add(nicodemus);
 		ciphers.add(railfence);
 		ciphers.add(redefence);
+		ciphers.add(route);
 		ciphers.add(twoSquare);
 		ciphers.add(playfair);
 		ciphers.add(porta);

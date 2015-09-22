@@ -11,7 +11,7 @@ import javalibrary.cipher.Variant;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
-import javalibrary.util.ProgressValue;
+import javalibrary.swing.ProgressValue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;

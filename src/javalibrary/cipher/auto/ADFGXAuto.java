@@ -18,7 +18,7 @@ import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
-import javalibrary.util.ProgressValue;
+import javalibrary.swing.ProgressValue;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;

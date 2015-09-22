@@ -13,6 +13,13 @@ public class ArrayHelper {
 	    return arr;
 	}
 	
+	public static Integer[] rangeInt(int start, int end){
+		Integer[] arr = new Integer[end - start];
+	    for(int i = 0; i < end - start; i++)
+	        arr[i] = start + i;
+	    return arr;
+	}
+	
 	public static char[] charRange(char start, char end){
 		char[] arr = new char[end - start];
 	    for(int i = 0; i < end - start; i++)

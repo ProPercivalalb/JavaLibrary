@@ -30,14 +30,17 @@ public class Finnish implements ILanguage {
 		return 12.702D;
 	}
 	
+	
+	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/finnish_quadgrams.txt");
+	}
+	
 	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/finnish_quadgrams.txt");
-		
 		return quadgramData;
 	}
-
+	
 	@Override
 	public String getName() {
 		return "Finnish";

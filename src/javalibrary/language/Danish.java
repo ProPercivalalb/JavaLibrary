@@ -30,10 +30,12 @@ public class Danish implements ILanguage {
 	}
 	
 	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/danish_quadgrams.txt");
+	}
+	
+	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/danish_quadgrams.txt");
-		
 		return quadgramData;
 	}
 

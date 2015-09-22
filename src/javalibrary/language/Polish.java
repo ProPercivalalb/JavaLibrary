@@ -31,10 +31,12 @@ public class Polish implements ILanguage {
 	}
 	
 	@Override
+	public void loadNGramData() {
+		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/polish_quadgrams.txt");
+	}
+	
+	@Override
 	public NGramData getQuadgramData() {
-		if(quadgramData == null)
-			quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/polish_quadgrams.txt");
-		
 		return quadgramData;
 	}
 

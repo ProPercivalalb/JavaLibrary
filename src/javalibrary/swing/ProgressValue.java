@@ -1,4 +1,4 @@
-package javalibrary.util;
+package javalibrary.swing;
 
 import java.math.BigInteger;
 

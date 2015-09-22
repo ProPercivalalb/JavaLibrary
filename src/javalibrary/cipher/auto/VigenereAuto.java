@@ -13,7 +13,7 @@ import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.ChiSquared;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
-import javalibrary.util.ProgressValue;
+import javalibrary.swing.ProgressValue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;

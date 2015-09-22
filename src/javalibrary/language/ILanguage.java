@@ -11,6 +11,8 @@ public interface ILanguage {
 
 	public double getMaxFrequency();
 	
+	public void loadNGramData();
+	
 	public NGramData getQuadgramData();
 	
 	public double getNormalCoincidence();

@@ -27,6 +27,11 @@ public class Languages {
 		return names;
 	}
 	
+	public static void loadNGgramData() {
+		for(ILanguage language : languages)
+			language.loadNGramData();
+	}
+	
 	static {
 		languages.add(danish);
 		languages.add(english);
