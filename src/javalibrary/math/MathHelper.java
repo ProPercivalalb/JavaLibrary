@@ -74,6 +74,16 @@ public class MathHelper {
 		return currentBiggest;
 	}
 	
+	public static int findSmallest(Iterable<Integer> numberArray) {
+		int currentBiggest = Integer.MAX_VALUE;
+		
+		for(int number : numberArray)
+			if(currentBiggest > number)
+				currentBiggest = number;
+		
+		return currentBiggest;
+	}
+	
 	public static double round(double target, int decimalPlaces) {
 		double power = Math.pow(10, decimalPlaces);
 		return Math.round(target * power) / power;
