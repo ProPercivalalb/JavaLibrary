@@ -164,8 +164,8 @@ public class NetworkBase {
 		if(!nodesAccountedFor.contains(randomStartId))
 			nodesAccountedFor.add(randomStartId);
 		
-		System.out.println(nodesAccountedFor);
-		System.out.println(nodesAccountedFor.size() + " " + this.NODES.size());
+		//System.out.println(nodesAccountedFor);
+		//System.out.println(nodesAccountedFor.size() + " " + this.NODES.size());
 		return nodesAccountedFor.size() != this.NODES.size();
 	}
 	
