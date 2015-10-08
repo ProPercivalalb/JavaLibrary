@@ -1,5 +1,6 @@
 package javalibrary.network;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,8 +9,11 @@ import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -19,6 +23,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -26,28 +32,50 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.NumberFormatter;
 
 import javalibrary.util.RandomUtil;
 
 public class Zoom extends JFrame {
 
-	private DrawingPanel p;
+	private static DrawingPanel p;
 	private double factor = 1;
 	private int currentX, currentY, oldX, oldY;
 	private int moveX, moveY;
 	public NodeShape startNode;
 	public int holdX, holdY, currentHoldX, currentHoldY;
-	public boolean controlDown = false;
+	public static boolean controlDown = false;
 	
+	public NodeShape nodeAbove;
+	
+	public static JTable tbl;
+	public static DefaultTableModel dtm;
+	
+	public int currentId = 0;
 	
 	public Zoom() {
 		super("ZOOM");
@@ -58,43 +86,107 @@ public class Zoom extends JFrame {
 		Box box = Box.createHorizontalBox();
 		box.add(Box.createHorizontalGlue());
 		
-		
-		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 30, 10);
-		framesPerSecond.addChangeListener(new ChangeListener() {
 
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider)e.getSource();
-			    
-			        int fps = (int)source.getValue();
-			        factor = fps;
-			        p.repaint();
-			}
-			
-		});
-		    
-		framesPerSecond.setMajorTickSpacing(10);
-
-		//Create the label table
-		Hashtable labelTable = new Hashtable();
-		labelTable.put( new Integer( 0 ), new JLabel("Zoom Out") );
-		labelTable.put( new Integer( 30 ), new JLabel("Zoom In") );
-		framesPerSecond.setLabelTable( labelTable );
-		framesPerSecond.setMajorTickSpacing(10);
-		framesPerSecond.setMinorTickSpacing(1);
-		framesPerSecond.setPaintTicks(true);
-		framesPerSecond.setPaintLabels(true);
-
-		box.add(framesPerSecond);
-		box.add(Box.createHorizontalGlue());
+		//box.add(Box.createHorizontalGlue());
 		
 		
 		
 		add(box, BorderLayout.SOUTH);
 
-		add(new JLabel("\n"), BorderLayout.NORTH);
-		add(new JLabel("     "), BorderLayout.EAST);
-		add(new JLabel("     "), BorderLayout.WEST);
+		// create object of table and table model
+		tbl = new JTable() {
+			@Override
+            public TableCellEditor getCellEditor(int row, int column) {
+                int modelColumn = convertColumnIndexToModel(column);
+                /**DecimalFormat decimalFormat = new DecimalFormat("0.0");
+                NumberFormatter textFormatter = new NumberFormatter(decimalFormat);
+                textFormatter.setOverwriteMode(true);
+                textFormatter.setAllowsInvalid(false);
+                JFormattedTextField textfield = new JFormattedTextField(textFormatter);**/
+      
+                JTextField textfield = new JTextField();
+                ((AbstractDocument) textfield.getDocument()).setDocumentFilter(new DocumentFilter() {
+
+                	 public void replace(DocumentFilter.FilterBypass fb, int offset, int length,
+                	      String text, AttributeSet attr)
+
+                	      throws BadLocationException {
+                	           fb.insertString(offset, text.replaceAll("[^0-9.]", ""), attr);   
+                	 }
+          
+                	
+                });
+                
+                if (modelColumn == 2)
+                    return new DefaultCellEditor(textfield);
+                else
+                    return super.getCellEditor(row, column);
+  
+            }
+		};
+		
+		tbl.getTableHeader().setReorderingAllowed(false);
+		tbl.getTableHeader().setResizingAllowed(false);
+		tbl.setRowHeight(20);
+		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
+		JScrollPane scrollPane = new JScrollPane(tbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getViewport().setPreferredSize(new Dimension(225, 500));
+		dtm = new DefaultTableModel(0, 0) {
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return columnIndex == 2;
+			}
+		};
+		dtm.addTableModelListener(new TableModelListener() {
+
+			@Override
+			public void tableChanged(TableModelEvent event) {
+				System.out.println("TABLE CHANGE");
+				DefaultTableModel dtm = (DefaultTableModel)event.getSource();
+				int row = event.getFirstRow();
+				if(row != -1) {
+					try {
+						Object value = dtm.getValueAt(row, 2);
+						if(value instanceof String)
+							Double.parseDouble((String)value);
+					}
+					catch(NumberFormatException e) {
+						dtm.setValueAt("10", row, 2);
+					}
+					p.repaint();
+				}
+			}
+			
+		});
+		
+		dtm.setColumnIdentifiers(new String[] {"Node", "Node", "Distance"});
+		tbl.setModel(dtm);
+		
+		add(scrollPane, BorderLayout.EAST);
+		
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+		    public void valueChanged(ListSelectionEvent lse) {
+		        for(ArcShape arc : p.arcs) {
+					boolean foundArc = false;
+					for(int row : tbl.getSelectedRows()) {
+						int id1 = (int)tbl.getValueAt(row, 0);
+						int id2 = (int)tbl.getValueAt(row, 1);
+							
+						if(arc.n1.id == id1 && arc.n2.id == id2 || arc.n1.id == id2 && arc.n2.id == id1) {
+							arc.highlight = true;
+							foundArc = true;
+						}
+					}
+						
+					if(!foundArc)
+						arc.highlight = false;
+				}
+					
+				p.repaint();
+		    }
+		});
 
 		p.addMouseWheelListener(new MouseWheelListener() {
 
@@ -111,8 +203,10 @@ public class Zoom extends JFrame {
         
 			    double endX = (event.getX() - moveX) / factor;
 			    double endY = (event.getY() - moveY) / factor;
-			    moveX +=  (int)((endX - startX) * factor);
+			    moveX += (int)((endX - startX) * factor);
 			    moveY += (int)((endY - startY) * factor);
+			    currentHoldX = (int)((currentX - moveX) / factor);
+				currentHoldY = (int)((currentY - moveY) / factor);
                 p.repaint();
 			}
 			
@@ -132,10 +226,26 @@ public class Zoom extends JFrame {
 					moveX += (currentX - oldX) * 1;
 					moveY += (currentY - oldY) * 1;
 				}
-				else {
-					//p.squareSize.add(new ArcShape((int)((oldX - moveX) / factor), (int)((oldY - moveY) / factor), 
-					//		(int)((currentX - moveX) / factor), (int)((currentY - moveY) / factor)));
+				else if(SwingUtilities.isRightMouseButton(event) && controlDown && nodeAbove != null) {
+					int newX = (int)((currentX - moveX) / factor);
+					int newY = (int)((currentY - moveY) / factor);
+					
+					boolean tooClose = false;
+					
+					for(NodeShape node : p.nodes) {
+						if(nodeAbove == node) continue;
+						if(Math.pow(node.x - newX, 2) + Math.pow(node.y - newY, 2) <= Math.pow(6 * 2, 2)) {
+							tooClose = true;
+							break;
+						}
+					}
+					
+					if(!tooClose) {
+						nodeAbove.x = newX;
+						nodeAbove.y = newY;
+					}
 				}
+				
 				oldX = currentX;
 				oldY = currentY;
 
@@ -159,14 +269,10 @@ public class Zoom extends JFrame {
 					int scaledX = (int)((holdX - moveX) / factor);
 					int scaledY = (int)((holdY - moveY) / factor);
 					
-					for(GraphShape graphShape : p.squareSize) {
-						if(graphShape instanceof NodeShape) {
-							NodeShape node = (NodeShape)graphShape;
-							if(Math.abs(node.x - scaledX) < 6 && Math.abs(node.y - scaledY) < 6) {
-								startNode = node;
-								break;
-							}
-								
+					for(NodeShape node : p.nodes) {
+						if(Math.abs(node.x - scaledX) < 6 && Math.abs(node.y - scaledY) < 6) {
+							startNode = node;
+							break;
 						}
 					}
 
@@ -182,21 +288,27 @@ public class Zoom extends JFrame {
 					
 					boolean tooClose = false;
 					
-					for(GraphShape graphShape : p.squareSize) {
-						if(graphShape instanceof NodeShape) {
-							NodeShape node = (NodeShape)graphShape;
-							if(Math.abs(node.x - scaledX) <= 12 && Math.abs(node.y - scaledY) <= 12) {
-								System.out.println("tooclose");
-								tooClose = true;
-								break;
-							}
-								
+					for(NodeShape node : p.nodes) {
+						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6 * 2, 2)) {
+							tooClose = true;
+							break;
 						}
 					}
 					
 					if(!tooClose) {
-						p.squareSize.add(new NodeShape(scaledX, scaledY));
+						p.nodes.add(new NodeShape(scaledX, scaledY, currentId++));
 						p.repaint();
+					}
+				}
+				else if(SwingUtilities.isRightMouseButton(event) && controlDown) {
+					int scaledX = (int)((oldX - moveX) / factor);
+					int scaledY = (int)((oldY - moveY) / factor);
+					
+					for(NodeShape node : p.nodes) {
+						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6, 2)) {
+							nodeAbove = node;
+							break;	
+						}
 					}
 				}
 			}
@@ -209,19 +321,17 @@ public class Zoom extends JFrame {
 					
 			
 					
-					for(GraphShape graphShape : p.squareSize) {
-						if(graphShape instanceof NodeShape) {
-							NodeShape node = (NodeShape)graphShape;
-							if(Math.abs(node.x - currentHoldX) < 6 && Math.abs(node.y - currentHoldY) < 6) {
-								endNode = node;
-								break;
-							}
-								
+					for(NodeShape node : p.nodes) {
+						if(Math.pow(node.x - currentHoldX, 2) + Math.pow(node.y - currentHoldY, 2) <= Math.pow(6, 2)) {
+							endNode = node;
+							break;
 						}
 					}
 					
-					if(endNode != null)
-						p.squareSize.add(new ArcShape(startNode, endNode));
+					if(startNode != null && endNode != null && startNode != endNode) {
+						p.arcs.add(new ArcShape(startNode, endNode, 10));
+					    dtm.addRow(new Object[] {startNode.id, endNode.id, "10"});
+					}
 					
 					startNode = null;
 					holdX = 0;
@@ -230,27 +340,70 @@ public class Zoom extends JFrame {
 					currentHoldY = 0;
 					p.repaint();
 				}
-				
+				else if(SwingUtilities.isRightMouseButton(event) && controlDown) {
+					nodeAbove = null;
+				}
+				else if(SwingUtilities.isMiddleMouseButton(event)) {
+					int scaledX = (int)((oldX - moveX) / factor);
+					int scaledY = (int)((oldY - moveY) / factor);
+					
+					NodeShape nodeDelete = null;
+					
+					for(NodeShape node : p.nodes) {
+						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6, 2)) {
+							nodeDelete = node;
+							break;
+						}
+					}
+					
+					if(nodeDelete != null) {
+						p.nodes.remove(nodeDelete);
+						List<ArcShape> toRemove = new ArrayList<ArcShape>();
+						for(ArcShape arc : p.arcs) {
+							if(arc.n1 == nodeDelete || arc.n2 == nodeDelete) {
+								toRemove.add(arc);
+								int row = 0;
+								for(; row < tbl.getRowCount(); row++) {
+									int id1 = (int)tbl.getValueAt(row, 0);
+									int id2 = (int)tbl.getValueAt(row, 1);
+									
+									if(arc.n1.id == id1 && arc.n2.id == id2 || arc.n1.id == id2 && arc.n2.id == id1) {
+										dtm.removeRow(row);
+										break;
+									}
+								}
+							}
+						}
+						p.arcs.removeAll(toRemove);
+						p.repaint();
+					}
+				}
 			}
 		});
 		
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
+				
+				boolean before = controlDown;
 				controlDown = e.isShiftDown();
+				if(before != controlDown)
+					p.repaint();
 		    	return false;
 		    }
 		});
 		
 		
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(600,400);
-		setVisible(true);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setSize(600,400);
+		//this.pack();
+		this.setVisible(true);
 	}
 
 	public class DrawingPanel extends JPanel {
 
-		private List<GraphShape> squareSize = new ArrayList<GraphShape>();
+		private List<NodeShape> nodes = new ArrayList<NodeShape>();
+		private List<ArcShape> arcs = new ArrayList<ArcShape>();
 		
 		public DrawingPanel() {
 			this.setBorder(BorderFactory.createEtchedBorder());
@@ -262,23 +415,33 @@ public class Zoom extends JFrame {
 			Graphics2D g2 = (Graphics2D)g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			g2.drawLine(moveX, moveY - 1000, moveX, moveY + 1000);
-			g2.drawLine(moveX - 1000, moveY, moveX + 1000, moveY);
+			//g2.drawLine(moveX, moveY - 1000, moveX, moveY + 1000);
+			//g2.drawLine(moveX - 1000, moveY, moveX + 1000, moveY);
 			
 			if(startNode != null)
 				g2.drawLine((int)(startNode.x * factor) + moveX, (int)(startNode.y * factor) + moveY, (int)(currentHoldX * factor) + moveX, (int)(currentHoldY * factor) + moveY);
+			g2.drawString("" + factor + " " + moveX + " " +moveY, 10, 20);
 			
-			for(int i = 0; i < this.squareSize.size(); ++i) {
-				GraphShape graphShape = this.squareSize.get(i);
-				
-				graphShape.drawShape(this, g2, factor, moveX, moveY);
-				
-				g2.drawString("" + factor + " " + moveX + " " +moveY, 10, 20);
-				//int squareWidth = (int)(this.squareSize.get(i) * factor);
-			//	int x = (width - squareWidth) / 2 + moveX;
-				//int y = (height - squareWidth) / 2 + moveY;
-				//g.drawOval(x, y, squareWidth, squareWidth);
+			for(ArcShape arc : p.arcs) {
+				g2.setColor(Color.black);
+				arc.drawShape(this, g2, factor, moveX, moveY);
 			}
+			
+			for(NodeShape node : p.nodes) {
+				g2.setColor(Color.black);
+				node.drawShape(this, g2, factor, moveX, moveY);
+			}
+		}
+		
+		public NetworkBase getNetworkBase() {
+			NetworkBase base = new NetworkBase();
+			for(NodeShape node : this.nodes)
+				base.addNode(new Node(node.id));
+			
+			for(ArcShape arc : this.arcs)
+				base.addArc(new Arc(arc.n1.id, arc.n2.id, arc.getDistance()));
+			
+			return base;
 		}
 	}
 	
@@ -289,10 +452,12 @@ public class Zoom extends JFrame {
 	public static class NodeShape implements GraphShape {
 		
 		public int x, y;
+		public int id;
 		
-		public NodeShape(int x, int y) {
+		public NodeShape(int x, int y, int id) {
 			this.x = x;
 			this.y = y;
+			this.id = id;
 		}
 
 		@Override
@@ -303,26 +468,68 @@ public class Zoom extends JFrame {
 			int squareWidth = (int)(12 * scaleFactor);
 			int renderX = (int)(this.x * scaleFactor) + moveX - squareWidth / 2;
 			int renderY = (int)(this.y * scaleFactor) + moveY - squareWidth / 2;
+			if(controlDown) {
+				//graphics.setColor(Color.green);
+			}
 			graphics.fillOval(renderX, renderY, squareWidth, squareWidth);
+			graphics.setColor(Color.black);
+			graphics.setFont(graphics.getFont().deriveFont((float) (12.0F * scaleFactor)));
+			graphics.drawString("" + this.id, renderX - (int)(3 * scaleFactor), renderY - (int)(3 * scaleFactor));
 		}
 	}
 	
 	public static class ArcShape implements GraphShape {
 		
 		public NodeShape n1, n2;
+		public double distance;
+		public boolean highlight;
 		
-		public ArcShape(NodeShape n1, NodeShape n2) {
+		public ArcShape(NodeShape n1, NodeShape n2, int distance) {
 			this.n1 = n1;
 			this.n2 = n2;
-
+			this.distance = distance;
 		}
 
 		@Override
 		public void drawShape(DrawingPanel panel, Graphics2D graphics, double scaleFactor, int moveX, int moveY) {
 			Dimension dim = panel.getSize();
+			graphics.setColor(Color.black);
 			int width = dim.width;
 			int height = dim.height;
-			graphics.drawLine((int)(n1.x * scaleFactor) + moveX, (int)(n1.y * scaleFactor) + moveY, (int)(n2.x * scaleFactor) + moveX, (int)(n2.y * scaleFactor) + moveY);
+		
+			int x1 = (int)(n1.x * scaleFactor) + moveX;
+			int y1 = (int)(n1.y * scaleFactor) + moveY;
+			int x2 = (int)(n2.x * scaleFactor) + moveX;
+			int y2 = (int)(n2.y * scaleFactor) + moveY;
+			
+			Stroke stroke = graphics.getStroke();
+			if(highlight) {
+				graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
+				graphics.setColor(Color.red);
+			}
+			graphics.drawLine(x1, y1, x2, y2);
+			graphics.setStroke(stroke);
+			
+			graphics.setColor(Color.black);
+			graphics.setFont(graphics.getFont().deriveFont((float) (6.0F * scaleFactor)));
+			Double d = this.getDistance();
+			String s = d.longValue() == d ? "" + d.longValue() : "" + d; 
+			graphics.drawString("" + s, Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
+			
+		}
+		
+		public double getDistance() {
+			int row = 0;
+			for(; row < tbl.getRowCount(); row++) {
+				int id1 = (int)tbl.getValueAt(row, 0);
+				int id2 = (int)tbl.getValueAt(row, 1);
+				
+				if(this.n1.id == id1 && this.n2.id == id2 || this.n1.id == id2 && this.n2.id == id1) {
+					break;
+				}
+			}
+			
+			return Double.valueOf((String)dtm.getValueAt(row, 2));
 		}
 	}
 	
