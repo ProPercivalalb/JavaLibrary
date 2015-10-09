@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -46,6 +47,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -76,6 +79,7 @@ public class Zoom extends JFrame {
 	public static DefaultTableModel dtm;
 	
 	public int currentId = 0;
+	public ArrayList<ArcShape> tableOrder = new ArrayList<ArcShape>();
 	
 	public Zoom() {
 		super("ZOOM");
@@ -83,38 +87,62 @@ public class Zoom extends JFrame {
 		p = new DrawingPanel();
 		add(p, BorderLayout.CENTER);
 
-		Box box = Box.createHorizontalBox();
-		box.add(Box.createHorizontalGlue());
-		
+		Box box = Box.createVerticalBox();
 
 		//box.add(Box.createHorizontalGlue());
 		
 		
 		
-		add(box, BorderLayout.SOUTH);
 
 		// create object of table and table model
 		tbl = new JTable() {
 			@Override
-            public TableCellEditor getCellEditor(int row, int column) {
+            public TableCellEditor getCellEditor(final int row, int column) {
                 int modelColumn = convertColumnIndexToModel(column);
-                /**DecimalFormat decimalFormat = new DecimalFormat("0.0");
-                NumberFormatter textFormatter = new NumberFormatter(decimalFormat);
-                textFormatter.setOverwriteMode(true);
-                textFormatter.setAllowsInvalid(false);
-                JFormattedTextField textfield = new JFormattedTextField(textFormatter);**/
-      
-                JTextField textfield = new JTextField();
+                
+                final JTextField textfield = new JTextField();
                 ((AbstractDocument) textfield.getDocument()).setDocumentFilter(new DocumentFilter() {
 
                 	 public void replace(DocumentFilter.FilterBypass fb, int offset, int length,
-                	      String text, AttributeSet attr)
-
-                	      throws BadLocationException {
+                	      String text, AttributeSet attr) throws BadLocationException {
+                		 if(textfield.getText().indexOf('.') != -1 && text.contains(".")) {
+                			 text = text.replaceAll(".", "");
+                		 }
                 	           fb.insertString(offset, text.replaceAll("[^0-9.]", ""), attr);   
                 	 }
           
                 	
+                });
+                
+                textfield.getDocument().addDocumentListener(new DocumentListener() {
+                	@Override
+                	public void changedUpdate(DocumentEvent event) {
+                		
+                	}
+                	@Override
+                	public void removeUpdate(DocumentEvent event) {
+                		try {
+	                		double v = Double.parseDouble(textfield.getText());
+							tableOrder.get(row).distance = v;
+							p.repaint();
+                		}
+                		catch(NumberFormatException e) {
+                			tableOrder.get(row).distance = 0;
+							p.repaint();
+                		}
+                	}
+                	@Override
+                	public void insertUpdate(DocumentEvent event) {
+                		try {
+	                		double v = Double.parseDouble(textfield.getText());
+							tableOrder.get(row).distance = v;
+							p.repaint();
+                		}
+                		catch(NumberFormatException e) {
+                			tableOrder.get(row).distance = 0;
+							p.repaint();
+                		}
+                	}
                 });
                 
                 if (modelColumn == 2)
@@ -128,6 +156,7 @@ public class Zoom extends JFrame {
 		tbl.getTableHeader().setReorderingAllowed(false);
 		tbl.getTableHeader().setResizingAllowed(false);
 		tbl.setRowHeight(20);
+		tbl.setAutoCreateColumnsFromModel(true);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		JScrollPane scrollPane = new JScrollPane(tbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -138,31 +167,36 @@ public class Zoom extends JFrame {
 				return columnIndex == 2;
 			}
 		};
-		dtm.addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent event) {
-				System.out.println("TABLE CHANGE");
-				DefaultTableModel dtm = (DefaultTableModel)event.getSource();
-				int row = event.getFirstRow();
-				if(row != -1) {
-					try {
-						Object value = dtm.getValueAt(row, 2);
-						if(value instanceof String)
-							Double.parseDouble((String)value);
-					}
-					catch(NumberFormatException e) {
-						dtm.setValueAt("10", row, 2);
-					}
-					p.repaint();
-				}
-			}
-			
-		});
 		
 		dtm.setColumnIdentifiers(new String[] {"Node", "Node", "Distance"});
 		tbl.setModel(dtm);
 		
+		box.add(scrollPane);
+		box.add(Box.createVerticalStrut(15));
+		JButton shortestPath = new JButton("Shortest Path");
+		shortestPath.addActionListener(new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent event) {
+				JButton source = (JButton)event.getSource();
+				NetworkBase base = p.getNetworkBase();
+				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.PRIM);
+				for(Arc arc : spanningTree.CONNECTIONS) {
+					ArcShape finalShape = null;
+					for(ArcShape shape : p.arcs) {
+						if((shape.n1.id == arc.id1 && shape.n2.id == arc.id2) || (shape.n1.id == arc.id2 && shape.n2.id == arc.id1)) {
+							finalShape = shape;
+							break;
+						}
+					}
+					finalShape.pathHighlight = true;
+				}
+				p.repaint();
+				spanningTree.print();
+		    }
+		});
+		box.add(shortestPath);
+		add(box, BorderLayout.SOUTH);
+
 		add(scrollPane, BorderLayout.EAST);
 		
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -329,8 +363,12 @@ public class Zoom extends JFrame {
 					}
 					
 					if(startNode != null && endNode != null && startNode != endNode) {
-						p.arcs.add(new ArcShape(startNode, endNode, 10));
+						ArcShape arc = new ArcShape(startNode, endNode, 10);
+						p.arcs.add(arc);
+						
+						tableOrder.add(arc);
 					    dtm.addRow(new Object[] {startNode.id, endNode.id, "10"});
+					    //dtm.fireTableDataChanged();
 					}
 					
 					startNode = null;
@@ -369,12 +407,14 @@ public class Zoom extends JFrame {
 									
 									if(arc.n1.id == id1 && arc.n2.id == id2 || arc.n1.id == id2 && arc.n2.id == id1) {
 										dtm.removeRow(row);
+		
 										break;
 									}
 								}
 							}
 						}
 						p.arcs.removeAll(toRemove);
+						tableOrder.removeAll(toRemove);
 						p.repaint();
 					}
 				}
@@ -420,7 +460,15 @@ public class Zoom extends JFrame {
 			
 			if(startNode != null)
 				g2.drawLine((int)(startNode.x * factor) + moveX, (int)(startNode.y * factor) + moveY, (int)(currentHoldX * factor) + moveX, (int)(currentHoldY * factor) + moveY);
-			g2.drawString("" + factor + " " + moveX + " " +moveY, 10, 20);
+			
+			Dimension dim = this.getSize();
+			int width = dim.width;
+			int height = dim.height;
+			
+			Double d = this.getTotalDistance();
+			String s = d.longValue() == d ? "" + d.longValue() : "" + d; 
+			
+			g2.drawString(s, 10, 20);
 			
 			for(ArcShape arc : p.arcs) {
 				g2.setColor(Color.black);
@@ -433,13 +481,20 @@ public class Zoom extends JFrame {
 			}
 		}
 		
+		public double getTotalDistance() {
+			double distance = 0;
+			for(ArcShape arc : this.arcs)
+				distance += arc.distance;
+			return distance;
+		}
+		
 		public NetworkBase getNetworkBase() {
 			NetworkBase base = new NetworkBase();
 			for(NodeShape node : this.nodes)
 				base.addNode(new Node(node.id));
 			
 			for(ArcShape arc : this.arcs)
-				base.addArc(new Arc(arc.n1.id, arc.n2.id, arc.getDistance()));
+				base.addArc(new Arc(arc.n1.id, arc.n2.id, arc.distance));
 			
 			return base;
 		}
@@ -474,7 +529,7 @@ public class Zoom extends JFrame {
 			graphics.fillOval(renderX, renderY, squareWidth, squareWidth);
 			graphics.setColor(Color.black);
 			graphics.setFont(graphics.getFont().deriveFont((float) (12.0F * scaleFactor)));
-			graphics.drawString("" + this.id, renderX - (int)(3 * scaleFactor), renderY - (int)(3 * scaleFactor));
+			graphics.drawString("" + this.id, renderX - (int)(2 * scaleFactor), renderY - (int)(1 * scaleFactor));
 		}
 	}
 	
@@ -483,6 +538,7 @@ public class Zoom extends JFrame {
 		public NodeShape n1, n2;
 		public double distance;
 		public boolean highlight;
+		public boolean pathHighlight;
 		
 		public ArcShape(NodeShape n1, NodeShape n2, int distance) {
 			this.n1 = n1;
@@ -503,7 +559,11 @@ public class Zoom extends JFrame {
 			int y2 = (int)(n2.y * scaleFactor) + moveY;
 			
 			Stroke stroke = graphics.getStroke();
-			if(highlight) {
+			if(pathHighlight) {
+				graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
+				graphics.setColor(Color.yellow);
+			}
+			else if(highlight) {
 				graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
 				graphics.setColor(Color.red);
 			}
@@ -512,24 +572,10 @@ public class Zoom extends JFrame {
 			
 			graphics.setColor(Color.black);
 			graphics.setFont(graphics.getFont().deriveFont((float) (6.0F * scaleFactor)));
-			Double d = this.getDistance();
+			Double d = this.distance;
 			String s = d.longValue() == d ? "" + d.longValue() : "" + d; 
 			graphics.drawString("" + s, Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
 			
-		}
-		
-		public double getDistance() {
-			int row = 0;
-			for(; row < tbl.getRowCount(); row++) {
-				int id1 = (int)tbl.getValueAt(row, 0);
-				int id2 = (int)tbl.getValueAt(row, 1);
-				
-				if(this.n1.id == id1 && this.n2.id == id2 || this.n1.id == id2 && this.n2.id == id1) {
-					break;
-				}
-			}
-			
-			return Double.valueOf((String)dtm.getValueAt(row, 2));
 		}
 	}
 	
