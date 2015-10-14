@@ -3,9 +3,16 @@ package javalibrary.network;
 public class Node {
 
 	private final int id;
-	
+	public int x, y;
+
 	public Node(int id) {
+		this(id, 0, 0);
+	}
+	
+	public Node(int id, int x, int y) {
 		this.id = id;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public int getId() {

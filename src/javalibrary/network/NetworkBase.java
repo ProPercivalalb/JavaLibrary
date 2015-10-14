@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javalibrary.network.Arc.ArcIndex;
 import javalibrary.util.RandomUtil;
 
 public class NetworkBase {
@@ -23,12 +24,31 @@ public class NetworkBase {
 	
 	public boolean addArc(Arc arc) {
 		if(!this.CONNECTIONS.contains(arc)) {
-			this.CONNECTIONS.add(arc);
-			return true;
+			return this.CONNECTIONS.add(arc.copy());
 		}
+		else {
+			Arc real = this.CONNECTIONS.get(this.CONNECTIONS.indexOf(arc));
+			return real.getDistances().addAll(arc.getDistances());
+		}
+	}
 	
-		System.out.println("***** Already has arc - " + arc + " *****");
-		return false;
+	public boolean addArc(ArcIndex arcIndex) {
+		if(!this.CONNECTIONS.contains(arcIndex.arc)) {
+			return this.CONNECTIONS.add(arcIndex.createArc());
+		}
+		else {
+			Arc real = this.CONNECTIONS.get(this.CONNECTIONS.indexOf(arcIndex.arc));
+			return real.getDistances().add(arcIndex.getDistance());
+		}
+	}
+	
+	public void removeArcIndex(ArcIndex arcIndex) {
+		if(this.CONNECTIONS.contains(arcIndex.arc)) {
+			Arc real = this.CONNECTIONS.get(this.CONNECTIONS.indexOf(arcIndex.arc));
+			real.getDistances().remove(arcIndex.getDistance());
+			if(real.distanceCount() <= 0)
+				this.CONNECTIONS.remove(arcIndex.arc);
+		}
 	}
 	
 	public List<Node> getNodesConnectedToNode(Node node) {
@@ -64,23 +84,24 @@ public class NetworkBase {
 		return list;
 	}
 	
-	public Arc getShortestArcFromNode(Node node) {
+	public ArcIndex getShortestArcFromNode(Node node) {
 		return this.getShortestArcFromNode(node.getId());
 	}
 	
-	public Arc getShortestArcFromNode(int id) {
-		Arc shortestArc = null;
+	public ArcIndex getShortestArcFromNode(int id) {
+		ArcIndex shortestArc = null;
 		
 		for(Arc arc : this.CONNECTIONS)
 			if(arc.hasConnectionWith(id))
-				if(shortestArc == null || shortestArc.distance > arc.distance)
-					shortestArc = arc;
+				for(int i = 0; i < arc.distanceCount(); i++)
+					if(shortestArc == null || shortestArc.getDistance() > arc.getDistance(i))
+						shortestArc = new ArcIndex(arc, i);
 
 		return shortestArc;
 	}
 	
-	public List<Integer> getArcsConnectedToNode(Node node) {
-		return this.getNodeIdsConnectedToNode(node.getId());
+	public List<Arc> getArcsConnectedToNode(Node node) {
+		return this.getArcsConnectedToNode(node.getId());
 	}
 	
 	public List<Arc> getArcsConnectedToNode(int nodeId) {
@@ -93,17 +114,28 @@ public class NetworkBase {
 		return list;
 	}
 	
+	public List<ArcIndex> getAllPathsConnectedToNode(int nodeId) {
+		List<ArcIndex> arcIndexs = new ArrayList<ArcIndex>();
+		
+		List<Arc> arcs = this.getArcsConnectedToNode(nodeId);
+		for(Arc arc : arcs)
+			for(int i = 0; i < arc.distanceCount(); i++)
+				arcIndexs.add(new ArcIndex(arc, i));
+		
+		return arcIndexs;
+	}
+	
 	public int getTotalDistance() {
 		int distance = 0;
 		for(Arc arc : this.CONNECTIONS)
-			distance += arc.distance;
+			distance += arc.getTotalDistance();
 		return distance;
 	}
 	
 	public ArrayList<Integer> getOddNodeIds() {
 		ArrayList<Integer> oddNodes = new ArrayList<Integer>();
 		for(int nodeId : this.NODES.keySet()) {
-			int count = this.getArcsConnectedToNode(nodeId).size();
+			int count = this.getAllPathsConnectedToNode(nodeId).size();
 			if((count & 1) == 1)
 				oddNodes.add(nodeId);
 		}
@@ -125,12 +157,24 @@ public class NetworkBase {
 		return list;
 	}
 	
+	public Arc getArc(int id1, int id2) {
+		int index = this.CONNECTIONS.indexOf(new Arc(id1, id2, 0));
+		return index != -1 ? this.CONNECTIONS.get(index) : null;
+	}
+	
 	public int getTotalNodes() {
 		return this.NODES.size();
 	}
 	
 	public int getTotalArcs() {
 		return this.CONNECTIONS.size();
+	}
+	
+	public int getTotalArcIndexs() {
+		int count = 0;
+		for(Arc arc : this.CONNECTIONS)
+			count += arc.distanceCount();
+		return count;
 	}
 	
 	public boolean isRouteBetween(int to, int from, ArrayList<Integer> ignore) {
@@ -164,8 +208,7 @@ public class NetworkBase {
 		if(!nodesAccountedFor.contains(randomStartId))
 			nodesAccountedFor.add(randomStartId);
 		
-		//System.out.println(nodesAccountedFor);
-		//System.out.println(nodesAccountedFor.size() + " " + this.NODES.size());
+		System.out.println(nodesAccountedFor.size() + " " + this.NODES.size());
 		return nodesAccountedFor.size() != this.NODES.size();
 	}
 	
@@ -204,6 +247,14 @@ public class NetworkBase {
 		return this;
 	}
 	
+	public <T extends NetworkBase> T copy(T to) {
+		for(Node node : this.NODES.values())
+			to.addNode(node);
+		for(Arc arc : this.CONNECTIONS)
+			to.addArc(arc.copy());
+		return to;
+	}
+	
 	public void print() {
 		System.out.println("--------------------------");
 		System.out.println("Network");
@@ -211,6 +262,9 @@ public class NetworkBase {
 		System.out.println("Nodes...");
 		for(int id : NODES.keySet()) {
 			System.out.println("  " + id + " connected to: " + this.getNodesConnectedToNode(id));
+		}
+		for(Arc arc : this.CONNECTIONS) {
+			System.out.println(arc);
 		}
 		System.out.println("Distance: " + this.getTotalDistance());
 		

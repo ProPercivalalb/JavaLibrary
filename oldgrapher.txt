@@ -8,8 +8,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -25,15 +23,12 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -75,10 +70,7 @@ import javax.swing.text.DocumentFilter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import javalibrary.string.ValueFormat;
 import javalibrary.swing.ImageUtil;
-import javalibrary.thread.Threads;
-import javalibrary.util.RandomUtil;
 
 public class Zoom extends JFrame {
 
@@ -86,22 +78,17 @@ public class Zoom extends JFrame {
 	private double factor = 1;
 	private int currentX, currentY, oldX, oldY;
 	private int moveX, moveY;
-	public Node startNode;
+	public NodeShape startNode;
 	public int holdX, holdY, currentHoldX, currentHoldY;
 	public static boolean controlDown = false;
 	
-	public Node nodeAbove;
+	public NodeShape nodeAbove;
 	
 	public static JTable tbl;
 	public static DefaultTableModel dtm;
 	
 	public int currentId = 0;
-	public ArrayList<Arc> tableOrder = new ArrayList<Arc>();
-	public ArrayList<Arc> highlightSelected = new ArrayList<Arc>();
-	public ArrayList<Arc> highlightRoute = new ArrayList<Arc>();
-	public ArrayList<Arc> highlightArrowRoute = new ArrayList<Arc>();
-	public HashMap<Arc, List<Boolean>> arrow = new HashMap<Arc, List<Boolean>>();
-	public Arc lastest;
+	public ArrayList<ArcShape> tableOrder = new ArrayList<ArcShape>();
 	
 	public Zoom() {
 		super("ZOOM");
@@ -109,7 +96,7 @@ public class Zoom extends JFrame {
 		p = new DrawingPanel();
 		add(p, BorderLayout.CENTER);
 
-		Box box = Box.createHorizontalBox();
+		Box box = Box.createVerticalBox();
 
 		//box.add(Box.createHorizontalGlue());
 		
@@ -122,7 +109,12 @@ public class Zoom extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				p.clearAll();
+				p.nodes.clear();
+				p.arcs.clear();
+				tableOrder.clear();
+				int rowCount = dtm.getRowCount();
+				for(int i = rowCount - 1; i >= 0; i--)
+					dtm.removeRow(i);
 				
 				p.repaint();
 			}
@@ -135,9 +127,8 @@ public class Zoom extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				JFileChooser fc = new JFileChooser();
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				fc.setAcceptAllFileFilterUsed(false);
 				fc.addChoosableFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
-
+				fc.setAcceptAllFileFilterUsed(false);
 				File workingDirectory = new File(System.getProperty("user.dir"));
 				fc.setCurrentDirectory(workingDirectory);
 				
@@ -152,24 +143,29 @@ public class Zoom extends JFrame {
 							FileInputStream fIn = new FileInputStream(file);
 						    BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
 			
-						    p.clearAll();
+							p.nodes.clear();
+							p.arcs.clear();
+							tableOrder.clear();
+							int rowCount = dtm.getRowCount();
+							for(int i = rowCount - 1; i >= 0; i--)
+								dtm.removeRow(i);
 		
 							HashMap<String, List<Map<String, Object>>> map = new Gson().fromJson(myReader, new TypeToken<HashMap<String, List<Map<String, Object>>>>(){}.getType());
-							HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
+							HashMap<Integer, NodeShape> nodeMap = new HashMap<Integer, NodeShape>();
 
 							List<Map<String, Object>> nodes = map.get("nodes");
 							for(Map<String, Object> nodeData : nodes) {
-								Node node = new Node(((Double)nodeData.get("id")).intValue(), ((Double)nodeData.get("x")).intValue(), ((Double)nodeData.get("y")).intValue());
-								nodeMap.put(((Double)nodeData.get("id")).intValue(), node);
-								p.getNetworkBase().addNode(node);
+								NodeShape nodeShape = new NodeShape(((Double)nodeData.get("x")).intValue(), ((Double)nodeData.get("y")).intValue(), ((Double)nodeData.get("id")).intValue());
+								nodeMap.put(((Double)nodeData.get("id")).intValue(), nodeShape);
+								p.nodes.add(nodeShape);
 							}
 							
 							List<Map<String, Object>> edges = map.get("edges");
 							for(Map<String, Object> edgeData : edges) {
-								Arc arc = new Arc(((Double)edgeData.get("source")).intValue(), ((Double)edgeData.get("target")).intValue(), (Double)edgeData.get("distance"));
-								p.getNetworkBase().addArc(arc);
-								tableOrder.add(arc);
-								dtm.addRow(new Object[] {arc.id1, arc.id2, arc.getTotalDistance()});
+								ArcShape arcShape = new ArcShape(nodeMap.get(edgeData.get("source")), nodeMap.get(edgeData.get("target")), (Double)edgeData.get("distance"));
+								p.arcs.add(arcShape);
+								tableOrder.add(arcShape);
+								dtm.addRow(new Object[] {arcShape.n1.id, arcShape.n2.id, arcShape.distance});
 							}
 							
 							p.repaint();
@@ -193,8 +189,8 @@ public class Zoom extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				JFileChooser fc = new JFileChooser();
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				fc.setAcceptAllFileFilterUsed(false);
 				fc.addChoosableFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
+				fc.setAcceptAllFileFilterUsed(false);
 				File workingDirectory = new File(System.getProperty("user.dir"));
 				fc.setCurrentDirectory(workingDirectory);
 				
@@ -215,9 +211,9 @@ public class Zoom extends JFrame {
 
 						
 						List<Map<String, Object>> nodeData = new ArrayList<Map<String, Object>>();
-						for(Node node : p.base.NODES.values()) {
+						for(NodeShape node : p.nodes) {
 							Map<String, Object> data = new HashMap<String, Object>();
-							data.put("id", node.getId());
+							data.put("id", node.id);
 							data.put("x", node.x);
 							data.put("y", node.y);
 							nodeData.add(data);
@@ -225,11 +221,11 @@ public class Zoom extends JFrame {
 						map.put("nodes", nodeData);
 						
 						List<Map<String, Object>> edgesData = new ArrayList<Map<String, Object>>();
-						for(Arc arc : p.base.CONNECTIONS) {
+						for(ArcShape arc : p.arcs) {
 							Map<String, Object> data = new HashMap<String, Object>();
-							data.put("source", arc.id1);
-							data.put("target", arc.id2);
-							data.put("distance", arc.getTotalDistance());
+							data.put("source", arc.n1.id);
+							data.put("target", arc.n2.id);
+							data.put("distance", arc.distance);
 							edgesData.add(data);
 						}
 						map.put("edges", edgesData);
@@ -284,11 +280,11 @@ public class Zoom extends JFrame {
                 	public void removeUpdate(DocumentEvent event) {
                 		try {
 	                		double v = Double.parseDouble(textfield.getText());
-							tableOrder.get(row).distances.set(0, v);
+							tableOrder.get(row).distance = v;
 							p.repaint();
                 		}
                 		catch(NumberFormatException e) {
-                			tableOrder.get(row).distances.set(0, 0.0D);
+                			tableOrder.get(row).distance = 0;
 							p.repaint();
                 		}
                 	}
@@ -296,11 +292,11 @@ public class Zoom extends JFrame {
                 	public void insertUpdate(DocumentEvent event) {
                 		try {
 	                		double v = Double.parseDouble(textfield.getText());
-	                		tableOrder.get(row).distances.set(0, v);
+							tableOrder.get(row).distance = v;
 							p.repaint();
                 		}
                 		catch(NumberFormatException e) {
-                			tableOrder.get(row).distances.set(0, 0.0D);
+                			tableOrder.get(row).distance = 0;
 							p.repaint();
                 		}
                 	}
@@ -331,162 +327,31 @@ public class Zoom extends JFrame {
 		
 		dtm.setColumnIdentifiers(new String[] {"Node", "Node", "Distance"});
 		tbl.setModel(dtm);
-		tbl.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseReleased(MouseEvent event) {
-				if(SwingUtilities.isMiddleMouseButton(event)) {
-					int row = tbl.rowAtPoint(event.getPoint());
-			        if (row >= 0) {
-			        	dtm.removeRow(row);
-			        	p.base.CONNECTIONS.remove(tableOrder.get(row));
-			        	p.displayBase = p.base;
-			        	tableOrder.remove(row);
-			        	p.repaint();
-			        }
-				}
-			}
-			
-		});
 		
 		box.add(scrollPane);
-		//box.add(Box.createVerticalStrut(15));
-		JButton spanningTree = new JButton("Mininum Spanning Tree");
-		spanningTree.addActionListener(new ActionListener() {
-			@Override
-		    public void actionPerformed(ActionEvent event) {
-				highlightRoute.clear();
-				highlightArrowRoute.clear();
-				arrow.clear();
-				lastest = null;
-				NetworkBase base = p.getNetworkBase();
-				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.PRIM);
-				p.displayBase = base;
-				for(Arc arc : spanningTree.CONNECTIONS) {
-					Arc finalShape = null;
-					for(Arc shape : p.base.CONNECTIONS) {
-						if(shape.equals(arc)){
-							finalShape = shape;
-							break;
-						}
-					}
-					highlightRoute.add(finalShape);
-				}
-				
-				p.repaint();
-		    }
-		});
-		box.add(spanningTree);
-		JButton shortestPath = new JButton("Shortest Path");
+		box.add(Box.createVerticalStrut(15));
+		JButton shortestPath = new JButton("Mininum Spanning Tree");
 		shortestPath.addActionListener(new ActionListener() {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
-				highlightRoute.clear();
-				highlightArrowRoute.clear();
-				arrow.clear();
-				lastest = null;
+				JButton source = (JButton)event.getSource();
 				NetworkBase base = p.getNetworkBase();
-				int smallestId = 0;
-				int largestId = 0;
-				for(Node node : p.base.NODES.values()) {
-					smallestId = Math.min(node.getId(), smallestId);
-					largestId = Math.max(node.getId(), largestId);
-				}
-				
-				ShortestPath shortestPath = ShortestPath.findShortestPath(base, smallestId, largestId, Algorithm.DIJKSTRA);
-				p.displayBase = base;
-				
-				List<Integer> routeIds = shortestPath.getRouteIds();
-				
-				for(int i = 0; i < routeIds.size() - 1; i++) {
-					int id1 = routeIds.get(i);
-					int id2 = routeIds.get(i + 1);
-					
-					Arc finalShape = null;
-					boolean direction = false;
-					for(Arc shape : p.base.CONNECTIONS) {
-						if((shape.id1 == id1 && shape.id2 == id2)) {
-							finalShape = shape;
-							direction = true;
-							break;
-						}
-						else if(shape.id1 == id2 && shape.id2 == id1) {
+				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.PRIM);
+				for(Arc arc : spanningTree.CONNECTIONS) {
+					ArcShape finalShape = null;
+					for(ArcShape shape : p.arcs) {
+						if((shape.n1.id == arc.id1 && shape.n2.id == arc.id2) || (shape.n1.id == arc.id2 && shape.n2.id == arc.id1)) {
 							finalShape = shape;
 							break;
 						}
 					}
-					if(finalShape != null) {
-						highlightArrowRoute.add(finalShape);
-						arrow.put(finalShape, Arrays.asList(direction));
-					}
+					finalShape.pathHighlight = true;
 				}
 				p.repaint();
-				shortestPath.print();
+				spanningTree.print();
 		    }
 		});
 		box.add(shortestPath);
-		
-		JButton chinesePostman = new JButton("Chinese Postman");
-		chinesePostman.addActionListener(new ActionListener() {
-			@Override
-		    public void actionPerformed(ActionEvent event) {
-				Threads.runTask(new Runnable() {
-
-					@Override
-					public void run() {
-						highlightRoute.clear();
-						highlightArrowRoute.clear();
-						arrow.clear();
-						lastest = null;
-						NetworkBase base = p.getNetworkBase();
-
-						int smallestId = 0;
-						for(Node node : p.base.NODES.values()) 
-							smallestId = Math.min(node.getId(), smallestId);
-						
-						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, smallestId);
-						p.displayBase = chinesePostman;
-						List<Integer> routeIds = chinesePostman.getRouteIds();
-						System.out.println(routeIds);
-						for(int i = 0; i < routeIds.size() - 1; i++) {
-							int id1 = routeIds.get(i);
-							int id2 = routeIds.get(i + 1);
-							
-							Arc finalShape = null;
-							boolean direction = false;
-							for(Arc shape : p.base.CONNECTIONS) {
-								if((shape.id1 == id1 && shape.id2 == id2)) {
-									finalShape = shape;
-									direction = true;
-									break;
-								}
-								else if(shape.id1 == id2 && shape.id2 == id1) {
-									finalShape = shape;
-									break;
-								}
-							}
-							highlightArrowRoute.add(finalShape);
-							if(!arrow.containsKey(finalShape))
-								arrow.put(finalShape, new ArrayList<Boolean>());
-							arrow.get(finalShape).add(direction);
-							lastest = finalShape;
-							p.repaint();
-							try {
-								Thread.sleep(400);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-	
-						
-					}
-					
-				});
-		    }
-		});
-		box.add(chinesePostman);
-		
 		add(box, BorderLayout.SOUTH);
 
 		add(scrollPane, BorderLayout.EAST);
@@ -494,14 +359,22 @@ public class Zoom extends JFrame {
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 		    public void valueChanged(ListSelectionEvent lse) {
-				if(!lse.getValueIsAdjusting()) {
-					highlightSelected.clear();
+		        for(ArcShape arc : p.arcs) {
+					boolean foundArc = false;
 					for(int row : tbl.getSelectedRows()) {
-						Arc arc = tableOrder.get(row);
-						highlightSelected.add(arc);
+						int id1 = (int)tbl.getValueAt(row, 0);
+						int id2 = (int)tbl.getValueAt(row, 1);
+							
+						if(arc.n1.id == id1 && arc.n2.id == id2 || arc.n1.id == id2 && arc.n2.id == id1) {
+							arc.highlight = true;
+							foundArc = true;
+						}
 					}
+						
+					if(!foundArc)
+						arc.highlight = false;
 				}
-		
+					
 				p.repaint();
 		    }
 		});
@@ -550,7 +423,7 @@ public class Zoom extends JFrame {
 					
 					boolean tooClose = false;
 					
-					for(Node node : p.base.NODES.values()) {
+					for(NodeShape node : p.nodes) {
 						if(nodeAbove == node) continue;
 						if(Math.pow(node.x - newX, 2) + Math.pow(node.y - newY, 2) <= Math.pow(6 * 2, 2)) {
 							tooClose = true;
@@ -587,7 +460,7 @@ public class Zoom extends JFrame {
 					int scaledX = (int)((holdX - moveX) / factor);
 					int scaledY = (int)((holdY - moveY) / factor);
 					
-					for(Node node : p.base.NODES.values()) {
+					for(NodeShape node : p.nodes) {
 						if(Math.abs(node.x - scaledX) < 6 && Math.abs(node.y - scaledY) < 6) {
 							startNode = node;
 							break;
@@ -606,7 +479,7 @@ public class Zoom extends JFrame {
 					
 					boolean tooClose = false;
 					
-					for(Node node :  p.base.NODES.values()) {
+					for(NodeShape node : p.nodes) {
 						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6 * 2, 2)) {
 							tooClose = true;
 							break;
@@ -614,21 +487,15 @@ public class Zoom extends JFrame {
 					}
 					
 					if(!tooClose) {
-						int smallestId = 0;
-						while(p.base.NODES.containsKey(smallestId))
-							smallestId += 1;
-						
-						if(p.base.addNode(new Node(smallestId, scaledX, scaledY))) {
-							p.displayBase = p.base;
-							p.repaint();
-						}
+						p.nodes.add(new NodeShape(scaledX, scaledY, currentId++));
+						p.repaint();
 					}
 				}
 				else if(SwingUtilities.isRightMouseButton(event) && controlDown) {
 					int scaledX = (int)((oldX - moveX) / factor);
 					int scaledY = (int)((oldY - moveY) / factor);
 					
-					for(Node node :  p.base.NODES.values()) {
+					for(NodeShape node : p.nodes) {
 						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6, 2)) {
 							nodeAbove = node;
 							break;	
@@ -641,11 +508,11 @@ public class Zoom extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent event) {
 				if(SwingUtilities.isLeftMouseButton(event) && controlDown) {
-					Node endNode = null;
+					NodeShape endNode = null;
 					
 			
 					
-					for(Node node :  p.base.NODES.values()) {
+					for(NodeShape node : p.nodes) {
 						if(Math.pow(node.x - currentHoldX, 2) + Math.pow(node.y - currentHoldY, 2) <= Math.pow(6, 2)) {
 							endNode = node;
 							break;
@@ -653,12 +520,12 @@ public class Zoom extends JFrame {
 					}
 					
 					if(startNode != null && endNode != null && startNode != endNode) {
-						Arc arc = new Arc(startNode.getId(), endNode.getId(), RandomUtil.pickRandomInt(99) + 1);
-						if(p.base.addArc(arc)) {
-							p.displayBase = p.base;
-							tableOrder.add(arc);
-						    dtm.addRow(new Object[] {arc.id1, arc.id2, "" + arc.getTotalDistance()});
-						}
+						ArcShape arc = new ArcShape(startNode, endNode, 10);
+						p.arcs.add(arc);
+						
+						tableOrder.add(arc);
+					    dtm.addRow(new Object[] {startNode.id, endNode.id, "10"});
+					    //dtm.fireTableDataChanged();
 					}
 					
 					startNode = null;
@@ -675,9 +542,9 @@ public class Zoom extends JFrame {
 					int scaledX = (int)((oldX - moveX) / factor);
 					int scaledY = (int)((oldY - moveY) / factor);
 					
-					Node nodeDelete = null;
+					NodeShape nodeDelete = null;
 					
-					for(Node node : p.base.NODES.values()) {
+					for(NodeShape node : p.nodes) {
 						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6, 2)) {
 							nodeDelete = node;
 							break;
@@ -685,19 +552,26 @@ public class Zoom extends JFrame {
 					}
 					
 					if(nodeDelete != null) {
+						p.nodes.remove(nodeDelete);
+						List<ArcShape> toRemove = new ArrayList<ArcShape>();
+						for(ArcShape arc : p.arcs) {
+							if(arc.n1 == nodeDelete || arc.n2 == nodeDelete) {
+								toRemove.add(arc);
+								int row = 0;
+								for(; row < tbl.getRowCount(); row++) {
+									int id1 = (int)tbl.getValueAt(row, 0);
+									int id2 = (int)tbl.getValueAt(row, 1);
+									
+									if(arc.n1.id == id1 && arc.n2.id == id2 || arc.n1.id == id2 && arc.n2.id == id1) {
+										dtm.removeRow(row);
 		
-						List<Arc> connectedArcs = p.base.getArcsConnectedToNode(nodeDelete);
-						p.base.NODES.remove(nodeDelete.getId());
-						p.base.CONNECTIONS.removeAll(connectedArcs);
-						
-						for(Arc arc : connectedArcs) {
-							int index = tableOrder.indexOf(arc);
-							if(index != -1) {
-								tableOrder.remove(index);
-								dtm.removeRow(index);
+										break;
+									}
+								}
 							}
 						}
-						
+						p.arcs.removeAll(toRemove);
+						tableOrder.removeAll(toRemove);
 						p.repaint();
 					}
 				}
@@ -724,197 +598,65 @@ public class Zoom extends JFrame {
 	}
 
 	public class DrawingPanel extends JPanel {
-		
-		public NetworkBase base;
-		public NetworkBase displayBase;
+
+		private List<NodeShape> nodes = new ArrayList<NodeShape>();
+		private List<ArcShape> arcs = new ArrayList<ArcShape>();
 		
 		public DrawingPanel() {
 			this.setBorder(BorderFactory.createEtchedBorder());
-			this.base = new NetworkBase();
-			this.displayBase = base;
 		}
 
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D graphics = (Graphics2D)g;
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			Graphics2D g2 = (Graphics2D)g;
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			//g2.drawLine(moveX, moveY - 1000, moveX, moveY + 1000);
 			//g2.drawLine(moveX - 1000, moveY, moveX + 1000, moveY);
 			
 			if(startNode != null)
-				graphics.drawLine((int)(startNode.x * factor) + moveX, (int)(startNode.y * factor) + moveY, (int)(currentHoldX * factor) + moveX, (int)(currentHoldY * factor) + moveY);
+				g2.drawLine((int)(startNode.x * factor) + moveX, (int)(startNode.y * factor) + moveY, (int)(currentHoldX * factor) + moveX, (int)(currentHoldY * factor) + moveY);
 			
 			Dimension dim = this.getSize();
 			int width = dim.width;
 			int height = dim.height;
 			
-			graphics.drawString(ValueFormat.getNumber(this.getTotalDistance()), 10, 20);
+			Double d = this.getTotalDistance();
+			String s = d.longValue() == d ? "" + d.longValue() : "" + d; 
 			
-			double scaleFactor = factor;
+			g2.drawString(s, 10, 20);
 			
-			for(Arc arc : this.displayBase.CONNECTIONS) {
-				int count = 0;
-				List<Boolean> arrows = arrow.get(arc);
-				
-				for(double distance : arc.getDistances()) {
-					graphics.setColor(Color.gray);
-	
-					Node node1 = this.displayBase.NODES.get(arc.id1);
-					Node node2 = this.displayBase.NODES.get(arc.id2);
-					
-					int x1 = (int)(node1.x * scaleFactor) + moveX;
-					int y1 = (int)(node1.y * scaleFactor) + moveY;
-					int x2 = (int)(node2.x * scaleFactor) + moveX;
-					int y2 = (int)(node2.y * scaleFactor) + moveY;
-					
-					Stroke stroke = graphics.getStroke();
-					if(highlightArrowRoute.contains(arc) && arrows != null && arrows.size() > count) {
-						graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
-						if(lastest == arc && count + 1 == arrows.size())
-							graphics.setColor(Color.green);
-						else
-							graphics.setColor(new Color(202, 0, 2));
-					}
-					else if(highlightRoute.contains(arc)) {
-						graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
-						graphics.setColor(new Color(202, 0, 2));
-					}
-					else if(highlightSelected.contains(arc) && highlightArrowRoute.isEmpty() && highlightRoute.isEmpty()) {
-						graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
-						graphics.setColor(Color.red);
-					}
-					if(count == 0)
-						graphics.drawLine(x1, y1, x2, y2);
-					else if(count == 1) {
-						double dy = node2.y - node1.y;
-					    double dx = node2.x - node1.x;
-						int lineLength = (int) (Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) * factor);
-						
-						double theta = Math.atan2(dy, dx);
-						  
-						AffineTransform affine = graphics.getTransform();
-						if(node1.getId() < node2.getId()) {
-							graphics.translate(x1, y1);
-							graphics.rotate(theta);
-						}
-						else {
-							graphics.translate(x2, y2);
-							graphics.rotate(theta + Math.PI);
-						}
-		
-						
-						   
-						graphics.drawArc(0, 0 - (int)(20 * scaleFactor / 2), lineLength, (int)(20 * scaleFactor), 0, 180);
-						graphics.setTransform(affine);
-					}
-					else if(count == 2) {
-						graphics.drawArc(x1, y1, x2 - x1, y2 - y1, 0, 180);
-					}
-					graphics.setStroke(stroke);
-					
-					graphics.setColor(Color.black);
-					graphics.setFont(graphics.getFont().deriveFont((float) (6.0F * scaleFactor)));
-	
-					graphics.drawString(ValueFormat.getNumber(distance), Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
-					if(arrows != null && arrows.size() > count) {
-						if(arrows.get(count))
-							drawArrowHead(graphics, x2, y2, x1, y1, Color.black, count, node1.getId() < node2.getId());
-						else
-							drawArrowHead(graphics, x1, y1, x2, y2, Color.black, count, node1.getId() > node2.getId());
-					}
-					count += 1;
-				}
+			for(ArcShape arc : p.arcs) {
+				g2.setColor(Color.black);
+				arc.drawShape(this, g2, factor, moveX, moveY);
 			}
 			
-			for(Node node : this.displayBase.NODES.values()) {
-				graphics.setColor(Color.gray);
-
-				int squareWidth = (int)(12 * scaleFactor);
-				int renderX = (int)(node.x * scaleFactor) + moveX - squareWidth / 2;
-				int renderY = (int)(node.y * scaleFactor) + moveY - squareWidth / 2;
-				if(controlDown) {
-					//graphics.setColor(Color.green);
-				}
-				graphics.fillOval(renderX, renderY, squareWidth, squareWidth);
-				Stroke stroke = graphics.getStroke();
-
-				graphics.setStroke(new BasicStroke((float)Math.max(scaleFactor / 2, 1)));
-					
-				
-				graphics.setColor(Color.black);
-				graphics.drawOval(renderX, renderY, squareWidth, squareWidth);
-				graphics.setStroke(stroke);
-				graphics.setFont(graphics.getFont().deriveFont((float) (12.0F * scaleFactor)));
-
-				graphics.drawString("" + node.getId(), renderX - (int)(2 * scaleFactor), renderY - (int)(1 * scaleFactor));
+			for(NodeShape node : p.nodes) {
+				g2.setColor(Color.black);
+				node.drawShape(this, g2, factor, moveX, moveY);
 			}
 		}
-		
-		public void clearAll() {
-			this.base = new NetworkBase();
-			this.displayBase = this.base;
-			tableOrder.clear();
-			highlightRoute.clear();
-			highlightSelected.clear();
-			highlightArrowRoute.clear();
-			arrow.clear();
-			lastest = null;
-			int rowCount = dtm.getRowCount();
-			for(int i = rowCount - 1; i >= 0; i--)
-				dtm.removeRow(i);
-		}
-	
-		private void drawArrowHead(Graphics2D g2, int x1, int y1, int x2, int y2, Color color, int count, boolean rightDirection) {
-			double phi = Math.toRadians(40);
-			int barb = (int) (10 * factor);
-	        g2.setPaint(color);
-	        double dy = y2 - y1;
-	        double dx = x2 - x1;
-	        double lineLength = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) / factor;
-	        
-	        double theta = Math.atan2(dy, dx);
-	        
-	        double x, y, rho = theta + phi;
-	        for(int j = 0; j < 2; j++) {
-	            x = x2 + barb * Math.cos(rho);
-	            y = y2 + barb * Math.sin(rho);
-	            double distance = (3 * lineLength / 4) * factor;
-	            double xTrans = 0;
-	            double yTrans = 0;
-	            if(count == 1) {
-		            xTrans = (rightDirection ? -1 : 1) * 9 * factor * Math.cos(theta + Math.PI / 2D);
-		            yTrans = (rightDirection ? -1 : 1) * 9 * factor * Math.sin(theta + Math.PI / 2D);
-	            }
-	            else if(count == 2) {
-		            xTrans = -9 * factor * Math.cos(theta - Math.PI / 2D);
-		            yTrans = -9 * factor * Math.sin(theta - Math.PI / 2D);
-	            }
-	            g2.draw(new Line2D.Double(x2 - distance * Math.cos(theta)- xTrans, y2 - distance * Math.sin(theta) - yTrans, x - distance * Math.cos(theta) - xTrans, y - distance * Math.sin(theta)  - yTrans ));
-	            rho = theta - phi;
-	        }
-	    }
-		
-		/**
-		 * Gets the change in x and y that need to be performed to move 
-		 * @return
-
-		public Point getTranslation(int theta, int distance) {
-			Point point = new Point();
-			point.translate(distance * Math.cos(theta), distance * Math.sin(theta));
-		}*/
 		
 		public double getTotalDistance() {
-			return this.displayBase.getTotalDistance();
+			double distance = 0;
+			for(ArcShape arc : this.arcs)
+				distance += arc.distance;
+			return distance;
 		}
 		
 		public NetworkBase getNetworkBase() {
-			return this.base;
+			NetworkBase base = new NetworkBase();
+			for(NodeShape node : this.nodes)
+				base.addNode(new Node(node.id));
+			
+			for(ArcShape arc : this.arcs)
+				base.addArc(new Arc(arc.n1.id, arc.n2.id, arc.distance));
+			
+			return base;
 		}
 	}
 	
-	/**
 	public static interface GraphShape {
 		public void drawShape(DrawingPanel panel, Graphics2D graphics, double scaleFactor, int moveX, int moveY);
 	}
@@ -992,7 +734,7 @@ public class Zoom extends JFrame {
 			graphics.drawString("" + s, Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
 			
 		}
-	}**/
+	}
 	
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

@@ -99,9 +99,8 @@ public class Zoom extends JFrame {
 	public ArrayList<Arc> tableOrder = new ArrayList<Arc>();
 	public ArrayList<Arc> highlightSelected = new ArrayList<Arc>();
 	public ArrayList<Arc> highlightRoute = new ArrayList<Arc>();
-	public ArrayList<Arc> highlightArrowRoute = new ArrayList<Arc>();
-	public HashMap<Arc, List<Boolean>> arrow = new HashMap<Arc, List<Boolean>>();
 	public Arc lastest;
+	public HashMap<Arc, List<Boolean>> arrow = new HashMap<Arc, List<Boolean>>();
 	
 	public Zoom() {
 		super("ZOOM");
@@ -340,7 +339,6 @@ public class Zoom extends JFrame {
 			        if (row >= 0) {
 			        	dtm.removeRow(row);
 			        	p.base.CONNECTIONS.remove(tableOrder.get(row));
-			        	p.displayBase = p.base;
 			        	tableOrder.remove(row);
 			        	p.repaint();
 			        }
@@ -356,24 +354,22 @@ public class Zoom extends JFrame {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
 				highlightRoute.clear();
-				highlightArrowRoute.clear();
 				arrow.clear();
-				lastest = null;
 				NetworkBase base = p.getNetworkBase();
 				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.PRIM);
-				p.displayBase = base;
+				ArrayList<Arc> arcPool = (ArrayList<Arc>)base.CONNECTIONS.clone();
 				for(Arc arc : spanningTree.CONNECTIONS) {
 					Arc finalShape = null;
 					for(Arc shape : p.base.CONNECTIONS) {
-						if(shape.equals(arc)){
+						if((shape.id1 == arc.id1 && shape.id2 == arc.id2) || (shape.id1 == arc.id2 && shape.id2 == arc.id1)) {
 							finalShape = shape;
 							break;
 						}
 					}
 					highlightRoute.add(finalShape);
 				}
-				
 				p.repaint();
+				spanningTree.print();
 		    }
 		});
 		box.add(spanningTree);
@@ -382,9 +378,7 @@ public class Zoom extends JFrame {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
 				highlightRoute.clear();
-				highlightArrowRoute.clear();
 				arrow.clear();
-				lastest = null;
 				NetworkBase base = p.getNetworkBase();
 				int smallestId = 0;
 				int largestId = 0;
@@ -394,10 +388,8 @@ public class Zoom extends JFrame {
 				}
 				
 				ShortestPath shortestPath = ShortestPath.findShortestPath(base, smallestId, largestId, Algorithm.DIJKSTRA);
-				p.displayBase = base;
-				
 				List<Integer> routeIds = shortestPath.getRouteIds();
-				
+				System.out.println(routeIds);
 				for(int i = 0; i < routeIds.size() - 1; i++) {
 					int id1 = routeIds.get(i);
 					int id2 = routeIds.get(i + 1);
@@ -416,7 +408,7 @@ public class Zoom extends JFrame {
 						}
 					}
 					if(finalShape != null) {
-						highlightArrowRoute.add(finalShape);
+						highlightRoute.add(finalShape);
 						arrow.put(finalShape, Arrays.asList(direction));
 					}
 				}
@@ -434,18 +426,15 @@ public class Zoom extends JFrame {
 
 					@Override
 					public void run() {
-						highlightRoute.clear();
-						highlightArrowRoute.clear();
-						arrow.clear();
-						lastest = null;
-						NetworkBase base = p.getNetworkBase();
 
+						highlightRoute.clear();
+						arrow.clear();
+						NetworkBase base = p.getNetworkBase();
 						int smallestId = 0;
 						for(Node node : p.base.NODES.values()) 
 							smallestId = Math.min(node.getId(), smallestId);
 						
 						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, smallestId);
-						p.displayBase = chinesePostman;
 						List<Integer> routeIds = chinesePostman.getRouteIds();
 						System.out.println(routeIds);
 						for(int i = 0; i < routeIds.size() - 1; i++) {
@@ -465,7 +454,7 @@ public class Zoom extends JFrame {
 									break;
 								}
 							}
-							highlightArrowRoute.add(finalShape);
+							highlightRoute.add(finalShape);
 							if(!arrow.containsKey(finalShape))
 								arrow.put(finalShape, new ArrayList<Boolean>());
 							arrow.get(finalShape).add(direction);
@@ -618,10 +607,8 @@ public class Zoom extends JFrame {
 						while(p.base.NODES.containsKey(smallestId))
 							smallestId += 1;
 						
-						if(p.base.addNode(new Node(smallestId, scaledX, scaledY))) {
-							p.displayBase = p.base;
+						if(p.base.addNode(new Node(smallestId, scaledX, scaledY)))
 							p.repaint();
-						}
 					}
 				}
 				else if(SwingUtilities.isRightMouseButton(event) && controlDown) {
@@ -655,7 +642,6 @@ public class Zoom extends JFrame {
 					if(startNode != null && endNode != null && startNode != endNode) {
 						Arc arc = new Arc(startNode.getId(), endNode.getId(), RandomUtil.pickRandomInt(99) + 1);
 						if(p.base.addArc(arc)) {
-							p.displayBase = p.base;
 							tableOrder.add(arc);
 						    dtm.addRow(new Object[] {arc.id1, arc.id2, "" + arc.getTotalDistance()});
 						}
@@ -726,12 +712,10 @@ public class Zoom extends JFrame {
 	public class DrawingPanel extends JPanel {
 		
 		public NetworkBase base;
-		public NetworkBase displayBase;
 		
 		public DrawingPanel() {
 			this.setBorder(BorderFactory.createEtchedBorder());
 			this.base = new NetworkBase();
-			this.displayBase = base;
 		}
 
 		@Override
@@ -754,15 +738,15 @@ public class Zoom extends JFrame {
 			
 			double scaleFactor = factor;
 			
-			for(Arc arc : this.displayBase.CONNECTIONS) {
+			for(Arc arc : this.base.CONNECTIONS) {
 				int count = 0;
 				List<Boolean> arrows = arrow.get(arc);
 				
 				for(double distance : arc.getDistances()) {
 					graphics.setColor(Color.gray);
 	
-					Node node1 = this.displayBase.NODES.get(arc.id1);
-					Node node2 = this.displayBase.NODES.get(arc.id2);
+					Node node1 = base.NODES.get(arc.id1);
+					Node node2 = base.NODES.get(arc.id2);
 					
 					int x1 = (int)(node1.x * scaleFactor) + moveX;
 					int y1 = (int)(node1.y * scaleFactor) + moveY;
@@ -770,18 +754,14 @@ public class Zoom extends JFrame {
 					int y2 = (int)(node2.y * scaleFactor) + moveY;
 					
 					Stroke stroke = graphics.getStroke();
-					if(highlightArrowRoute.contains(arc) && arrows != null && arrows.size() > count) {
+					if(highlightRoute.contains(arc) && arrows != null && arrows.size() > count) {
 						graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
 						if(lastest == arc && count + 1 == arrows.size())
 							graphics.setColor(Color.green);
 						else
 							graphics.setColor(new Color(202, 0, 2));
 					}
-					else if(highlightRoute.contains(arc)) {
-						graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
-						graphics.setColor(new Color(202, 0, 2));
-					}
-					else if(highlightSelected.contains(arc) && highlightArrowRoute.isEmpty() && highlightRoute.isEmpty()) {
+					else if(highlightSelected.contains(arc) && highlightRoute.isEmpty()) {
 						graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
 						graphics.setColor(Color.red);
 					}
@@ -828,7 +808,7 @@ public class Zoom extends JFrame {
 				}
 			}
 			
-			for(Node node : this.displayBase.NODES.values()) {
+			for(Node node : this.base.NODES.values()) {
 				graphics.setColor(Color.gray);
 
 				int squareWidth = (int)(12 * scaleFactor);
@@ -854,13 +834,10 @@ public class Zoom extends JFrame {
 		
 		public void clearAll() {
 			this.base = new NetworkBase();
-			this.displayBase = this.base;
 			tableOrder.clear();
-			highlightRoute.clear();
 			highlightSelected.clear();
-			highlightArrowRoute.clear();
+			highlightRoute.clear();
 			arrow.clear();
-			lastest = null;
 			int rowCount = dtm.getRowCount();
 			for(int i = rowCount - 1; i >= 0; i--)
 				dtm.removeRow(i);
@@ -906,7 +883,7 @@ public class Zoom extends JFrame {
 		}*/
 		
 		public double getTotalDistance() {
-			return this.displayBase.getTotalDistance();
+			return this.base.getTotalDistance();
 		}
 		
 		public NetworkBase getNetworkBase() {

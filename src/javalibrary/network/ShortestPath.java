@@ -32,7 +32,7 @@ public class ShortestPath extends NetworkBase {
 		
 		List<Arc> startingArcs = base.getArcsConnectedToNode(startId);
 		for(Arc arc : startingArcs)
-			temp.put(arc.getOtherNode(startId), new Route(startId, arc.distance));
+			temp.put(arc.getOtherNode(startId), new Route(startId, arc.getShortestDistance()));
 	
 		while(temp.size() > 0) {
 			//Gets smallest temp value
@@ -52,34 +52,58 @@ public class ShortestPath extends NetworkBase {
 			List<Arc> connectedArcs = base.getArcsConnectedToNode(pointId);
 
 			for(Arc arc : connectedArcs) {
-				double combinedDistance = arc.distance + boxed.get(pointId).getDistance();
+				double combinedDistance = arc.getShortestDistance() + boxed.get(pointId).getDistance();
 				int targetNode = arc.getOtherNode(pointId);
 				
 				if(!boxed.containsKey(targetNode) && (!temp.containsKey(targetNode) || temp.get(targetNode).getDistance() > combinedDistance))
 					temp.put(targetNode, new Route(pointId, combinedDistance));
 			}
 		}
-		
-		StringBuilder builder = new StringBuilder("" + (char)startId);
-		
+
 		shortestPath.addNode(new Node(startId));
+		
+		shortestPath.route = new ArrayList<Integer>();
 		
 		int nextId = endId;
 		
 		while(nextId != startId) {
 			int oldId = nextId;
+			shortestPath.route.add(oldId);
 			double oldDistance = boxed.get(oldId).getDistance();
-			
-			builder.insert(1, (char)nextId);
+
 			nextId = boxed.get(nextId).getSourceId();
 			
 			shortestPath.addNode(new Node(oldId));
 			shortestPath.addArc(new Arc(nextId, oldId, oldDistance - boxed.get(nextId).getDistance()));
 		}
+		shortestPath.route.add(startId);
 		
-		System.out.println((char)startId + "" + (char)endId + " " + builder + " distance: " + boxed.get(endId).getDistance());
+		Collections.reverse(shortestPath.route); 
+		
+		System.out.println(startId + "," + endId + " " + shortestPath.route + " distance: " + boxed.get(endId).getDistance());
 		
 		return shortestPath;
+	}
+	
+	private ArrayList<Integer> route;
+	
+	public List<Integer> getRouteIds() {
+		return (List<Integer>)this.route.clone();
+	}
+	
+	public List<Node> getRouteNodes() {
+		List<Node> list = new ArrayList<Node>();
+		
+		List<Integer> nodeIds = this.getRouteIds();
+		
+		for(Integer nodeId : nodeIds) {
+			if(this.NODES.containsKey(nodeId))
+				list.add(this.NODES.get(nodeId));
+			else
+				System.out.println("***** Missing node with id - " + nodeId + " *****");
+		}
+		
+		return list;
 	}
 	
 	public static class Route {
