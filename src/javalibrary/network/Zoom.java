@@ -8,21 +8,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
@@ -33,13 +26,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +37,7 @@ import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -386,14 +373,8 @@ public class Zoom extends JFrame {
 				arrow.clear();
 				lastest = null;
 				NetworkBase base = p.getNetworkBase();
-				int smallestId = 0;
-				int largestId = 0;
-				for(Node node : p.base.NODES.values()) {
-					smallestId = Math.min(node.getId(), smallestId);
-					largestId = Math.max(node.getId(), largestId);
-				}
 				
-				ShortestPath shortestPath = ShortestPath.findShortestPath(base, smallestId, largestId, Algorithm.DIJKSTRA);
+				ShortestPath shortestPath = ShortestPath.findShortestPath(base, base.getSmallestNode(), base.getLargestNode(), Algorithm.DIJKSTRA);
 				p.displayBase = base;
 				
 				List<Integer> routeIds = shortestPath.getRouteIds();
@@ -440,11 +421,7 @@ public class Zoom extends JFrame {
 						lastest = null;
 						NetworkBase base = p.getNetworkBase();
 
-						int smallestId = 0;
-						for(Node node : p.base.NODES.values()) 
-							smallestId = Math.min(node.getId(), smallestId);
-						
-						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, smallestId);
+						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, base.getSmallestNodeId());
 						p.displayBase = chinesePostman;
 						List<Integer> routeIds = chinesePostman.getRouteIds();
 						System.out.println(routeIds);
@@ -486,6 +463,50 @@ public class Zoom extends JFrame {
 		    }
 		});
 		box.add(chinesePostman);
+		
+		JButton travellingSalesman = new JButton("Travelling Salesman");
+		travellingSalesman.addActionListener(new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent event) {
+				highlightRoute.clear();
+				highlightArrowRoute.clear();
+				arrow.clear();
+				lastest = null;
+				NetworkBase base = p.getNetworkBase();
+				
+				TravellingSalesman travellingSalesman = TravellingSalesman.findRouteAll(base, base.getSmallestNodeId());
+				p.displayBase = travellingSalesman;
+				
+				/**
+				List<Integer> routeIds = shortestPath.getRouteIds();
+				
+				for(int i = 0; i < routeIds.size() - 1; i++) {
+					int id1 = routeIds.get(i);
+					int id2 = routeIds.get(i + 1);
+					
+					Arc finalShape = null;
+					boolean direction = false;
+					for(Arc shape : p.base.CONNECTIONS) {
+						if((shape.id1 == id1 && shape.id2 == id2)) {
+							finalShape = shape;
+							direction = true;
+							break;
+						}
+						else if(shape.id1 == id2 && shape.id2 == id1) {
+							finalShape = shape;
+							break;
+						}
+					}
+					if(finalShape != null) {
+						highlightArrowRoute.add(finalShape);
+						arrow.put(finalShape, Arrays.asList(direction));
+					}
+				}**/
+				p.repaint();
+				travellingSalesman.print();
+		    }
+		});
+		box.add(travellingSalesman);
 		
 		add(box, BorderLayout.SOUTH);
 
@@ -913,86 +934,6 @@ public class Zoom extends JFrame {
 			return this.base;
 		}
 	}
-	
-	/**
-	public static interface GraphShape {
-		public void drawShape(DrawingPanel panel, Graphics2D graphics, double scaleFactor, int moveX, int moveY);
-	}
-	
-	public static class NodeShape implements GraphShape {
-		
-		public int x, y;
-		public int id;
-		
-		public NodeShape(int x, int y, int id) {
-			this.x = x;
-			this.y = y;
-			this.id = id;
-		}
-
-		@Override
-		public void drawShape(DrawingPanel panel, Graphics2D graphics, double scaleFactor, int moveX, int moveY) {
-			Dimension dim = panel.getSize();
-			int width = dim.width;
-			int height = dim.height;
-			int squareWidth = (int)(12 * scaleFactor);
-			int renderX = (int)(this.x * scaleFactor) + moveX - squareWidth / 2;
-			int renderY = (int)(this.y * scaleFactor) + moveY - squareWidth / 2;
-			if(controlDown) {
-				//graphics.setColor(Color.green);
-			}
-			graphics.fillOval(renderX, renderY, squareWidth, squareWidth);
-			graphics.setColor(Color.black);
-			graphics.setFont(graphics.getFont().deriveFont((float) (12.0F * scaleFactor)));
-			graphics.drawString("" + this.id, renderX - (int)(2 * scaleFactor), renderY - (int)(1 * scaleFactor));
-		}
-	}
-	
-	public static class ArcShape implements GraphShape {
-		
-		public NodeShape n1, n2;
-		public double distance;
-		public boolean highlight;
-		public boolean pathHighlight;
-		
-		public ArcShape(NodeShape n1, NodeShape n2, double distance) {
-			this.n1 = n1;
-			this.n2 = n2;
-			this.distance = distance;
-		}
-
-		@Override
-		public void drawShape(DrawingPanel panel, Graphics2D graphics, double scaleFactor, int moveX, int moveY) {
-			Dimension dim = panel.getSize();
-			graphics.setColor(Color.black);
-			int width = dim.width;
-			int height = dim.height;
-		
-			int x1 = (int)(n1.x * scaleFactor) + moveX;
-			int y1 = (int)(n1.y * scaleFactor) + moveY;
-			int x2 = (int)(n2.x * scaleFactor) + moveX;
-			int y2 = (int)(n2.y * scaleFactor) + moveY;
-			
-			Stroke stroke = graphics.getStroke();
-			if(pathHighlight) {
-				graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
-				graphics.setColor(Color.yellow);
-			}
-			else if(highlight) {
-				graphics.setStroke(new BasicStroke((int)(4 * scaleFactor)));
-				graphics.setColor(Color.red);
-			}
-			graphics.drawLine(x1, y1, x2, y2);
-			graphics.setStroke(stroke);
-			
-			graphics.setColor(Color.black);
-			graphics.setFont(graphics.getFont().deriveFont((float) (6.0F * scaleFactor)));
-			Double d = this.distance;
-			String s = d.longValue() == d ? "" + d.longValue() : "" + d; 
-			graphics.drawString("" + s, Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
-			
-		}
-	}**/
 	
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

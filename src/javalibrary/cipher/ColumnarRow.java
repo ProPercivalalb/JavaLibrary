@@ -2,8 +2,6 @@ package javalibrary.cipher;
 
 import java.util.Arrays;
 
-import javalibrary.string.StringTransformer;
-
 public class ColumnarRow {
 
 	public static String encode(String plainText, String key) {

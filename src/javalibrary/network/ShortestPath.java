@@ -78,9 +78,7 @@ public class ShortestPath extends NetworkBase {
 		}
 		shortestPath.route.add(startId);
 		
-		Collections.reverse(shortestPath.route); 
-		
-		System.out.println(startId + "," + endId + " " + shortestPath.route + " distance: " + boxed.get(endId).getDistance());
+		Collections.reverse(shortestPath.route);
 		
 		return shortestPath;
 	}
@@ -88,7 +86,7 @@ public class ShortestPath extends NetworkBase {
 	private ArrayList<Integer> route;
 	
 	public List<Integer> getRouteIds() {
-		return (List<Integer>)this.route.clone();
+		return new ArrayList<Integer>(this.route);
 	}
 	
 	public List<Node> getRouteNodes() {

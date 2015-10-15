@@ -8,10 +8,10 @@ import java.awt.Graphics;
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 
+import javax.swing.border.Border;
+
 import javalibrary.math.MathHelper;
 import javalibrary.swing.graphic.CircleRenderer;
-
-import javax.swing.border.Border;
 
 /**
  * @author Alex Barter
@@ -56,7 +56,7 @@ public class JPieChart extends JChartBase {
 	    Font toolTipFont = new Font("SansSerif", Font.BOLD, 12);
 	    FontMetrics toolTipFontMetrics = graphics.getFontMetrics(toolTipFont);
 	    
-	    ArrayList<Arc2D> arcs = CircleRenderer.drawPieChart(graphics, this.values, graphX + graphWidth / 2, graphY + graphHeight / 2, MathHelper.findSmallest(graphWidth, graphHeight) - 6);
+	    ArrayList<Arc2D> arcs = CircleRenderer.drawPieChart(graphics, this.values, graphX + graphWidth / 2, graphY + graphHeight / 2, MathHelper.findSmallestInt(graphWidth, graphHeight) - 6);
 	    int index = 0;
 	    for(Arc2D arc : arcs) {
 	    	if(arc.contains(this.mouseX, this.mouseY)) {

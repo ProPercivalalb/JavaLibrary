@@ -1,7 +1,6 @@
 package javalibrary.network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javalibrary.math.MathHelper;
@@ -58,7 +57,7 @@ public class Arc {
 	}
 	
 	public double getShortestDistance() {
-		return MathHelper.findSmallest(this.distances);
+		return MathHelper.findSmallestDouble(this.distances);
 	}
 	
 	public int distanceCount() {

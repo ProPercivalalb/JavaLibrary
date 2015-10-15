@@ -4,6 +4,11 @@ import java.awt.Dimension;
 import java.math.BigInteger;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
@@ -15,11 +20,6 @@ import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
 import javalibrary.math.matrics.Matrix;
 import javalibrary.swing.ProgressValue;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * @author Alex Barter (10AS)

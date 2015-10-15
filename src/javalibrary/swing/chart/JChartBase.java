@@ -4,9 +4,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import javalibrary.swing.chart.UIUpdater.IUIUpdater;
-
 import javax.swing.JComponent;
+
+import javalibrary.swing.chart.UIUpdater.IUIUpdater;
 
 /**
  * @author Alex Barter

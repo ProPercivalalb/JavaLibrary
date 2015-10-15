@@ -5,22 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.ADFGVX;
-import javalibrary.cipher.ColumnarRow;
 import javalibrary.cipher.auto.RedefenceAuto.PermutationTask;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
-import javalibrary.math.ArrayHelper;
 import javalibrary.swing.ProgressValue;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class ADFGVXAuto implements IForceDecrypt {
 

@@ -15,7 +15,7 @@ public class Node {
 		this.y = y;
 	}
 	
-	public int getId() {
+	public final int getId() {
 		return this.id;
 	}
 	

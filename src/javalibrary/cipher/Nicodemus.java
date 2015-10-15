@@ -3,7 +3,6 @@ package javalibrary.cipher;
 import java.util.Arrays;
 
 import javalibrary.math.MathHelper;
-import javalibrary.string.StringTransformer;
 
 public class Nicodemus {
 

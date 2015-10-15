@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
@@ -14,9 +17,6 @@ import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.QuadgramStats;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class FourSquareAuto implements IForceDecrypt {
 

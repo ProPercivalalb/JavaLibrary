@@ -1,15 +1,15 @@
 package javalibrary.cipher.auto;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.RailFence;
 import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.Routes;
 import javalibrary.cipher.wip.Routes.RouteCipherType;
 import javalibrary.fitness.QuadgramStats;
@@ -17,11 +17,6 @@ import javalibrary.language.ILanguage;
 import javalibrary.math.MathHelper;
 import javalibrary.string.StringTransformer;
 import javalibrary.swing.ProgressValue;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * @author Alex Barter (10AS)

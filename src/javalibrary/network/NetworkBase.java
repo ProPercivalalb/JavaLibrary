@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javalibrary.math.MathHelper;
 import javalibrary.network.Arc.ArcIndex;
 import javalibrary.util.RandomUtil;
 
@@ -46,7 +47,7 @@ public class NetworkBase {
 		if(this.CONNECTIONS.contains(arcIndex.arc)) {
 			Arc real = this.CONNECTIONS.get(this.CONNECTIONS.indexOf(arcIndex.arc));
 			real.getDistances().remove(arcIndex.getDistance());
-			if(real.distanceCount() <= 0)
+			if(real.getDistances().isEmpty())
 				this.CONNECTIONS.remove(arcIndex.arc);
 		}
 	}
@@ -132,7 +133,7 @@ public class NetworkBase {
 		return distance;
 	}
 	
-	public ArrayList<Integer> getOddNodeIds() {
+	public ArrayList<Integer> getOddDegreeNodeIds() {
 		ArrayList<Integer> oddNodes = new ArrayList<Integer>();
 		for(int nodeId : this.NODES.keySet()) {
 			int count = this.getAllPathsConnectedToNode(nodeId).size();
@@ -142,10 +143,10 @@ public class NetworkBase {
 		return oddNodes;
 	}
 	
-	public List<Node> getOddNodes() {
+	public List<Node> getOddDegreeNodes() {
 		List<Node> list = new ArrayList<Node>();
 		
-		List<Integer> nodeIds = this.getOddNodeIds();
+		List<Integer> nodeIds = this.getOddDegreeNodeIds();
 		
 		for(Integer nodeId : nodeIds) {
 			if(this.NODES.containsKey(nodeId))
@@ -208,7 +209,6 @@ public class NetworkBase {
 		if(!nodesAccountedFor.contains(randomStartId))
 			nodesAccountedFor.add(randomStartId);
 		
-		System.out.println(nodesAccountedFor.size() + " " + this.NODES.size());
 		return nodesAccountedFor.size() != this.NODES.size();
 	}
 	
@@ -239,6 +239,23 @@ public class NetworkBase {
 		return encountedNodes;
 	}
 	
+
+	public Node getSmallestNode() {
+		return this.NODES.get(this.getSmallestNodeId());
+	}
+	
+	public int getSmallestNodeId() {
+		return MathHelper.findSmallestInt(this.NODES.keySet());
+	}
+	
+	public Node getLargestNode() {
+		return this.NODES.get(this.getLargestNodeId());
+	}
+	
+	public int getLargestNodeId() {
+		return MathHelper.findLargestInt(this.NODES.keySet());
+	}
+	
 	public NetworkBase combine(NetworkBase other) {
 		for(Node node : other.NODES.values())
 			this.addNode(node);
@@ -247,7 +264,7 @@ public class NetworkBase {
 		return this;
 	}
 	
-	public <T extends NetworkBase> T copy(T to) {
+	public <T extends NetworkBase> T copyTo(T to) {
 		for(Node node : this.NODES.values())
 			to.addNode(node);
 		for(Arc arc : this.CONNECTIONS)
@@ -263,9 +280,9 @@ public class NetworkBase {
 		for(int id : NODES.keySet()) {
 			System.out.println("  " + id + " connected to: " + this.getNodesConnectedToNode(id));
 		}
-		for(Arc arc : this.CONNECTIONS) {
-			System.out.println(arc);
-		}
+		//for(Arc arc : this.CONNECTIONS) {
+		//	System.out.println(arc);
+		//}
 		System.out.println("Distance: " + this.getTotalDistance());
 		
 		System.out.println("--------------------------");

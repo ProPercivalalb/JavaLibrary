@@ -2,12 +2,10 @@ package javalibrary.network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import javalibrary.math.MathHelper;
 import javalibrary.network.Arc.ArcIndex;
-import javalibrary.network.ShortestPath.Route;
 import javalibrary.util.RandomUtil;
 
 public class ChinesePostman extends NetworkBase {
@@ -16,7 +14,7 @@ public class ChinesePostman extends NetworkBase {
 
 	public static ChinesePostman findRouteAll(NetworkBase base, int targetNodeId) {
 		
-		ChinesePostman chinesePostman = base.copy(new ChinesePostman());
+		ChinesePostman chinesePostman = base.copyTo(new ChinesePostman());
 		
 		int baseDistance = base.getTotalDistance();
 		
@@ -27,7 +25,7 @@ public class ChinesePostman extends NetworkBase {
 		
 		
 		//Needs to add more arcs?
-		ArrayList<Integer> oddNodes = base.getOddNodeIds();
+		ArrayList<Integer> oddNodes = base.getOddDegreeNodeIds();
 		
 		if((oddNodes.size() & 1) == 1)
 			System.out.println("ERROR ODD NUMBER OF NODES");
@@ -168,7 +166,7 @@ public class ChinesePostman extends NetworkBase {
 	public static ArrayList<ArrayList<NodePair>> getPairs(ArrayList<Integer> oddNodes, int noNodes, ArrayList<NodePair> previousPairs) {
 		ArrayList<ArrayList<NodePair>> allCombos = new ArrayList<ArrayList<NodePair>>();
 		
-		int starter = MathHelper.findSmallest(oddNodes);
+		int starter = MathHelper.findSmallestInt(oddNodes);
 		
 		for(Integer j : oddNodes) {
 			if(j == starter) continue; //Miss out duplicate
@@ -176,7 +174,7 @@ public class ChinesePostman extends NetworkBase {
 			ArrayList<NodePair> newPairs = new ArrayList<NodePair>(previousPairs);
 			newPairs.add(new NodePair(starter, j));
 			
-			ArrayList<Integer> next = (ArrayList<Integer>)oddNodes.clone();
+			ArrayList<Integer> next = new ArrayList<Integer>(oddNodes);
 			next.removeAll(Arrays.asList(starter, j));
 			
 			if(newPairs.size() * 2 < noNodes)

@@ -2,7 +2,6 @@ package javalibrary.math;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alex Barter
@@ -13,75 +12,38 @@ public class MathHelper {
 	public static double PI =  Math.PI;
 	public static double E  =  Math.E;
 	
-	/**
-	 * Looks in the given list and returns the biggest value
-	 * @param numberArray A array of integers
-	 * @return The biggest number from the given array
-	 */
-	public static double findBiggest(double... numberArray) {
-		if(numberArray.length <= 0)
-			return 0;
+	public static int findLargestInt(Iterable<Integer> numberArray) {	
+		int largest = Integer.MIN_VALUE;
+		for(int number : numberArray)
+			largest = Math.max(largest, number);
 		
-		double currentBiggest = Double.MIN_VALUE;
-		for(double number : numberArray) {
-			if(currentBiggest < number) {
-				currentBiggest = number;
-			}
-		}
-		
-		return currentBiggest;
+		return largest;
 	}
-	
-	public static double findSmallest(double... numberArray) {
-		if(numberArray.length <= 0)
-			return 0;
+
+	public static double findLargestDouble(Iterable<Double> numberArray) {	
+		double largest = Double.MIN_VALUE;
+		for(double number : numberArray)
+			largest = Math.max(largest, number);
 		
-		double currentBiggest = Double.MAX_VALUE;
-		for(double number : numberArray) {
-			if(currentBiggest > number) {
-				currentBiggest = number;
-			}
-		}
-		
-		return currentBiggest;
+		return largest;
 	}
-	
-	public static double findBiggest(List<Double> numberArray) {
-		if(numberArray.size() <= 0)
-			return 0;
-		
-		double currentBiggest = Double.MIN_VALUE;
-		for(double number : numberArray) {
-			if(currentBiggest < number) {
-				currentBiggest = number;
-			}
-		}
-		
-		return currentBiggest;
-	}
-	
-	public static double findSmallest(List<Double> numberArray) {
-		if(numberArray.size() <= 0)
-			return 0;
-		
-		double currentBiggest = Double.MAX_VALUE;
-		for(double number : numberArray) {
-			if(currentBiggest > number) {
-				currentBiggest = number;
-			}
-		}
-		
-		return currentBiggest;
-	}
-	
-	public static int findSmallest(Iterable<Integer> numberArray) {
-		int currentBiggest = Integer.MAX_VALUE;
+
+	public static int findSmallestInt(Iterable<Integer> numberArray) {
+		int smallest = Integer.MAX_VALUE;
 		
 		for(int number : numberArray)
-			if(currentBiggest > number)
-				currentBiggest = number;
+			smallest = Math.min(smallest, number);
 		
-		return currentBiggest;
+		return smallest;
+	}
+	
+	public static double findSmallestDouble(Iterable<Double> numberArray) {
+		double smallest = Double.MAX_VALUE;
+		
+		for(double number : numberArray)
+			smallest = Math.min(smallest, number);
+		
+		return smallest;
 	}
 	
 	public static double round(double target, int decimalPlaces) {

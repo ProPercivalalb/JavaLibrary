@@ -2,12 +2,12 @@ package javalibrary;
 
 import java.util.List;
 
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * @author Alex Barter (10AS)

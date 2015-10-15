@@ -1,16 +1,11 @@
 package javalibrary.cipher.stats;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import javalibrary.file.FileCompression;
 
 import com.google.gson.Gson;
 

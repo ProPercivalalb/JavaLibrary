@@ -10,9 +10,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.UIManager;
 
 public class NetworkRender extends JFrame {
 

@@ -6,9 +6,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import javalibrary.math.MathHelper;
-
 import javax.swing.border.Border;
+
+import javalibrary.math.MathHelper;
 
 /**
  * @author Alex Barter
@@ -55,7 +55,7 @@ public class JBarChart extends JChartBase {
 	    if(this.paintEmptyText(graphics, graphX, graphY, graphWidth, graphHeight, "Empty Bar Chart"))
 	    	return;
 	    
-	    double maxValue = MathHelper.findBiggest(this.values.getAllValues());
+	    double maxValue = MathHelper.findLargestDouble(this.values.getAllValues());
 	    
 	    int barWidth = graphWidth / this.values.size();
 	    int barGap = 4; //Should be a multiple of 2 to work well

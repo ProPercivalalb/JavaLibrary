@@ -3,6 +3,11 @@ package javalibrary.cipher.auto;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
@@ -14,11 +19,6 @@ import javalibrary.fitness.ChiSquared;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 import javalibrary.swing.ProgressValue;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * @author Alex Barter
