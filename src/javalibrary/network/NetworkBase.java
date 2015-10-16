@@ -23,6 +23,10 @@ public class NetworkBase {
 		return false;
 	}
 	
+	public void removeNode(int nodeId) {
+		this.NODES.remove((Integer)nodeId);
+	}
+	
 	public boolean addArc(Arc arc) {
 		if(!this.CONNECTIONS.contains(arc)) {
 			return this.CONNECTIONS.add(arc.copy());
@@ -50,6 +54,11 @@ public class NetworkBase {
 			if(real.getDistances().isEmpty())
 				this.CONNECTIONS.remove(arcIndex.arc);
 		}
+	}
+	
+	public void removeArc(Arc arc) {
+		if(this.CONNECTIONS.contains(arc))
+			this.CONNECTIONS.remove(arc);
 	}
 	
 	public List<Node> getNodesConnectedToNode(Node node) {

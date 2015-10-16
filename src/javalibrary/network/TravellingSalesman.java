@@ -1,6 +1,7 @@
 package javalibrary.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TravellingSalesman extends NetworkBase {
 
@@ -21,12 +22,28 @@ public class TravellingSalesman extends NetworkBase {
 				travellingSalesman.addArc(arc);
 			}
 			else {
-			
 				arc.distances.clear();
 				arc.distances.add(shortestDistance);
 			}
 		}
 		
+		for(int nodeId : travellingSalesman.NODES.keySet()) {
+			NearestNeighbour nearestNeighbour = NearestNeighbour.findRouteAll(travellingSalesman, nodeId);
+			
+			List<Integer> routeIds = nearestNeighbour.getRouteIds();
+			int distance = 0;
+			
+			
+			for(int i = 0; i < routeIds.size() - 1; i++) {
+				int id1 = routeIds.get(i);
+				int id2 = routeIds.get(i + 1);
+				Arc arc = travellingSalesman.getArc(id1, id2);
+				distance += arc.getTotalDistance();
+			}
+			System.out.println(nearestNeighbour.getRouteIds());
+			System.out.println("Distance: " + distance);
+			//System.out.println(nearestNeighbour.getRouteIds());
+		}
 		return travellingSalesman;
 		
 	}

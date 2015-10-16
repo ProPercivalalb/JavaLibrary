@@ -271,11 +271,13 @@ public class Zoom extends JFrame {
                 	public void removeUpdate(DocumentEvent event) {
                 		try {
 	                		double v = Double.parseDouble(textfield.getText());
-							tableOrder.get(row).distances.set(0, v);
-							p.repaint();
+	                		p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, v);
+							p.displayBase = p.base;
+	                		p.repaint();
                 		}
                 		catch(NumberFormatException e) {
-                			tableOrder.get(row).distances.set(0, 0.0D);
+                			p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, 0.0D);
+							p.displayBase = p.base;
 							p.repaint();
                 		}
                 	}
@@ -283,11 +285,13 @@ public class Zoom extends JFrame {
                 	public void insertUpdate(DocumentEvent event) {
                 		try {
 	                		double v = Double.parseDouble(textfield.getText());
-	                		tableOrder.get(row).distances.set(0, v);
-							p.repaint();
+	                		p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, v);
+							p.displayBase = p.base;
+	                		p.repaint();
                 		}
                 		catch(NumberFormatException e) {
-                			tableOrder.get(row).distances.set(0, 0.0D);
+                			p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, 0.0D);
+							p.displayBase = p.base;
 							p.repaint();
                 		}
                 	}
@@ -421,7 +425,7 @@ public class Zoom extends JFrame {
 						lastest = null;
 						NetworkBase base = p.getNetworkBase();
 
-						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, base.getSmallestNodeId());
+						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, base.getSmallestNodeId(), base.getLargestNodeId());
 						p.displayBase = chinesePostman;
 						List<Integer> routeIds = chinesePostman.getRouteIds();
 						System.out.println(routeIds);

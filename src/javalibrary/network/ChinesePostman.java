@@ -12,9 +12,15 @@ public class ChinesePostman extends NetworkBase {
 
 	private ChinesePostman() {}
 
-	public static ChinesePostman findRouteAll(NetworkBase base, int targetNodeId) {
+	public static ChinesePostman findRouteAll(NetworkBase base, int targetId) {
+		return findRouteAll(base, targetId, targetId);
+	}
+	
+	public static ChinesePostman findRouteAll(NetworkBase base, int startId, int endId) {
 		
 		ChinesePostman chinesePostman = base.copyTo(new ChinesePostman());
+		
+		boolean isCircuit = startId == endId;
 		
 		int baseDistance = base.getTotalDistance();
 		
@@ -26,6 +32,9 @@ public class ChinesePostman extends NetworkBase {
 		
 		//Needs to add more arcs?
 		ArrayList<Integer> oddNodes = base.getOddDegreeNodeIds();
+		
+		if(!isCircuit)
+			oddNodes.removeAll(Arrays.asList(startId, endId));
 		
 		if((oddNodes.size() & 1) == 1)
 			System.out.println("ERROR ODD NUMBER OF NODES");
@@ -68,11 +77,10 @@ public class ChinesePostman extends NetworkBase {
 		
 		for(Arc arc : combined.CONNECTIONS)
 			chinesePostman.addArc(arc);
-		chinesePostman.print();
 
-		int nextId = targetNodeId;
+		int nextId = startId;
 		chinesePostman.route = new ArrayList<Integer>();
-		chinesePostman.route.add(targetNodeId);
+		chinesePostman.route.add(startId);
 		int nodesConnected = 0;
 
 		NetworkBase temp = new NetworkBase();
@@ -85,10 +93,10 @@ public class ChinesePostman extends NetworkBase {
 		int finalConnections = temp.getTotalArcIndexs();
 		while(nodesConnected < finalConnections) {
 			List<ArcIndex> connectedNodes = temp.getAllPathsConnectedToNode(nextId);
-			//System.out.println(connectedNodes);
+			
 			ArcIndex testArc = RandomUtil.pickRandomElement(connectedNodes);
 			int testNode = testArc.arc.getOtherNode(nextId);
-			if(testNode == targetNodeId && connectedNodes.size() > 1)
+			if(testNode == endId && connectedNodes.size() > 1)
 				continue;
 			
 	
@@ -98,10 +106,9 @@ public class ChinesePostman extends NetworkBase {
 			
 			if(connectedNodes.size() <= 1)
 				temp.NODES.remove(nextId);
-			//System.out.println(temp.getArcsConnectedToNode(testNode).size() + " " + connectedNodes.size() + " " + temp.NODES);
-			if(temp.NODES.isEmpty()) {
+		
+			if(temp.NODES.isEmpty())
 				break;
-			}
 				
 			
 			if(temp.isNetworkBridged()) {
@@ -111,15 +118,12 @@ public class ChinesePostman extends NetworkBase {
 			}
 				
 			chinesePostman.route.add(testNode);
-			System.out.println(chinesePostman.route);
+			
 			nextId = testNode;
 			nodesConnected++;
 		}
-		chinesePostman.route.add(targetNodeId);
-
-		System.out.println("PATH " + chinesePostman.route);
 		
-		System.out.println("Postman route is " + (baseDistance + combined.getTotalDistance()));
+		chinesePostman.route.add(endId);
 		
 		return chinesePostman;
 	}
@@ -127,7 +131,7 @@ public class ChinesePostman extends NetworkBase {
 	private ArrayList<Integer> route;
 	
 	public List<Integer> getRouteIds() {
-		return (List<Integer>)this.route.clone();
+		return new ArrayList<Integer>(this.route);
 	}
 	
 	public List<Node> getRouteNodes() {
