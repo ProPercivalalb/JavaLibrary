@@ -1,33 +1,51 @@
 package javalibrary.language;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javalibrary.fitness.NGramData;
 import javalibrary.fitness.QuadgramStats;
 
 /**
  * @author Alex Barter
  */
-public class German implements ILanguage {
+public class German extends ILanguage {
 	
 	public static NGramData quadgramData;
+	public static Map<Character, Double> frequencyMap;
 	
 	@Override
-	public double getFrequencyOfLetter(char character) {
-		character = Character.toUpperCase(character);
-		if(character == 'A') return 6.516D; if(character == 'B') return 1.886D;  if(character == 'C') return 2.732D; 
-		if(character == 'D') return 5.076D; if(character == 'E') return 16.396D; if(character == 'F') return 1.656D; 
-		if(character == 'G') return 3.009D; if(character == 'H') return 4.577D;  if(character == 'I') return 6.550D; 
-		if(character == 'J') return 0.268D; if(character == 'K') return 1.417D;  if(character == 'L') return 3.437D;
-		if(character == 'M') return 2.534D; if(character == 'N') return 9.776D;  if(character == 'O') return 2.594D; 
-        if(character == 'P') return 0.670D; if(character == 'Q') return 0.018D;  if(character == 'R') return 7.003D; 
-        if(character == 'S') return 7.273D; if(character == 'T') return 6.154D;  if(character == 'U') return 4.166D; 
-        if(character == 'V') return 0.846D; if(character == 'W') return 1.921D;  if(character == 'X') return 0.034D; 
-        if(character == 'Y') return 0.039D; if(character == 'Z') return 1.134D;
-        return 0.0D;
-	}
-
-	@Override
-	public double getMaxFrequency() {
-		return 16.396D;
+	public Map<Character, Double> getCharacterFrequency() {
+		if(frequencyMap == null) {
+			frequencyMap = new HashMap<Character, Double>();
+			frequencyMap.put('A', 6.516D);
+			frequencyMap.put('B', 1.886D);
+			frequencyMap.put('C', 2.732D);
+			frequencyMap.put('D', 5.076D);
+			frequencyMap.put('E', 16.396D);
+			frequencyMap.put('F', 1.656D);
+			frequencyMap.put('G', 3.009D);
+			frequencyMap.put('H', 4.577D);
+			frequencyMap.put('I', 6.550D);
+			frequencyMap.put('J', 0.268D);
+			frequencyMap.put('K', 1.417D);
+			frequencyMap.put('L', 3.437D);
+			frequencyMap.put('M', 2.534D);
+			frequencyMap.put('N', 9.776D);
+			frequencyMap.put('O', 2.594D);
+			frequencyMap.put('P', 0.670D);
+			frequencyMap.put('Q', 0.018D);
+			frequencyMap.put('R', 7.003D);
+			frequencyMap.put('S', 7.270D);
+			frequencyMap.put('T', 6.154D);
+			frequencyMap.put('U', 4.166D);
+			frequencyMap.put('V', 0.846D);
+			frequencyMap.put('W', 1.921D);
+			frequencyMap.put('X', 0.034D);
+			frequencyMap.put('Y', 0.039D);
+			frequencyMap.put('Z', 1.134D);	
+		}
+		return frequencyMap;
 	}
 	
 	@Override

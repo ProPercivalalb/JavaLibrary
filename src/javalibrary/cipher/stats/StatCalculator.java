@@ -69,7 +69,7 @@ public class StatCalculator {
 		for(String letter : letters.keySet())
 			sum += letters.get(letter) * (letters.get(letter) - 1);
 		
-		int n = MathHelper.sum(letters.values());
+		int n = MathHelper.sumInt(letters.values());
 		return sum / (n * (n - 1)) * 10000.0D;
 	}
 	
@@ -80,7 +80,7 @@ public class StatCalculator {
 		for(String letter : letters.keySet())
 			sum += letters.get(letter) * (letters.get(letter) - 1);
 		
-		int n = MathHelper.sum(letters.values());
+		int n = MathHelper.sumInt(letters.values());
 		return sum / (n * (n - 1)) * 10000;
 	}
 

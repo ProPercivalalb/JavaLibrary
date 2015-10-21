@@ -1,23 +1,51 @@
 package javalibrary.language;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import javalibrary.fitness.NGramData;
+import javalibrary.math.MathHelper;
 
 /**
  * @author Alex Barter
  */
-public interface ILanguage {
+public abstract class ILanguage {
 	
-	public double getFrequencyOfLetter(char character);
+	public abstract Map<Character, Double> getCharacterFrequency();
+	
+	public double getFrequencyOfLetter(char character) {
+		return this.getCharacterFrequency().get(character);
+	}
+	
+	public List<Double> getFrequencyLargestFirst() {
+		List<Double> list = new ArrayList<Double>(this.getCharacterFrequency().values());
+		Collections.sort(list, Collections.reverseOrder());
+		return list;
+	}
+	
+	public List<Double> getFrequencySmallestFirst() {
+		List<Double> list = new ArrayList<Double>(this.getCharacterFrequency().values());
+		Collections.sort(list);
+		return list;
+	}
 
-	public double getMaxFrequency();
+	public double getMaxFrequency() {
+		return MathHelper.findLargestDouble(this.getCharacterFrequency().values());
+	}
 	
-	public void loadNGramData();
+	public double getMinFrequency() {
+		return MathHelper.findSmallestDouble(this.getCharacterFrequency().values());
+	}
 	
-	public NGramData getQuadgramData();
+	public abstract void loadNGramData();
 	
-	public double getNormalCoincidence();
+	public abstract NGramData getQuadgramData();
 	
-	public String getName();
+	public abstract double getNormalCoincidence();
 	
-	public String getImagePath();
+	public abstract String getName();
+	
+	public abstract String getImagePath();
 }

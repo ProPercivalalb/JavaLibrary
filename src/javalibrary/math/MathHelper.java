@@ -14,6 +14,7 @@ public class MathHelper {
 	
 	public static int findLargestInt(Iterable<Integer> numberArray) {	
 		int largest = Integer.MIN_VALUE;
+		
 		for(int number : numberArray)
 			largest = Math.max(largest, number);
 		
@@ -22,6 +23,7 @@ public class MathHelper {
 
 	public static double findLargestDouble(Iterable<Double> numberArray) {	
 		double largest = Double.MIN_VALUE;
+		
 		for(double number : numberArray)
 			largest = Math.max(largest, number);
 		
@@ -162,9 +164,16 @@ public class MathHelper {
 	    return fact;
 	}
 
-	public static int sum(Iterable<Integer> values) {
+	public static int sumInt(Iterable<Integer> values) {
 		int sum = 0;
 		for(int i : values)
+			sum += i;
+		return sum;
+	}
+	
+	public static double sumDouble(Iterable<Double> values) {
+		double sum = 0;
+		for(double i : values)
 			sum += i;
 		return sum;
 	}

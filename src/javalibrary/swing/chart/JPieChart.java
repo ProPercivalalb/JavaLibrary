@@ -56,7 +56,7 @@ public class JPieChart extends JChartBase {
 	    Font toolTipFont = new Font("SansSerif", Font.BOLD, 12);
 	    FontMetrics toolTipFontMetrics = graphics.getFontMetrics(toolTipFont);
 	    
-	    ArrayList<Arc2D> arcs = CircleRenderer.drawPieChart(graphics, this.values, graphX + graphWidth / 2, graphY + graphHeight / 2, MathHelper.findSmallestInt(graphWidth, graphHeight) - 6);
+	    ArrayList<Arc2D> arcs = CircleRenderer.drawPieChart(graphics, this.values, graphX + graphWidth / 2, graphY + graphHeight / 2, Math.min(graphWidth, graphHeight) - 6);
 	    int index = 0;
 	    for(Arc2D arc : arcs) {
 	    	if(arc.contains(this.mouseX, this.mouseY)) {

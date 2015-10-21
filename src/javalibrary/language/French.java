@@ -1,35 +1,52 @@
 package javalibrary.language;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javalibrary.fitness.NGramData;
 import javalibrary.fitness.QuadgramStats;
 
 /**
  * @author Alex Barter
  */
-public class French implements ILanguage {
+public class French extends ILanguage {
 
 	public static NGramData quadgramData;
+	public static Map<Character, Double> frequencyMap;
 	
 	@Override
-	public double getFrequencyOfLetter(char character) {
-		character = Character.toUpperCase(character);
-		if(character == 'A') return 7.636D; if(character == 'B') return 0.901D;  if(character == 'C') return 3.260D; 
-		if(character == 'D') return 3.669D; if(character == 'E') return 14.715D; if(character == 'F') return 1.066D; 
-		if(character == 'G') return 0.866D; if(character == 'H') return 0.737D;  if(character == 'I') return 7.529D; 
-		if(character == 'J') return 0.613D; if(character == 'K') return 0.049D;  if(character == 'L') return 5.456D;
-		if(character == 'M') return 2.968D; if(character == 'N') return 7.095D;  if(character == 'O') return 5.598D; 
-        if(character == 'P') return 2.521D; if(character == 'Q') return 1.362D;  if(character == 'R') return 6.693D; 
-        if(character == 'S') return 7.948D; if(character == 'T') return 7.244D;  if(character == 'U') return 6.311D; 
-        if(character == 'V') return 1.838D; if(character == 'W') return 0.074D;  if(character == 'X') return 0.427D; 
-        if(character == 'Y') return 0.128D; if(character == 'Z') return 0.326D;
-        return 0.0D;
+	public Map<Character, Double> getCharacterFrequency() {
+		if(frequencyMap == null) {
+			frequencyMap = new HashMap<Character, Double>();
+			frequencyMap.put('A', 7.636D);
+			frequencyMap.put('B', 0.901D);
+			frequencyMap.put('C', 3.260D);
+			frequencyMap.put('D', 3.669D);
+			frequencyMap.put('E', 14.715D);
+			frequencyMap.put('F', 1.066D);
+			frequencyMap.put('G', 0.866D);
+			frequencyMap.put('H', 0.737D);
+			frequencyMap.put('I', 7.529D);
+			frequencyMap.put('J', 0.613D);
+			frequencyMap.put('K', 0.049D);
+			frequencyMap.put('L', 5.456D);
+			frequencyMap.put('M', 2.968D);
+			frequencyMap.put('N', 7.095D);
+			frequencyMap.put('O', 5.796D);
+			frequencyMap.put('P', 2.521D);
+			frequencyMap.put('Q', 1.362D);
+			frequencyMap.put('R', 6.693D);
+			frequencyMap.put('S', 7.948D);
+			frequencyMap.put('T', 7.244D);
+			frequencyMap.put('U', 6.311D);
+			frequencyMap.put('V', 1.838D);
+			frequencyMap.put('W', 0.074D);
+			frequencyMap.put('X', 0.427D);
+			frequencyMap.put('Y', 0.128D);
+			frequencyMap.put('Z', 0.326D);	
+		}
+		return frequencyMap;
 	}
-
-	@Override
-	public double getMaxFrequency() {
-		return 14.715D;
-	}
-
 
 	@Override
 	public void loadNGramData() {

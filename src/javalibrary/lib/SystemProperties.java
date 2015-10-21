@@ -1,6 +1,5 @@
 package javalibrary.lib;
 
-
 /**
  * @author Alex
  */

@@ -14,7 +14,7 @@ public class BifidPeriod {
 				counts.put(s, counts.containsKey(s) ? counts.get(s) + 1 : 1);
 			}
 			
-			double average =  MathHelper.sum(counts.values()) / (double)counts.size();
+			double average =  MathHelper.sumInt(counts.values()) / (double)counts.size();
 		    
 		    double totalDiff = 0.0D;
 		    for(String s : counts.keySet()) {

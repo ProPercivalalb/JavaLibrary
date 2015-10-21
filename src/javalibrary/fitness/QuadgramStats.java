@@ -49,7 +49,7 @@ public class QuadgramStats {
 				
 			String line = "";
 			while((line = reader.readLine()) != null) {
-				if(line.isEmpty()) 
+				if(line.isEmpty())
 					continue;
 					
 				String[] str = line.split(" ");
@@ -61,13 +61,15 @@ public class QuadgramStats {
 				total += count;
 				mapping.put(str[0], (double)count);
 			}
-				
+			
 			floor = Math.log10(0.01F / total);
-				
+			
 			for(String gram : mapping.keySet()) {
 				double count = mapping.get(gram);
-				mapping.put(gram, Math.log10(count / total));
-				fitnessPerChar += (count / total) * Math.log10(count / total);
+				double log = Math.log10(count / total);
+				
+				mapping.put(gram, log);
+				fitnessPerChar += (count / total) * log;
 			}
 		} 
 		catch(Exception e) {
