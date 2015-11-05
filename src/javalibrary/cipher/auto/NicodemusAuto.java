@@ -14,7 +14,7 @@ import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Nicodemus;
 import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -69,7 +69,7 @@ public class NicodemusAuto implements IForceDecrypt {
 		public void onKeyCreate(String key) {
 			this.lastText = Nicodemus.decode(this.cipherText, key);
 				
-			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
+			this.currentScore = TextFitness.scoreFitnessQuadgrams(this.lastText, this.language);
 			
 			if(this.currentScore >= this.bestScore) {
 				this.output.println("Fitness: %f, Key: %s, Plaintext: %s", this.currentScore, key, this.lastText);

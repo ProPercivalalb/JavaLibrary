@@ -14,7 +14,7 @@ import javalibrary.cipher.Playfair;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -41,7 +41,7 @@ public class PlayfairAuto implements IForceDecrypt {
 			progressBar.setValue(0);
 			String bestKey = KeySquareManipulation.generateRandKeySquare();
 			String bestText = Playfair.decode(cipherText, bestKey);
-			double maxscore = QuadgramStats.scoreFitness(bestText, language);
+			double maxscore = TextFitness.scoreFitnessQuadgrams(bestText, language);
 			
 			String bestEverKey = bestKey;
 			String bestEverText = bestText;
@@ -54,7 +54,7 @@ public class PlayfairAuto implements IForceDecrypt {
 					String lastKey = KeySquareManipulation.modifyKey(bestKey);
 			
 					String lastText = Playfair.decode(cipherText, lastKey);
-					double score = QuadgramStats.scoreFitness(lastText, language);
+					double score = TextFitness.scoreFitnessQuadgrams(lastText, language);
 					double dF = score - maxscore;
 					
 				    if(dF >= 0) {

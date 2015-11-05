@@ -12,7 +12,7 @@ import javalibrary.Output;
 import javalibrary.cipher.Bazeries;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -53,7 +53,7 @@ public class BazeriesAuto implements IForceDecrypt {
 		public void onIteration(int numberKey) {
 			this.lastText = Bazeries.decode(this.cipherText, numberKey);
 			
-			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
+			this.currentScore = TextFitness.scoreFitnessQuadgrams(this.lastText, this.language);
 			
 			if(this.currentScore > this.bestScore) {
 				this.output.println("Fitness: %f, Number Key: %d, Plaintext: %s", this.currentScore, numberKey, this.lastText);	

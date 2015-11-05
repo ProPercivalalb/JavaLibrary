@@ -125,4 +125,24 @@ public class StringTransformer {
     		list.add(text.substring(i, Bound.bound(i + size, 0, text.length())));
     	return list;
     }
+    
+    public static int countDigitChars(String text) {
+    	text = text.replaceAll("[^0-9]", "");
+    	return text.length();
+    }
+    
+    public static int countLetterChars(String text) {
+    	text = text.replaceAll("[^a-zA-Z]+", "");
+    	return text.length();
+    }
+    
+    public static int countSpacesChars(String text) {
+    	text = text.replaceAll("[^\\s+]+", "");
+    	return text.length();
+    }
+    
+	public static int countOtherChars(String text) {
+		text = text.replaceAll("[0-9a-zA-Z\\s+]", "");
+    	return text.length();
+	}
 }

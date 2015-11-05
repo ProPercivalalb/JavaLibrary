@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javalibrary.fitness.NGramData;
 import javalibrary.math.MathHelper;
+import javalibrary.util.MapHelper;
 
 /**
  * @author Alex Barter
@@ -17,6 +18,11 @@ public abstract class ILanguage {
 	
 	public double getFrequencyOfLetter(char character) {
 		return this.getCharacterFrequency().get(character);
+	}
+	
+	public List<Character> getLetterLargestFirst() {
+		Map<Character, Double> order = MapHelper.sortMapByValue(this.getCharacterFrequency(), false);
+		return new ArrayList<Character>(order.keySet());
 	}
 	
 	public List<Double> getFrequencyLargestFirst() {
@@ -42,6 +48,8 @@ public abstract class ILanguage {
 	public abstract void loadNGramData();
 	
 	public abstract NGramData getQuadgramData();
+	
+	public abstract NGramData getDiagramData();
 	
 	public abstract double getNormalCoincidence();
 	

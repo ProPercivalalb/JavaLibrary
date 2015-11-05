@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javalibrary.fitness.NGramData;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 
 /**
  * @author Alex Barter
@@ -12,6 +12,7 @@ import javalibrary.fitness.QuadgramStats;
 public class Spanish extends ILanguage {
 
 	public static NGramData quadgramData;
+	public static NGramData trigramData;
 	public static Map<Character, Double> frequencyMap;
 	
 	@Override
@@ -50,12 +51,17 @@ public class Spanish extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/spanish_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/javalibrary/fitness/spanish_quadgrams.txt");
 	}
 	
 	@Override
 	public NGramData getQuadgramData() {
 		return quadgramData;
+	}
+	
+	@Override
+	public NGramData getDiagramData() {
+		return trigramData;
 	}
 	
 	@Override

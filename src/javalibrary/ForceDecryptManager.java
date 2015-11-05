@@ -15,6 +15,7 @@ import javalibrary.cipher.auto.CaesarAuto;
 import javalibrary.cipher.auto.ColumnarAuto;
 import javalibrary.cipher.auto.ColumnarRowAuto;
 import javalibrary.cipher.auto.FourSquareAuto;
+import javalibrary.cipher.auto.GodSolverAuto;
 import javalibrary.cipher.auto.HillAuto;
 import javalibrary.cipher.auto.KeywordAuto;
 import javalibrary.cipher.auto.MyszkowskiAuto;
@@ -24,6 +25,7 @@ import javalibrary.cipher.auto.PortaAuto;
 import javalibrary.cipher.auto.RailFenceAuto;
 import javalibrary.cipher.auto.RedefenceAuto;
 import javalibrary.cipher.auto.RouteAuto;
+import javalibrary.cipher.auto.TestAuto;
 import javalibrary.cipher.auto.TwoSquareAuto;
 import javalibrary.cipher.auto.VariantAuto;
 import javalibrary.cipher.auto.VigenereAuto;
@@ -35,6 +37,7 @@ import javalibrary.cipher.auto.VigenereProgressiveKeyAuto;
  */
 public class ForceDecryptManager {
 
+	public static GodSolverAuto god = new GodSolverAuto();
 	public static ADFGXAuto adfgx = new ADFGXAuto();
 	public static ADFGVXAuto adfgvx = new ADFGVXAuto();
 	public static AffineAuto affine = new AffineAuto();
@@ -79,6 +82,8 @@ public class ForceDecryptManager {
 	}
 	
 	static {
+		ciphers.add(new TestAuto());
+		ciphers.add(god);
 		ciphers.add(adfgx);
 		ciphers.add(adfgvx);
 		ciphers.add(affine);

@@ -16,7 +16,7 @@ import javalibrary.cipher.auto.RedefenceAuto.PermutationTask;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -44,7 +44,7 @@ public class ADFGXAuto implements IForceDecrypt {
 			int[] bestArray = new int[] {0, 1, 2, 3, 4};//ArrayHelper.range(0, 6);
 			System.out.println(Arrays.toString(bestArray));
 			String bestText = ADFGX.decode(cipherText, bestKey, bestArray);
-			double maxscore = QuadgramStats.scoreFitness(bestText, language);
+			double maxscore = TextFitness.scoreFitnessQuadgrams(bestText, language);
 			
 			String bestEverKey = bestKey;
 			String bestEverText = bestText;
@@ -61,7 +61,7 @@ public class ADFGXAuto implements IForceDecrypt {
 					//	bestArray = KeySquareManipulation.exchangeOrder(bestArray);
 					
 					String lastText = ADFGX.decode(cipherText, lastKey, bestArray);
-					double score = QuadgramStats.scoreFitness(lastText, language);
+					double score = TextFitness.scoreFitnessQuadgrams(lastText, language);
 					double dF = score - maxscore;
 					
 				    if(dF >= 0) {

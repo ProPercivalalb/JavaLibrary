@@ -13,6 +13,7 @@ import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Caesar;
 import javalibrary.cipher.Vigenere;
+import javalibrary.cipher.stats.StatCalculator;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.ChiSquared;
@@ -31,7 +32,7 @@ public class VigenereAuto implements IForceDecrypt {
 		int minKeywordLength = data.getData("minkeylength", Integer.class);
 		int maxKeywordLength = data.getData("maxkeylength", Integer.class);
 		
-		int keyLength = this.findKeywordLength(cipherText, minKeywordLength, maxKeywordLength, language);
+		int keyLength = StatCalculator.calculateBestKappaIC(cipherText, minKeywordLength, maxKeywordLength, language);
 		
 		progressBar.addMaxValue(keyLength * 26);
 		
@@ -48,29 +49,6 @@ public class VigenereAuto implements IForceDecrypt {
         
 		return plainText;
 	}
-	
-	public int findKeywordLength(String text, int minLength, int maxLength, ILanguage language) {
-		int bestLength = minLength;
-	
-	    double smallestDifference = Double.MAX_VALUE;
-	    for(int i = minLength; i <= maxLength; ++i) {
-	    	double total = 0;
-	    	String temp = StringTransformer.rotateRight(text, i);
-		    for(int j = 0; j < text.length(); ++j)
-		       if(temp.charAt(j) == text.charAt(j))
-		    	   total += 1;
-	    	
-	    	double average = total / text.length();
-	    	double currentSquaredDiff = Math.abs((language.getNormalCoincidence() - average));
-	    	
-	        if(currentSquaredDiff < smallestDifference) {
-	        	bestLength = i;
-	        	smallestDifference = currentSquaredDiff;
-	        }
-	    }
-	    
-	    return bestLength;
-	}	
 
     public int findBestCaesarShift(String text, ILanguage language, ProgressValue progressBar) {
         int best = 0;

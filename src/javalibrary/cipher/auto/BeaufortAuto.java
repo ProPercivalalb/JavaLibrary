@@ -13,6 +13,7 @@ import javalibrary.ForceDecryptManager;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Beaufort;
+import javalibrary.cipher.stats.StatCalculator;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.language.ILanguage;
@@ -42,7 +43,7 @@ public class BeaufortAuto implements IForceDecrypt {
 		int minKeywordLength = data.getData("minkeylength", Integer.class);
 		int maxKeywordLength = data.getData("maxkeylength", Integer.class);
 		
-		int keyLength = ForceDecryptManager.vigenere.findKeywordLength(invervedText, minKeywordLength, maxKeywordLength, language);
+		int keyLength = StatCalculator.calculateBestKappaIC(invervedText, minKeywordLength, maxKeywordLength, language);
 		
 		progressBar.addMaxValue(keyLength * 26);
 		

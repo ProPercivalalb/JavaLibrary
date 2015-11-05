@@ -11,6 +11,10 @@ public class Dictionary {
 
 	public static List<String> words = new ArrayList<String>();
 	
+	public static boolean containsWord(String word) {
+		return words.contains(word);
+	}
+	
 	public static void onLoad() {
 		try {
 			BufferedReader updateReader3 = new BufferedReader(new InputStreamReader(TraverseTree.class.getResourceAsStream("/javalibrary/dict/english_wordlist.txt")));

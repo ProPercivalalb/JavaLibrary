@@ -2,7 +2,7 @@ package javalibrary;
 
 import java.util.Random;
 
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 
 public abstract class SimulatedAnnealing {
@@ -24,7 +24,7 @@ public abstract class SimulatedAnnealing {
 		
 		while(true) {
 			String bestText = this.getStartText();
-			double maxscore = QuadgramStats.scoreFitness(bestText, language);
+			double maxscore = TextFitness.scoreFitnessQuadgrams(bestText, language);
 			
 			String bestEverText = bestText;
 			double bestscore = maxscore;
@@ -33,7 +33,7 @@ public abstract class SimulatedAnnealing {
 			for(double TEMP = TEMP_VALUE; TEMP >= 0; TEMP -= STEP_VALUE) {
 				for(int count = 0; count < COUNT_VALUE; count++){ 
 					String lastText = this.getModifiedText(count);
-					double score = QuadgramStats.scoreFitness(lastText, language);
+					double score = TextFitness.scoreFitnessQuadgrams(lastText, language);
 					double dF = score - maxscore;
 					
 				    if(dF >= 0) {

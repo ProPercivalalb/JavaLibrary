@@ -2,6 +2,7 @@ package javalibrary.math;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex Barter
@@ -116,22 +117,21 @@ public class MathHelper {
 	 */
 	public static boolean isPrimeNumber(int target) {
 		//Gets all the factors of the given number
-		ArrayList<Integer> factors = getFactors(target);
+		List<Integer> factors = getFactors(target);
 		//If there are 2 or less factors it is deemed to be a prime number 
 		return factors.size() <= 2;
 	}
 	
-	public static ArrayList<Integer> getFactors(int target) {
-		ArrayList<Integer> factors = new ArrayList<Integer>();
-		for(int i = 1; i <= (target + 1) / 2; ++i) {
-			int answer = target / i;
-			if(answer * i == target) {
-				if(!factors.contains(i))
-					factors.add(i);
-				if(!factors.contains(answer))
-					factors.add(answer);
-			}
-		}
+	public static List<Integer> getFactors(int target) {
+		List<Integer> factors = new ArrayList<Integer>();
+		int incrementer = 1;
+        if((target & 1) == 1) incrementer = 2;
+
+        for(int i = 1; i <= target / 2; i += incrementer)
+            if(target % i == 0)
+            	factors.add(i);
+
+        factors.add(target);
 		return factors;
 	}
 	
@@ -152,14 +152,14 @@ public class MathHelper {
 	
 	public static int factorial(int n) {
 		int fact = 1; 
-	    for (int i = 1; i <= n; i++) 
+	    for(int i = 1; i <= n; i++) 
 	    	fact *= i;
 	    return fact;
 	}
 	
 	public static BigInteger factorialBig(int n) {
 		BigInteger fact = BigInteger.ONE;
-	    for (int i = 1; i <= n; i++) 
+	    for(int i = 1; i <= n; i++) 
 	    	fact = fact.multiply(BigInteger.valueOf(i));
 	    return fact;
 	}

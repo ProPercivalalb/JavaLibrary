@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.border.Border;
 
@@ -21,7 +23,8 @@ public class JBarChart extends JChartBase {
 	private boolean hasBarText = true;
 	private Color barFillColor = Color.gray;
 	private Color barOutlineColor = Color.black;
-
+	public List<Integer> selected = new ArrayList<Integer>();
+	
 	public JBarChart() {
 		this(new ChartList());
 	}
@@ -40,10 +43,14 @@ public class JBarChart extends JChartBase {
 		int componentHeight = dimension.height;
 		
 		Border border = this.getBorder();
-		int borderInsetsBottom = border.getBorderInsets(this).bottom;
-		int borderInsetsTop = border.getBorderInsets(this).top;
-		int borderInsetsLeft = border.getBorderInsets(this).left;
-		int borderInsetsRight = border.getBorderInsets(this).right;
+		int borderInsetsBottom = 0, borderInsetsTop = 0, borderInsetsLeft = 0, borderInsetsRight = 0;
+		
+		if(border != null) {
+			borderInsetsBottom = border.getBorderInsets(this).bottom;
+			borderInsetsTop = border.getBorderInsets(this).top;
+			borderInsetsLeft = border.getBorderInsets(this).left;
+			borderInsetsRight = border.getBorderInsets(this).right;
+		}
 		
 	    //Creates the parameters in which the graph will be drawn within
 	    int graphX = borderInsetsLeft;
@@ -90,8 +97,11 @@ public class JBarChart extends JChartBase {
 	    	}
 	    	
 	    	graphics.setColor(this.barOutlineColor);
+
 	    	graphics.fillRect(barX, barY, barWidth - (barGap / 2), barTall);
 	    	graphics.setColor(this.barFillColor);
+	    	if(selected.contains(i))
+	    		graphics.setColor(new Color(202, 0, 2));
 	    	graphics.fillRect(barX + 1, barY + 1, barWidth - (barGap / 2) - 2, barTall - 2);
 	    
 	    	if(this.hasBarText) {
@@ -158,5 +168,13 @@ public class JBarChart extends JChartBase {
 	public JBarChart setHasBarText(boolean hasBarText) {
 		this.hasBarText = hasBarText;
 		return this;
+	}
+	
+	public void setSelected(int index) {
+		this.selected.add(index);
+	}
+	
+	public void unselectAll() {
+		this.selected.clear();
 	}
 }

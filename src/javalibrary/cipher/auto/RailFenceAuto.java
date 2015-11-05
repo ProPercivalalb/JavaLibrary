@@ -15,7 +15,7 @@ import javalibrary.Output;
 import javalibrary.cipher.RailFence;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -38,7 +38,7 @@ public class RailFenceAuto implements IForceDecrypt {
 		
 		for(int rows = minRows; rows <= maxRows; ++rows) {
 			lastText = RailFence.decode(cipherText, rows);
-			currentScore = QuadgramStats.scoreFitness(lastText, language);
+			currentScore = TextFitness.scoreFitnessQuadgrams(lastText, language);
 		
 			if(currentScore > bestScore) {
 				output.println("Fitness: %f, Number of Rows: %d, Plaintext: %s", currentScore, rows, lastText);

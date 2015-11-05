@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javalibrary.ForceDecryptManager;
 import javalibrary.IForceDecrypt;
+import javalibrary.cipher.Bifid;
+import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
-import javalibrary.math.MathHelper;
 import javalibrary.string.LetterCount;
 import javalibrary.string.StringAnalyzer;
 import javalibrary.string.StringTransformer;
+import javalibrary.util.MapHelper;
 
 /**
  * @author Alex Barter (10AS)
  */
 public class StatCalculator {
 
+	/*                   Index of coincidence calculations                   */
+	
 	public static double calculateIC(String text) {
 		TreeMap<String, Integer> letters = StringAnalyzer.getEmbeddedStrings(text, 1, 1);
 
@@ -30,60 +35,283 @@ public class StatCalculator {
 		return total / (text.length() * (text.length() - 1)) * 1000.0D;
 	}
 	
-	public static double calculateMIC(String text) {
+	public static double calculateMaxIC(String text, int minPeriod, int maxPeriod) {
 		double maxIC = 0.0D;
 		
-	    for(int period = 1; period <= 15; ++period) {
+	    for(int period = minPeriod; period <= maxPeriod; ++period) {
 	    	double totalIOC = 0.0D;
 	    	
-	    	for(int j = 0; j < period; ++j)
-		    	totalIOC += StatCalculator.calculateIC(StringTransformer.getEveryNthChar(text, j, period));
+	    	for(int i = 0; i < period; ++i)
+		    	totalIOC += StatCalculator.calculateIC(StringTransformer.getEveryNthChar(text, i, period));
 	    	
-	    	double average = totalIOC / period;
-	    	maxIC = Math.max(maxIC, average);
+	    	maxIC = Math.max(maxIC, totalIOC / period);
 	    }
 	    return maxIC;
 	}
 	
-	public static double calculateMKA(String text) {
-	    double maxKappa = Double.MIN_VALUE;
-	    
-	    for(int period = 1; period <= 15; ++period) {
-	    	double total = 0;
-	    	String temp = StringTransformer.rotateRight(text, period);
-		    for(int j = 0; j < text.length(); ++j)
-		       if(temp.charAt(j) == text.charAt(j))
-		    	   total += 1;
-	    	
-	    	double average = total / text.length();
-	    	maxKappa = Math.max(maxKappa, average);
-	    }
-	    
-	    return maxKappa * 1000.0D;
-	}
-	
-	public static double calculateDIC(String text) {
+	public static double calculateDiagrahpicIC(String text) {
 		TreeMap<String, Integer> letters = StringAnalyzer.getEmbeddedStrings(text, 2, 2);
 
 		double sum = 0.0;
 		for(String letter : letters.keySet())
 			sum += letters.get(letter) * (letters.get(letter) - 1);
 		
-		int n = MathHelper.sumInt(letters.values());
+		int n = text.length() - 1;
 		return sum / (n * (n - 1)) * 10000.0D;
 	}
 	
-	public static double calculateEDI(String text) {
+	public static double calculateEvenDiagrahpicIC(String text) {
 		TreeMap<String, Integer> letters = StringAnalyzer.getEmbeddedStrings(text, 2, 2, false);
 		
 		double sum = 0.0;
 		for(String letter : letters.keySet())
 			sum += letters.get(letter) * (letters.get(letter) - 1);
 		
-		int n = MathHelper.sumInt(letters.values());
-		return sum / (n * (n - 1)) * 10000;
+		int n = (int)Math.floor(text.length() / 2);
+		return sum / (n * (n - 1));
 	}
+	
+	/*                         Friedman's Kappa test                         */
+	
+	/**
+	 * Calculates how many times a letter appears in the same place in two sets of text.
+	 * In English for a length of 1000 characters you would expect 66 or 67 coincidences between them.
+	 */
+	public static double calculateKappaIC(String text, int period) {
+		return calculateKappaIC(text, StringTransformer.rotateRight(text, period));
+	}
+	
+	private static double calculateKappaIC(String text1, String text2) {
+		double coincidence = 0;
+		for(int i = 0; i < text1.length(); ++i)
+			if(text1.charAt(i) == text2.charAt(i))
+				coincidence += 1;
+	    	
+	    return coincidence / text1.length();
+	}
+	
+	public static double calculateMaxKappaIC(String text, int minPeriod, int maxPeriod) {
+	    double maxKappa = Double.MIN_VALUE;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period)
+	    	maxKappa = Math.max(maxKappa, calculateKappaIC(text, period));
+	    
+	    return maxKappa * 1000.0D;
+	}
+	
+	public static double calculateMinKappaIC(String text, int minPeriod, int maxPeriod) {
+	    double minKappa = Double.MAX_VALUE;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period)
+	    	minKappa = Math.min(minKappa, calculateKappaIC(text, period));
+	    
+	    return minKappa * 1000.0D;
+	}
+	
+	public static int calculateBestKappaIC(String text, int minPeriod, int maxPeriod, ILanguage language) {
+		int bestPeriod = -1;
+	    double bestKappa = Double.MAX_VALUE;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period) {
+	    	double sqDiff = Math.pow(calculateKappaIC(text, period) - language.getNormalCoincidence(), 2);
+	    	
+	    	if(sqDiff < bestKappa)
+	    		bestPeriod = period;
+	    	
+	    	bestKappa = Math.min(bestKappa, sqDiff);
+	    }
+	    
+	    return bestPeriod;
+	}
+	
 
+	public static double calculateDiagraphicKappaIC(String text, int period) {
+		return calculateDiagraphicKappaIC(text, StringTransformer.rotateRight(text, period));
+	}
+	
+	private static double calculateDiagraphicKappaIC(String text1, String text2) {
+		double coincidence = 0;
+		 for(int j = 0; j < text1.length(); j += 2)
+		       if(text1.substring(j, j + 2).equals(text2.substring(j, j + 2)))
+		    	   coincidence += 1;
+	    	
+	    return coincidence / (text1.length() / 2);
+	}
+	
+	public static double calculateMaxDiagraphicKappaIC(String text, int minPeriod, int maxPeriod) {
+	    double maxKappa = Double.MIN_VALUE;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period)
+	    	maxKappa = Math.max(maxKappa, calculateDiagraphicKappaIC(text, period));
+	    
+	    return maxKappa * 1000.0D;
+	}
+	
+	public static double calculateMinDiagraphicKappaIC(String text, int minPeriod, int maxPeriod) {
+	    double minKappa = Double.MAX_VALUE;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period)
+	    	minKappa = Math.min(minKappa, calculateDiagraphicKappaIC(text, period));
+	    
+	    return minKappa * 1000.0D;
+	}
+	
+	public static int calculateBestDiagraphicKappaIC(String text, int minPeriod, int maxPeriod, ILanguage language) {
+		int bestPeriod = -1;
+	    double bestKappa = Double.POSITIVE_INFINITY;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period) {
+	    	double sqDiff = Math.pow(calculateDiagraphicKappaIC(text, period) - language.getNormalCoincidence(), 2);
+	    	
+	    	if(sqDiff < bestKappa)
+	    		bestPeriod = period;
+	    	
+	    	bestKappa = Math.min(bestKappa, sqDiff);
+	    }
+	    
+	    return bestPeriod;
+	}
+	
+	public static double calculateBifidDiagraphicIC(String text, int period) {
+		if(period == 0) period = text.length();
+		
+		Map<String, Integer> theatricalDiagram = new HashMap<String, Integer>();
+		int count = 0;
+		for(int i = 0; i < text.length(); i += period) {
+			int columns = Math.min(period / 2, (text.length() - i) / 2);
+			int limit = Math.min(i + period, text.length());
+			
+			for(int j = i; j < limit - columns; j++) {
+				String theatrical = text.charAt(j) + "" + text.charAt(j + columns);
+				theatricalDiagram.put(theatrical, 1 + (theatricalDiagram.containsKey(theatrical) ? theatricalDiagram.get(theatrical) : 0));
+			}
+			count += limit - columns - i;
+		}
+		
+		double sum = 0.0;
+		for(String diagram : theatricalDiagram.keySet())
+			sum += theatricalDiagram.get(diagram) * (theatricalDiagram.get(diagram) - 1);
+		
+		return 62500 * sum / (count * (count - 1));
+	}
+	
+	public static double calculateMaxBifidDiagraphicIC(String text, int minPeriod, int maxPeriod) {
+		if(containsDigit(text) || containsHash(text))
+			return 0.0D;
+		
+		double bestIC = 0;
+	    for(int period = minPeriod; period <= maxPeriod; period++){
+	    	if(period == 1) continue;
+	    	
+	        bestIC = Math.max(bestIC, calculateBifidDiagraphicIC(text, period));
+	    }
+	    
+	    return bestIC;
+	}
+	
+	public static int calculateBestBifidDiagraphicIC(String text, int minPeriod, int maxPeriod) {
+		if(containsDigit(text) || containsHash(text))
+			return -1;
+		
+		int bestPeriod = -1;
+		double bestIC = Double.MIN_VALUE;
+	    for(int period = minPeriod; period <= maxPeriod; period++){
+	    	if(period == 1) continue;
+	    	
+	        double score = calculateBifidDiagraphicIC(text, period);
+	        
+	        if(bestIC < score)
+	        	bestPeriod = period;
+	        
+	        bestIC = Math.max(bestIC, score);
+	    }
+	    
+	    return bestPeriod;
+	}
+	
+	public static double calculateNicodemusIC(String text, int noOfRows, int period) {
+		int[][] counts = new int[period][26];
+
+        int blockNo = (int)Math.floor(text.length() / (noOfRows * period));
+        if(blockNo == 0) return 0.0D;
+        
+        int limit = blockNo * noOfRows * period;
+		int index = 0;
+		for(int i = 0; i < limit; i++) {
+			counts[index][text.charAt(i) - 'A'] += 1;
+            if((i + 1) % noOfRows == 0)
+                index = (index + 1) % period;
+		}
+		
+		double averagedIC = 0.0D;
+		for(int i = 0; i < period; i++) {
+			double total = 0.0D;
+			int count = 0;
+			for(int j = 0; j < counts[i].length; j++) {
+				total += counts[i][j] * (counts[i][j] - 1);
+				count += counts[i][j];
+			}
+			if(count > 1)
+				averagedIC += total / (count * (count - 1));
+		}
+        
+		return averagedIC / period;
+	}
+	
+	public static double calculateMaxNicodemusIC(String text, int minPeriod, int maxPeriod) {
+		if(containsDigit(text) || containsHash(text))
+			return 0.0D;
+		
+		double maxIC = Double.NEGATIVE_INFINITY;
+		
+		for(int period = minPeriod; period <= maxPeriod; period++)
+			maxIC = Math.max(maxIC, calculateNicodemusIC(text, 5, period));
+		
+	    return 1000.0D * maxIC;
+	}
+	
+	public static int calculateBestNicodemusIC(String text, int minPeriod, int maxPeriod, ILanguage language) {
+		if(containsDigit(text) || containsHash(text))
+			return -1;
+		
+		int bestPeriod = -1;
+	    double bestIC = Double.POSITIVE_INFINITY;
+	    
+	    for(int period = minPeriod; period <= maxPeriod; ++period) {
+	    	double sqDiff = Math.pow(calculateNicodemusIC(text, 5, period) - language.getNormalCoincidence(), 2);
+	    	
+	    	if(sqDiff < bestIC)
+	    		bestPeriod = period;
+	    	
+	    	bestIC = Math.min(bestIC, sqDiff);
+	    }
+		
+	    return bestPeriod;
+	}
+	
+	/*                              Normor test                              */
+	
+	public static double calculateNormalOrder(String text, ILanguage language) {
+		if(containsDigit(text) || containsHash(text))
+			return 0.0D;
+
+		List<Character> normalLetterOrder = language.getLetterLargestFirst();
+		
+		List<String> textLetterOrder = StringAnalyzer.orderByCount(StringAnalyzer.getEmbeddedStrings(text, 1, 1));
+		
+		double total = 0.0D;
+		for(int i = 0; i < normalLetterOrder.size(); i++) {
+			String target = "" + normalLetterOrder.get(i);
+			
+			if(textLetterOrder.contains(target))
+				total += Math.abs(i - textLetterOrder.indexOf(target));
+			else
+				total += i;
+		}
+		
+		return total;
+	}
+	
 	public static double calculateLR(String text) {
 		int count = 0;
 		for(int i = 0; i < text.length(); i++) {
@@ -104,7 +332,7 @@ public class StatCalculator {
 		int sumAll = 0;
 		int sumOdd = 0;
 		for(int i = 0; i < text.length(); i++) {
-			for(int j = i + 1 ; j < text.length(); j++) {
+			for(int j = i + 1; j < text.length(); j++) {
 				int n = 0;
 				while(j + n < text.length() && text.charAt(i + n) == text.charAt(j + n))
 					n++;
@@ -142,66 +370,68 @@ public class StatCalculator {
 		return score * 100 / (text.length() - 1);
 	}
 
-	public static boolean calculateDIV2(String text) {
+	public static boolean isLengthDivisible2(String text) {
 		return text.length() % 2 == 0;
 	}
 	
-	public static boolean calculateDIV3(String text) {
+	public static boolean isLengthDivisible3(String text) {
 		return text.length() % 3 == 0;
 	}
 	
-	public static boolean calculateDIV5(String text) {
+	public static boolean isLengthDivisible5(String text) {
 		return text.length() % 5 == 0;
 	}
 	
-	public static boolean calculateDIV25(String text) {
+	public static boolean isLengthDivisible25(String text) {
 		return text.length() % 25 == 0;
 	}
 	
-	public static boolean calculateDIV4_15(String text) {
+	public static boolean isLengthDivisible4_15(String text) {
 		for(int n = 4; n <= 15; n++) 
-			return text.length() % n == 0;
+			if(text.length() % n == 0)
+				return true;
 		
 		return false;
 	}
 	
-	public static boolean calculateDIV4_30(String text) {
+	public static boolean isLengthDivisible4_30(String text) {
 		for(int n = 4; n <= 30; n++) 
-			return text.length() % n == 0;
+			if(text.length() % n == 0)
+				return true;
 		
 		return false;
 	}
 	
-	public static boolean calculatePSQ(String text) {
+	public static boolean isLengthPerfectSquare(String text) {
 		int n = (int)Math.floor(Math.sqrt(text.length()));
 		return Math.pow(n, 2) == text.length();
 	}
 	
-	public static boolean calculateHASL(String text) {
+	public static boolean containsLetter(String text) {
 		for(int i = 0; i < text.length(); i++)
 	        if('A' <= text.charAt(i) && text.charAt(i) <= 'Z')
 	        	return true;
 	    return false;
 	}
 	
-	public static boolean calculateHASD(String text) {
+	public static boolean containsDigit(String text) {
 		for(int i = 0; i < text.length(); i++)
 	        if('0' <= text.charAt(i) && text.charAt(i) <= '9')
 	        	return true;
 	    return false;
 	}
 
-	public static boolean calculateHASJ(String text) {
+	public static boolean containsJ(String text) {
 		return text.contains("J");
 	}
 	
-	public static boolean calculateHASH(String text) {
+	public static boolean containsHash(String text) {
 		return text.contains("#");
 	}
 
 	public static boolean calculateDBL(String text) {
 		if(text.length() % 2 == 0)
-	        for(int i=0; i < text.length(); i += 2)
+	        for(int i = 0; i < text.length(); i += 2)
 	            if (text.charAt(i) == text.charAt(i + 1))
 	            	return true;
 		return false;
@@ -209,7 +439,7 @@ public class StatCalculator {
 	
 
 	public static double calculateALDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
+		if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 		
 	    List<Integer> xlate_indices = Arrays.asList(4,4,1,2,0,0,0,0);
@@ -355,7 +585,7 @@ public class StatCalculator {
 	}
 	
 	public static double calculateBLDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
+		if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 		
 		 int largestSum = Integer.MIN_VALUE;
@@ -375,7 +605,7 @@ public class StatCalculator {
 	}
 
 	public static double calculatePLDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
+		if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 		
 		int largestSum = Integer.MIN_VALUE;
@@ -395,7 +625,7 @@ public class StatCalculator {
 	}
 
 	public static int calculateSLDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text) || text.length() % 2 == 1)
+		if(containsDigit(text) || containsHash(text) || text.length() % 2 == 1)
 			return 0;
 		
 		int largestSum = Integer.MIN_VALUE;
@@ -417,7 +647,7 @@ public class StatCalculator {
 	}
 
 	public static double calculateVLDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
+		if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 		
 		int largestSum = Integer.MIN_VALUE;
@@ -437,32 +667,8 @@ public class StatCalculator {
 		return largestSum;
 	}
 	
-	public static double calculateNOMOR(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
-			return 0.0D; 
-
-		List<Integer> english_freq_list = Arrays.asList(4, 19, 0, 14, 8, 13, 18, 17, 7, 11, 3, 20, 2, 12, 6, 5, 24, 15, 22, 1, 21, 10, 23, 9, 25, 16);
-		
-		ArrayList<LetterCount> letters = StringAnalyzer.sizeOrder(StringAnalyzer.countLetters(text));
-	
-		double total = 0.0D;
-		for(int i = 0; i < 26; ++i) {
-			int count = 0;
-			int j = 0;
-			for(LetterCount letterCount : letters) {
-				if(letterCount.ch - 'A' == i) {
-					count = j;
-					break;
-				}
-				j += 1;
-			}
-	        total += Math.abs(english_freq_list.indexOf(i) - count);
-		}
-		return total;
-	}
-	
 	public static int calculateRDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text) || text.length() % 2 == 1)
+		if(containsDigit(text) || containsHash(text) || text.length() % 2 == 1)
 			return 0; 
 		
 		int n = 0;
@@ -478,7 +684,7 @@ public class StatCalculator {
 	}
 	
 	public static double calculatePTX(String text) {    
-	    if(calculateHASD(text) || calculateHASH(text) || text.length() % 2 == 1)
+	    if(containsDigit(text) || containsHash(text) || text.length() % 2 == 1)
 			return 0; 
 
 	    double best_score = 0.0D;
@@ -512,7 +718,7 @@ public class StatCalculator {
 	private static int[] decodePair(int k, int c1, int c2) {
 		int t_flag = 0;
 		int b_flag = 0;
-        if (c1<13) 
+        if (c1 < 13) 
         	t_flag = 0;
         else 
         	t_flag = 2;
@@ -531,55 +737,11 @@ public class StatCalculator {
         return rvalue;
 	} 
 	
-	public static double calculateNIC(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
-			return 0; 
-	    
-	    int col_len = 5;
-		
-		double mx = 0.0D;
-		
-	    int max_period = 15;
-		int[][] ct = new int[max_period + 1][26];
-		for(int i = 0;i <= max_period; i++)
-			Arrays.fill(ct[i], 0);
-		
-		for(int period = 3; period <= max_period;period++) {	
-			for(int i = 0; i < period; i++)
-				Arrays.fill(ct[i], 0);
-			
-	        int block_len = (int)Math.floor(text.length() / (col_len * period));
-	        if(block_len == 0) 
-	        	continue;
-	        int limit = block_len * col_len * period;
-			int index = 0;
-			for(int i=0; i < limit; i++) {
-				ct[index][text.charAt(i) - 'A'] += 1;
-	            if ((i + 1) % col_len == 0)
-	                index = (index + 1) % period;
-			}
-			double z = 0.0D;
-			for(int i = 0; i < period; i++) {
-				double x = 0.0D, y = 0.0D;
-				for(int j = 0;j < 26; j++) {
-					x += ct[i][j]* (ct[i][j] - 1);
-					y += ct[i][j];
-				}
-				if (y>1)
-					z += x / (y * (y - 1));
-			}
-			z = z / period;
-			mx = Math.max(mx, z);
-		}
-		
-	    return Math.floor(1000.0D * mx);
-	}
-	
 	public static double calculatePHIC(String text) {
 	    int col_len = 5;
 	    List<Integer> combine_alpha = Arrays.asList(0,1,2,3,0,4,5,1);
 
-	    if(calculateHASD(text) || calculateHASH(text))
+	    if(containsDigit(text) || containsHash(text))
 			return 0.0D; 
 
 	    int period = 8;
@@ -614,28 +776,14 @@ public class StatCalculator {
 	}
 	
 	public static boolean calculateHAS0(String text) {
-		if(calculateHASL(text) || calculateHASH(text))
+		if(containsLetter(text) || containsHash(text))
 			return false;
 		
 		return text.contains("0");
 	}
 	
-	public static double calculateBDI(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
-			return 0; 
-		
-	    int best_score = 0;
-	    for(int period = 3; period <= 15; period++){
-	        int score = getBifidDIC(text, period);
-	        if (score > best_score)
-	            best_score = score;
-	    }
-	    
-	    return best_score;
-	}
-	
 	public static double calculateCDD(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
+		if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 		
         double best_score = 0.0D;
@@ -692,7 +840,7 @@ public class StatCalculator {
                 for(int current_dif = 0; current_dif <= max_diff[t0] - long_corr; current_dif++) {	
                     diff_array[0] = current_dif;
                     int index = 1;
-                    for(int j=0;j<key_len;j++)
+                    for(int j = 0;j<key_len;j++)
                         if(!cols_in_use[j])
                             col_array[index++] = j;
                     double score = 0;
@@ -745,7 +893,7 @@ public class StatCalculator {
 	}
 	
 	public static double calculateSSTD(String text) {
-		if(calculateHASD(text) || calculateHASH(text))
+		if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 		
 		int best_score = 0;
@@ -854,36 +1002,10 @@ public class StatCalculator {
 		return new Object[] {1, str};
 	}
 	
-	public static int getBifidDIC(String text, int period) {
-		int normalizer = 25 * 25;
-		int[] freq = new int[26 * 26];
-		Arrays.fill(freq, 0);
-		
-		double numb = 0.0D;
-		for(int j = 0; j < text.length(); j += period){
-			int limit = 0;
-		    int secondRow = 0;
-			if (j + period < text.length()){
-				limit = j + period;
-				secondRow = (int)Math.floor(period / 2);
-		    }
-			else{
-				limit = text.length();
-				secondRow = (int)Math.floor((text.length() - j) / 2);
-		    }
-		    for (int i = j; i < limit - secondRow; i++)
-		        freq[text.charAt(i) - 'A' + 26 * (text.charAt(i + secondRow) - 'A')] += 1;
-		    numb += limit - secondRow - j;
-		}
 
-		double sum = 0.0D;
-		for(int i = 0;i < 26 * 26; i++)
-		    sum += freq[i] * (freq[i] - 1);
-		return (int)Math.floor(100 * normalizer * sum / (numb * (numb - 1)));
-	}
 
 	public static double calculateMPIC(String text) {
-	    if(calculateHASD(text) || calculateHASH(text))
+	    if(containsDigit(text) || containsHash(text))
 			return 0.0D;
 
 		double mx = 0.0D;
@@ -928,8 +1050,8 @@ public class StatCalculator {
 		return(Math.floor(1000.0 * mx));
 	}
 	
-	public static boolean calculateSERP(String text) {
-		if (text.length() % 2 == 1)
+	public static boolean calculateSeriatedPlayfair(String text) {
+		if(text.length() % 2 == 1)
 	        return false;
 		
 		int final_period = 15;

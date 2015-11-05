@@ -16,7 +16,7 @@ import javalibrary.cipher.Hill;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.math.matrics.Matrix;
 import javalibrary.swing.ProgressValue;
@@ -68,7 +68,7 @@ public class HillAuto implements IForceDecrypt {
 			try {
 				this.lastText = Hill.decode(this.cipherText, matrix);
 				
-				this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
+				this.currentScore = TextFitness.scoreFitnessQuadgrams(this.lastText, this.language);
 				if(this.currentScore > this.bestScore) {
 					
 					this.output.println("Fitness: %f, Matrix: %s, Plaintext: %s", this.currentScore, matrix, this.lastText);

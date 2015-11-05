@@ -13,7 +13,7 @@ import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.ColumnarRow;
 import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
 import javalibrary.math.MathHelper;
@@ -62,7 +62,7 @@ public class ColumnarRowAuto implements IForceDecrypt {
 		public void onPermutation(int[] order) {
 			this.lastText = ColumnarRow.decode(this.cipherText, order);
 			
-			this.currentScore = QuadgramStats.scoreFitness(this.lastText, this.language);
+			this.currentScore = TextFitness.scoreFitnessQuadgrams(this.lastText, this.language);
 			
 			if(this.currentScore > this.bestScore) {
 				this.output.println("Fitness: %f, Order: %s, Plaintext: %s", this.currentScore, Arrays.toString(order), this.lastText);	

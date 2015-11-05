@@ -1,0 +1,90 @@
+package javalibrary.fitness;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+
+import javalibrary.language.ILanguage;
+import javalibrary.streams.FileReader;
+
+/**
+ * @author Alex Barter (10AS)
+ */
+public class TextFitness {
+	
+	public static double scoreFitnessQuadgrams(String text, ILanguage language) {
+		return scoreFitnessQuadgrams(text.toCharArray(), language);
+	}
+	
+	public static double scoreFitnessQuadgrams(char[] text, ILanguage language) {
+		double fitness = 0.0D;
+
+		for(int k = 0; k < (text.length - 4 + 1); k++) {
+			String s = new String(text, k, 4);
+			NGramData quadgramData = language.getQuadgramData();
+			
+			if(quadgramData.mapping.containsKey(s))
+				fitness += quadgramData.mapping.get(s);
+			else
+				fitness += quadgramData.floor;
+		}
+
+		return fitness;
+	}
+	
+	public static double scoreFitnessDiagrams(String text, ILanguage language) {
+		double fitness = 0.0D;
+		char[] characters = text.toCharArray();
+
+		for(int k = 0; k < (text.length() - 2 + 1); k++) {
+			String s = new String(characters, k, 2);
+			NGramData trigramData = language.getDiagramData();
+			
+			if(trigramData.mapping.containsKey(s))
+				fitness += trigramData.mapping.get(s);
+			else
+				fitness += trigramData.floor;
+		}
+
+		return fitness;
+	}
+	
+	public static double getEstimatedFitness(String text, ILanguage language) {
+		NGramData quadgramData = language.getQuadgramData();
+		return quadgramData.fitnessPerChar * text.length();
+	}
+	
+	public static NGramData loadFile(String resourcePath) {
+		HashMap<String, Double> mapping = new HashMap<String, Double>();
+		double floor = 0.0D;
+		double total = 0.0D;
+		double fitnessPerChar = 0.0D;
+		
+		List<String> list = FileReader.compileTextFromResource(resourcePath);
+
+		for(String line : list) {
+			String[] str = line.split(" ");
+					
+			if(str.length < 2) continue;
+					
+			int count = Integer.valueOf(str[1]);
+			total += count;
+			mapping.put(str[0], (double)count);
+		}
+			
+		floor = Math.log10(0.01F / total);
+			
+		for(String gram : mapping.keySet()) {
+			double count = mapping.get(gram);
+			double log = Math.log10(count / total);
+
+			mapping.put(gram, log);
+			fitnessPerChar += (count / total) * log;
+		}
+
+		
+		return new NGramData(mapping, floor, fitnessPerChar);
+	}
+}

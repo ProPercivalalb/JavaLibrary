@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javalibrary.fitness.NGramData;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 
 /**
  * @author Alex Barter
@@ -12,6 +12,7 @@ import javalibrary.fitness.QuadgramStats;
 public class Icelandic extends ILanguage {
 
 	public static NGramData quadgramData;
+	public static NGramData trigramData;
 	public static Map<Character, Double> frequencyMap;
 	
 	@Override
@@ -50,7 +51,7 @@ public class Icelandic extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/icelandic_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/javalibrary/fitness/icelandic_quadgrams.txt");
 	}
 	
 	@Override
@@ -58,6 +59,11 @@ public class Icelandic extends ILanguage {
 		return quadgramData;
 	}
 
+	@Override
+	public NGramData getDiagramData() {
+		return trigramData;
+	}
+	
 	@Override
 	public String getName() {
 		return "Icelandic";
@@ -70,6 +76,6 @@ public class Icelandic extends ILanguage {
 
 	@Override
 	public double getNormalCoincidence() {
-		return 0;
+		return 0.0674D;
 	}
 }

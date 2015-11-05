@@ -12,7 +12,7 @@ import javalibrary.Output;
 import javalibrary.cipher.Bifid;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.wip.KeySquareManipulation;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -38,7 +38,7 @@ public class BifidAuto implements IForceDecrypt {
 			progressBar.setValue(0);
 			String bestKey = KeySquareManipulation.generateRandKeySquare();
 			String bestText = Bifid.decode(cipherText, bestKey, 0);
-			double maxscore = QuadgramStats.scoreFitness(bestText, language);
+			double maxscore = TextFitness.scoreFitnessQuadgrams(bestText, language);
 			
 			String bestEverKey = bestKey;
 			String bestEverText = bestText;
@@ -51,7 +51,7 @@ public class BifidAuto implements IForceDecrypt {
 					String lastKey = KeySquareManipulation.exchange2letters(bestKey);
 			
 					String lastText = Bifid.decode(cipherText, lastKey, 0); //TODO
-					double score = QuadgramStats.scoreFitness(lastText, language);
+					double score = TextFitness.scoreFitnessQuadgrams(lastText, language);
 					double dF = score - maxscore;
 					
 				    if(dF >= 0) {

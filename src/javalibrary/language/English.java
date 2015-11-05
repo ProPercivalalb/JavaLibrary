@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javalibrary.fitness.NGramData;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 
 /**
  * @author Alex Barter
@@ -12,6 +12,7 @@ import javalibrary.fitness.QuadgramStats;
 public class English extends ILanguage {
 
 	public static NGramData quadgramData;
+	public static NGramData diagramData;
 	public static Map<Character, Double> frequencyMap;
 	
 	@Override
@@ -50,17 +51,18 @@ public class English extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = QuadgramStats.loadFile("/javalibrary/fitness/english_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/javalibrary/fitness/english_quadgrams.txt");
+		diagramData = TextFitness.loadFile("/javalibrary/fitness/english_bigrams_1.txt");
 	}
 	
 	@Override
 	public NGramData getQuadgramData() {
 		return quadgramData;
 	}
-
+	
 	@Override
-	public double getNormalCoincidence() {
-		return 0.0667D;
+	public NGramData getDiagramData() {
+		return diagramData;
 	}
 	
 	@Override
@@ -71,5 +73,10 @@ public class English extends ILanguage {
 	@Override
 	public String getImagePath() {
 		return "/image/english_flag.png";
+	}
+
+	@Override
+	public double getNormalCoincidence() {
+		return 0.0667D;
 	}
 }

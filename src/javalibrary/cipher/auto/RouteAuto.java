@@ -12,7 +12,7 @@ import javalibrary.Output;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.wip.Routes;
 import javalibrary.cipher.wip.Routes.RouteCipherType;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.math.MathHelper;
 import javalibrary.string.StringTransformer;
@@ -28,6 +28,9 @@ public class RouteAuto implements IForceDecrypt {
 		List<Integer> factors = MathHelper.getFactors(cipherText.length());
 		
 		output.println("Factors - " + factors);
+		
+		double bestScore = Double.POSITIVE_INFINITY;
+		String bestText = "";
 		
 		for(Integer factor : factors) {
 			if(factor == 1 || factor == cipherText.length()) continue;
@@ -47,20 +50,37 @@ public class RouteAuto implements IForceDecrypt {
 					gridString += cipherText.charAt(grid.indexOf(i));
 				
 				//Read down columns
-				String finalStr = "";				
+				String finalStr = "";
 				for(int i = 0; i < factor; i++)
 					finalStr += StringTransformer.getEveryNthChar(gridString, i, factor);
 				
-				double gridScore = QuadgramStats.scoreFitness(gridString, language);
-				double gridBackwardsScore = QuadgramStats.scoreFitness(StringTransformer.reverseString(gridString), language);
-				double finalScore = QuadgramStats.scoreFitness(finalStr, language);
+				double gridScore = TextFitness.scoreFitnessQuadgrams(gridString, language);
+				String reversed = StringTransformer.reverseString(gridString);
+				double gridBackwardsScore = TextFitness.scoreFitnessQuadgrams(reversed, language);
+				double finalScore = TextFitness.scoreFitnessQuadgrams(finalStr, language);
 				
-				if(gridScore > finalScore && gridScore > gridBackwardsScore)
-					output.println(gridString + " --- " + gridScore + " --- read across --- " + type.getDescription());
-				else if(finalScore > gridScore && finalScore > gridBackwardsScore)
-					output.println(finalStr + " --- " + finalScore + " --- read down --- " + type.getDescription());
-				else
-					output.println(StringTransformer.reverseString(gridString) + " --- " + gridBackwardsScore + " --- backwards --- " + type.getDescription());
+				if(gridScore > finalScore && gridScore > gridBackwardsScore) {
+					if(gridScore > bestScore) {
+						bestScore = gridScore;
+						bestText = gridString;
+						output.println(gridString + " --- " + gridScore + " --- read across --- " + type.getDescription());
+					}
+				}
+				else if(finalScore > gridScore && finalScore > gridBackwardsScore) {
+				
+					if(finalScore > bestScore) {
+						bestScore = finalScore;
+						bestText = finalStr;
+						output.println(finalStr + " --- " + finalScore + " --- read down --- " + type.getDescription());
+					}
+				}
+				else {
+					if(gridBackwardsScore > bestScore) {
+						bestScore = gridBackwardsScore;
+						bestText = reversed;
+						output.println(reversed + " --- " + gridBackwardsScore + " --- backwards --- " + type.getDescription());
+					}
+				}
 			}
 		}
 		

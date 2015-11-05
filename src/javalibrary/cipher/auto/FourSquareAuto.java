@@ -14,7 +14,7 @@ import javalibrary.cipher.FourSquare;
 import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
-import javalibrary.fitness.QuadgramStats;
+import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
 
@@ -38,7 +38,7 @@ public class FourSquareAuto implements IForceDecrypt {
 			String bestKey1 = KeySquareManipulation.generateRandKeySquare();
 			String bestKey2 = KeySquareManipulation.generateRandKeySquare();
 			String bestText = FourSquare.decode(cipherText, bestKey1, bestKey2);
-			double maxscore = QuadgramStats.scoreFitness(bestText, language);
+			double maxscore = TextFitness.scoreFitnessQuadgrams(bestText, language);
 			
 			String bestEverKey1 = bestKey1;
 			String bestEverKey2 = bestKey2;
@@ -58,7 +58,7 @@ public class FourSquareAuto implements IForceDecrypt {
 						lastKey2 = KeySquareManipulation.exchange2letters(lastKey2);
 					
 					String lastText = FourSquare.decode(cipherText, lastKey1, lastKey2);
-					double score = QuadgramStats.scoreFitness(lastText, language);
+					double score = TextFitness.scoreFitnessQuadgrams(lastText, language);
 					double dF = score - maxscore;
 					
 				    if(dF >= 0) {
