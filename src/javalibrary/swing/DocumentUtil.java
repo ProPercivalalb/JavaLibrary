@@ -94,9 +94,7 @@ public class DocumentUtil {
 			
 		    @Override
 		    public void undoableEditHappened(UndoableEditEvent e) {
-		        System.out.println("Add edit");
 		        undoManager.addEdit(e.getEdit());
-
 		    }
 		});
 

@@ -91,6 +91,8 @@ public class StatCalculator {
 	}
 	
 	public static double calculateMaxKappaIC(String text, int minPeriod, int maxPeriod) {
+		if(text.length() == 0) return 0.0D;
+		
 	    double maxKappa = Double.MIN_VALUE;
 	    
 	    for(int period = minPeriod; period <= maxPeriod; ++period)
@@ -708,6 +710,8 @@ public class StatCalculator {
 	        	}
 	        }
 	        score *= 100;
+	        if(count == 0)
+	        	break;
 	        score /= count;
 
 	        best_score = Math.max(best_score, score);

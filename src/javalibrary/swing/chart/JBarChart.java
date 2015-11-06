@@ -177,4 +177,9 @@ public class JBarChart extends JChartBase {
 	public void unselectAll() {
 		this.selected.clear();
 	}
+	
+	public void resetAll() {
+		this.unselectAll();
+		this.values.clear();
+	}
 }
