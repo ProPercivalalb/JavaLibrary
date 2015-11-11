@@ -14,7 +14,6 @@ import javalibrary.math.MathHelper;
 public class Affine implements ICipher {
 
 	public static String encode(String plainText, int a, int b) {
-		char[] charArray = plainText.toCharArray();
 		
 		String cipherText = "";
 		
@@ -22,8 +21,7 @@ public class Affine implements ICipher {
 		for(int i = 'A'; i <= 'Z'; ++i)
 			tempAlphabet += (char)('A' + MathHelper.wrap(a * (i - 'A') + b, 0, 26));
 		
-		//Runs through all the characters from the array
-		for(char ch : charArray) {
+		for(char ch : plainText.toCharArray()) {
 				
 			if(!Character.isLetter(ch))
 				cipherText += ch;
@@ -34,20 +32,17 @@ public class Affine implements ICipher {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, int a, int b) {
-		char[] charArray = cipherText.toCharArray();
+	public static String decode(char[] cipherText, int a, int b) {
 		
-		String plainText = "";
+		char[] plainText = new char[cipherText.length];
+		
+		int multiplicativeInverse = BigInteger.valueOf((int)a).modInverse(BigInteger.valueOf(26)).intValue();
 		
 		//Runs through all the characters from the array
-		for(char ch : charArray) {
-			int multiplicativeInverse = 0;
-			multiplicativeInverse = BigInteger.valueOf((int)a).modInverse(BigInteger.valueOf(26)).intValue();
-			
-			plainText += (char)(MathHelper.wrap(multiplicativeInverse * (ch - 'A' - b), 0, 26) + 'A');
-		}
+		for(int i = 0; i < cipherText.length; i++)
+			plainText[i] = (char) (MathHelper.mod(multiplicativeInverse * (cipherText[i] - 'A' - b), 26) + 'A');
 
-		return plainText;
+		return new String(plainText);
 	}
 
 	@Override
@@ -57,7 +52,7 @@ public class Affine implements ICipher {
 
 	@Override
 	public String decode(String cipherText, EncryptionData data) {
-		return decode(cipherText, data.getData(EncryptionKeys.AFFINE_A, Integer.TYPE), data.getData(EncryptionKeys.AFFINE_B, Integer.TYPE));
+		return decode(cipherText.toCharArray(), data.getData(EncryptionKeys.AFFINE_A, Integer.TYPE), data.getData(EncryptionKeys.AFFINE_B, Integer.TYPE));
 	}
 
 	@Override

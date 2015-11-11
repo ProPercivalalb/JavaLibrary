@@ -37,6 +37,11 @@ public class ProgressValue {
 		this.progressBar.setValue(this.getPercentageDone());
 	}
 	
+	public void increase() {
+		this.value = this.value.add(BigInteger.ONE);
+		this.progressBar.setValue(this.getPercentageDone());
+	}
+	
 	public int getPercentageDone() {
 		return this.value.multiply(this.scale).divide(this.maxValue).intValue();
 	}

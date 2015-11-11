@@ -17,13 +17,13 @@ public class Dictionary {
 	
 	public static void onLoad() {
 		try {
-			BufferedReader updateReader3 = new BufferedReader(new InputStreamReader(TraverseTree.class.getResourceAsStream("/javalibrary/dict/english_wordlist.txt")));
+			BufferedReader updateReader3 = new BufferedReader(new InputStreamReader(TraverseTree.class.getResourceAsStream("/javalibrary/dict/english_words.txt")));
 			while(true) {
 				String line = updateReader3.readLine();
 				if(line == null) break;
 				if(line.isEmpty() || line.startsWith("#")) continue;
 	
-				words.add(line.toUpperCase());
+				words.add(line.split(" ")[0]);
 			}
 		}
 		catch(Exception e) {

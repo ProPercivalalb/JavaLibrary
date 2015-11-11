@@ -10,6 +10,14 @@ public class RandomUtil {
 
 	private static Random DEFAULT_RAND = new Random();
 	
+	public static double pickDouble() {
+		return pickDouble(DEFAULT_RAND);
+	}
+	
+	public static double pickDouble(Random random) {
+		return random.nextDouble();
+	}
+	
 	public static int pickRandomInt(int range) {
 		return pickRandomInt(range, DEFAULT_RAND);
 	}

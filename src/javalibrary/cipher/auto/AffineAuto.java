@@ -30,7 +30,7 @@ public class AffineAuto implements IForceDecrypt {
 		return at.plainText;
 	}
 	
-	public static class AffineTask implements IterationTask {
+	public static class AffineTask implements AffineKey {
 
 		public String cipherText;
 		public ILanguage language;
@@ -65,11 +65,11 @@ public class AffineAuto implements IForceDecrypt {
 		}
 	}
 	
-	public interface IterationTask {
+	public interface AffineKey {
 		public void onIteration(int a, int b);
 	}
 
-	public void iterate(IterationTask task) {
+	public void iterate(AffineKey task) {
 		for(int a : new int[] {1,3,5,7,9,11,15,17,19,21,23,25})
   			for(int b = 0; b < 26; ++b)
   				task.onIteration(a, b);

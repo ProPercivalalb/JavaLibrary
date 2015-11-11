@@ -39,22 +39,14 @@ public class Caesar {
 	 * @param shift The alphabetic shift used to encode the plain text
 	 * @return The Plain Text
 	 */
-	public static String decode(String cipherText, int shift) {
-		char[] charArray = cipherText.toCharArray();
+	public static String decode(char[] cipherText, int shift) {
 		
-		String plainText = "";
+		char[] plainText = new char[cipherText.length];
 		
 		//Runs through all the characters from the array
-		for(char ch : charArray) {
-			
-			if(!Character.isAlphabetic(ch))
-				plainText += ch;
-			else {
-				char newLetter = (char)(MathHelper.wrap(-shift + ch - 'A', 0, 26) + 'A');
-				plainText += newLetter;
-			}
-		}
+		for(int i = 0; i < cipherText.length; i++)
+			plainText[i] = (char)(MathHelper.wrap(-shift + cipherText[i] - 'A', 0, 26) + 'A');
 		
-		return plainText;
+		return new String(plainText);
 	}
 }

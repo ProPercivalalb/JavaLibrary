@@ -20,18 +20,23 @@ public class TextFitness {
 	
 	public static double scoreFitnessQuadgrams(char[] text, ILanguage language) {
 		double fitness = 0.0D;
-
+		NGramData quadgramData = language.getQuadgramData();
+		
+		
 		for(int k = 0; k < (text.length - 4 + 1); k++) {
 			String s = new String(text, k, 4);
-			NGramData quadgramData = language.getQuadgramData();
-			
-			if(quadgramData.mapping.containsKey(s))
-				fitness += quadgramData.mapping.get(s);
-			else
-				fitness += quadgramData.floor;
+				
+			fitness += scoreWord(s, quadgramData);
 		}
 
 		return fitness;
+	}
+	
+	public static double scoreWord(String s, NGramData quadgramData) {
+		if(quadgramData.mapping.containsKey(s))
+			return quadgramData.mapping.get(s);
+	
+		return quadgramData.floor;
 	}
 	
 	public static double scoreFitnessDiagrams(String text, ILanguage language) {

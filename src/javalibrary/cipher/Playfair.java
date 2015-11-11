@@ -42,11 +42,15 @@ public class Playfair {
 	}
 	
 	public static String decode(String cipherText, String keysquare) {
-	    String plainText = "";
+		return new String(decode(cipherText.toCharArray(), keysquare));
+	}
+	
+	public static char[] decode(char[] cipherText, String keysquare) {
+	    char[] plainText = new char[cipherText.length];
 	    
-	    for(int i = 0; i < cipherText.length(); i += 2){
-	        char a = cipherText.charAt(i);
-	        char b = cipherText.charAt(i + 1);
+	    for(int i = 0; i < cipherText.length; i += 2){
+	        char a = cipherText[i];
+	        char b = cipherText[i + 1];
 	        int i1 = keysquare.indexOf(a);
 	        int i2 = keysquare.indexOf(b);
 	        int row1 = (int)Math.floor(i1 / 5);
@@ -69,7 +73,9 @@ public class Playfair {
 	            d = keysquare.charAt(row2 * 5 + col1);
 	        }
 	        
-	        plainText += "" + c + "" + d;
+	        plainText[i] = c;
+	        plainText[i + 1] = d;
+
 	    }
 	    return plainText;
 	}
