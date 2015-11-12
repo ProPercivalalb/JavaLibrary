@@ -13,13 +13,13 @@ public class Keyword {
 		return cipherText;
 	}
 
-	public static String decode(char[] cipherText, String keyword) {
+	public static char[] decode(char[] cipherText, String keyword) {
 		
 		char[] plainText = new char[cipherText.length];
 		
 		for(int i = 0; i < cipherText.length; i++)
 			plainText[i] = (char)(keyword.indexOf(cipherText[i]) + 'A');
 
-		return new String(plainText);
+		return plainText;
 	}
 }

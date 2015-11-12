@@ -66,10 +66,10 @@ public class ColumnarRow {
 		for(int i = 0; i < charArray.length; i++)
 			order[key.indexOf(charArray[i])] = i;
 		
-		return decode(cipherText, order);
+		return new String(decode(cipherText.toCharArray(), order));
 	}
 	
-	public static String decode(String cipherText, int[] order) {
+	public static char[] decode(char[] cipherText, int[] order) {
 		int index = 0;
 		int columns = order.length;
 		
@@ -77,19 +77,19 @@ public class ColumnarRow {
 		for(int i = 0; i < columns; i++)
 			reversedOrder[order[i]] = i;
 		
-		int rows = (int)Math.ceil(cipherText.length() / (double)columns);
+		int rows = (int)Math.ceil(cipherText.length / (double)columns);
 		
-		char[] grid = new char[cipherText.length()];
+		char[] grid = new char[cipherText.length];
 		for(int row = 0; row < rows; row++) {
 			for(int column = 0; column < columns; column++) {
 				int trueColumn = reversedOrder[column];
-				if(row * columns + trueColumn >= cipherText.length())
+				if(row * columns + trueColumn >= cipherText.length)
 					continue;
 					
-				if(index >= cipherText.length())
+				if(index >= cipherText.length)
 					break;
 
-				char character = cipherText.charAt(index);
+				char character = cipherText[index];
 
 				grid[row * columns + trueColumn] = character;
 				
@@ -97,6 +97,6 @@ public class ColumnarRow {
 			}
 		}
 
-		return new String(grid);
+		return grid;
 	}
 }

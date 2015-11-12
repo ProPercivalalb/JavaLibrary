@@ -54,8 +54,8 @@ public class DocumentUtil {
 		
     	@Override
     	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-    		if(this.textComponent.getText().indexOf('.') != -1 && text.contains("."))
-    			text = text.replaceAll(".", "");
+    		//if(this.textComponent.getText().indexOf('.') != -1 && text.contains("."))
+    		//	text = text.replaceAll(".", "");
     		text = text.replaceAll("[^0-9.]", "");
     		 
     		super.replace(fb, offset, length, text, attrs);

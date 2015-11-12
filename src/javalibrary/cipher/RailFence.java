@@ -29,17 +29,16 @@ public class RailFence {
 		return last;
 	}
 	
-	public static String decode(String cipherText, int rows) {
-		char[] plainText = new char[cipherText.length()];
-		int index = 0;
+	public static char[] decode(char[] cipherText, int rows) {
+		char[] plainText = new char[cipherText.length];
 		int no_per_ite = rows * 2 - 2;
-		double total = (double)cipherText.length() / no_per_ite;
-		int total_ite = (int)Math.floor(total);
+		double total = (double)cipherText.length / no_per_ite;
+		int total_ite = (int)total;
 		int total_left = (int)((total - total_ite) * no_per_ite);
 		
+		int index = 0;
 		for(int c_row = 1; c_row <= rows; c_row++) {
-			if(index >= cipherText.length())
-				break;
+			if(index >= cipherText.length) break;
 			
 			int times = total_ite;
 			if(c_row != 1 && c_row != rows)
@@ -48,26 +47,26 @@ public class RailFence {
 			if(total_left >= c_row)
 				times += 1;
 			
-			if(c_row != rows && rows - c_row <= total_left - rows) // 16 - 4 <= 11
+			if(c_row != rows && rows - c_row <= total_left - rows)
 				times += 1;
 			
-			for(int i = 0; i < times; i++) {
+			for(int i = 0; i < times && index < cipherText.length; i++) {
 				int newIndex = 0;
 				
 				if(c_row == 1 || c_row == rows)
 					newIndex = i * no_per_ite + c_row - 1;
 				else {
-					int x = (int)Math.floor(i / 2);
+					int x = (int)(i / 2);
 					newIndex = x * no_per_ite + c_row - 1;
 					
 					if(i % 2 == 1)
 						newIndex += (rows - c_row) * 2;			
 				}
 				
-				plainText[newIndex] = cipherText.charAt(index);
+				plainText[newIndex] = cipherText[index];
 				index++;
 			}
 		}
-		return new String(plainText);
+		return plainText;
 	}
 }

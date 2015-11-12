@@ -27,8 +27,8 @@ public class ProgressValue {
 		this.maxValue = this.maxValue.add(add);
 	}
 	
-	public void setValue(int add) {
-		this.value = BigInteger.valueOf(add);
+	public void setValue(int value) {
+		this.value = BigInteger.valueOf(value);
 		this.progressBar.setValue(this.getPercentageDone());
 	}
 	

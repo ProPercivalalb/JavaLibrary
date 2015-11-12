@@ -33,14 +33,14 @@ public class Languages {
 	}
 	
 	static {
-		languages.add(danish);
+		//languages.add(danish);
 		languages.add(english);
-		languages.add(finnish);
-		languages.add(french);
-		languages.add(german);
-		languages.add(icelandic);
-		languages.add(polish);
-		languages.add(spanish);
-		languages.add(swedish);
+		//languages.add(finnish);
+		//languages.add(french);
+		//languages.add(german);
+		//languages.add(icelandic);
+		//languages.add(polish);
+		//languages.add(spanish);
+		//languages.add(swedish);
 	}
 }
