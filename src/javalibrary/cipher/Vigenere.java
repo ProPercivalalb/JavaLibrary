@@ -16,14 +16,12 @@ public class Vigenere {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, String key) {
-		char[] charArray = cipherText.toCharArray();
-		char[] keyArray = key.toCharArray();
+	public static char[] decode(char[] cipherText, String key) {
+
+		char[] plainText = new char[cipherText.length];
 		
-		String plainText = "";
-		
-		for(int index = 0; index < cipherText.length(); index++)
-			plainText += (char)(MathHelper.mod(charArray[index] - keyArray[index % key.length()], 26) + 'A');
+		for(int index = 0; index < cipherText.length; index++)
+			plainText[index] = (char)((26 + cipherText[index] - key.charAt(index % key.length())) % 26 + 'A');
 		
 		return plainText;
 	}

@@ -13,13 +13,13 @@ import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Hill;
-import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.math.matrics.Matrix;
 import javalibrary.swing.ProgressValue;
+import nationalciphernew.cipher.stats.StatisticRange;
 
 /**
  * @author Alex Barter (10AS)

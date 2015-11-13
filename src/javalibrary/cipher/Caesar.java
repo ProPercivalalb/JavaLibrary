@@ -39,7 +39,7 @@ public class Caesar {
 	 * @param shift The alphabetic shift used to encode the plain text
 	 * @return The Plain Text
 	 */
-	public static String decode(char[] cipherText, int shift) {
+	public static char[] decode(char[] cipherText, int shift) {
 		
 		char[] plainText = new char[cipherText.length];
 		
@@ -47,6 +47,6 @@ public class Caesar {
 		for(int i = 0; i < cipherText.length; i++)
 			plainText[i] = (char)(MathHelper.wrap(-shift + cipherText[i] - 'A', 0, 26) + 'A');
 		
-		return new String(plainText);
+		return plainText;
 	}
 }

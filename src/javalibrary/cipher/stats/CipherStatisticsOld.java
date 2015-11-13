@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CipherStatistics {
+import nationalciphernew.cipher.stats.StatisticRange;
+import nationalciphernew.cipher.stats.StatisticType;
+
+public class CipherStatisticsOld {
 
 	public static HashMap<String, List<StatisticRange>> getOtherCipherStatistics() {
 		HashMap<String, List<StatisticRange>> map = new	HashMap<String, List<StatisticRange>>();

@@ -13,13 +13,13 @@ import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Caesar;
 import javalibrary.cipher.Vigenere;
-import javalibrary.cipher.stats.StatCalculator;
-import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.ChiSquared;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 import javalibrary.swing.ProgressValue;
+import nationalciphernew.cipher.stats.StatCalculator;
+import nationalciphernew.cipher.stats.StatisticRange;
+import nationalciphernew.cipher.stats.StatisticType;
 
 /**
  * @author Alex Barter
@@ -50,11 +50,11 @@ public class VigenereAuto implements IForceDecrypt {
 		return plainText;
 	}
 
-    public int findBestCaesarShift(String text, ILanguage language, ProgressValue progressBar) {
+    public int findBestCaesarShift(char[] text, ILanguage language, ProgressValue progressBar) {
         int best = 0;
         double smallestSum = Double.MAX_VALUE;
         for(int shift = 0; shift < 26; ++shift) {
-            String encodedText = Caesar.decode(text, shift);
+            char[] encodedText = Caesar.decode(text, shift);
             double currentSum = ChiSquared.calculate(encodedText, language);
     
             if(currentSum < smallestSum) {

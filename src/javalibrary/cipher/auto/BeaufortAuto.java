@@ -13,12 +13,12 @@ import javalibrary.ForceDecryptManager;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Beaufort;
-import javalibrary.cipher.stats.StatCalculator;
-import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.cipher.stats.StatisticType;
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringTransformer;
 import javalibrary.swing.ProgressValue;
+import nationalciphernew.cipher.stats.StatCalculator;
+import nationalciphernew.cipher.stats.StatisticRange;
+import nationalciphernew.cipher.stats.StatisticType;
 
 /**
  * @author Alex Barter

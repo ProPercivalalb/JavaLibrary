@@ -11,12 +11,12 @@ import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.TwoSquare;
-import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.cipher.stats.StatisticType;
 import javalibrary.cipher.wip.KeySquareManipulation;
 import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
+import nationalciphernew.cipher.stats.StatisticRange;
+import nationalciphernew.cipher.stats.StatisticType;
 
 public class TwoSquareAuto implements IForceDecrypt {
 

@@ -14,9 +14,9 @@ import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.solver.IGodSolver;
-import javalibrary.cipher.stats.StatisticRange;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
+import nationalciphernew.cipher.stats.StatisticRange;
 
 public class GodSolverAuto implements IForceDecrypt {
 
@@ -51,7 +51,7 @@ public class GodSolverAuto implements IForceDecrypt {
 
 	@Override
 	public List<StatisticRange> getStatistics() {
-		return Arrays.asList();
+		return null;
 	}
 
 	@Override

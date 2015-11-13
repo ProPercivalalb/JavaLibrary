@@ -14,13 +14,13 @@ import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
 import javalibrary.cipher.Redefence;
-import javalibrary.cipher.stats.StatisticRange;
-import javalibrary.cipher.stats.StatisticType;
 import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.math.ArrayHelper;
 import javalibrary.math.MathHelper;
 import javalibrary.swing.ProgressValue;
+import nationalciphernew.cipher.stats.StatisticRange;
+import nationalciphernew.cipher.stats.StatisticType;
 
 /**
  * @author Alex Barter (10AS)
