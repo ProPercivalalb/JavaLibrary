@@ -23,7 +23,7 @@ public class ADFGVX {
 		return decode(cipherText, keysquare, key, "ADFGVX");
 	}
 	
-	public static String decode(String cipherText, String keysquare, int[] order) {
+	public static char[] decode(char[] cipherText, String keysquare, int[] order) {
 		return decode(cipherText, keysquare, order, "ADFGVX");
 	}
 	
@@ -35,28 +35,28 @@ public class ADFGVX {
 		for(int i = 0; i < charArray.length; i++)
 			order[key.indexOf(charArray[i])] = i;
 		
-		return decode(cipherText, keysquare, order, adfgvx);
+		return new String(decode(cipherText.toCharArray(), keysquare, order, adfgvx));
 	}
 	
-	public static String decode(String cipherText, String keysquare, int[] order, String adfgvx) {
+	public static char[] decode(char[] cipherText, String keysquare, int[] order, String adfgvx) {
 		return decodeTransformed(ColumnarRow.decode(cipherText, order), keysquare, adfgvx);
 	}
 	
-	public static String decodeTransformed(String untransformedText, String keysquare) {
+	public static char[] decodeTransformed(char[] untransformedText, String keysquare) {
 		return decodeTransformed(untransformedText, keysquare, "ADFGVX");
 	}
 
-	public static String decodeTransformed(String untransformedText, String keysquare, String adfgvx) {
-		String plainText = "";
+	public static char[] decodeTransformed(char[] untransformedText, String keysquare, String adfgvx) {
+		char[] plainText = new char[untransformedText.length];
 		
-		for(int i = 0; i < untransformedText.length(); i += 2) {
-			char c1 = untransformedText.charAt(i);
-			char c2 = untransformedText.charAt(i + 1);
+		for(int i = 0; i < untransformedText.length; i += 2) {
+			char c1 = untransformedText[i];
+			char c2 = untransformedText[i + 1];
 			
 			int row = adfgvx.indexOf(c1);
 			int column = adfgvx.indexOf(c2);
 			if(row != -1 && column != -1)
-				plainText += keysquare.charAt(row * adfgvx.length() + column);
+				plainText[i / 2] = keysquare.charAt(row * adfgvx.length() + column);
 		}
 		
 		return plainText;
