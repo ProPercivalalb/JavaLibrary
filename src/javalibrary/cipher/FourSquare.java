@@ -24,23 +24,23 @@ public class FourSquare {
 	    return cipherText;
 	}
 	
-	public static String decode(String cipherText, String keysquare1, String keysquare2) {
-	    String plainText = "";
+	public static char[] decode(char[] cipherText, String keysquare1, String keysquare2) {
+	    char[] plainText = new char[cipherText.length];
 	    
 	    String shortAlpha = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
 	    
-	    for(int i = 0; i < cipherText.length(); i += 2){
-	        char a = cipherText.charAt(i);
-	        char b = cipherText.charAt(i + 1);
+	    for(int i = 0; i < cipherText.length; i += 2){
+	        char a = cipherText[i];
+	        char b = cipherText[i + 1];
 	        int aIndex = keysquare1.indexOf(a);
 	        int bIndex = keysquare2.indexOf(b);
-	        int aRow = (int)Math.floor(aIndex / 5);
-	        int bRow = (int)Math.floor(bIndex / 5);
+	        int aRow = aIndex / 5;
+	        int bRow = bIndex / 5;
 	        int aCol = aIndex % 5;
 	        int bCol = bIndex % 5;
 	        
-	        plainText += shortAlpha.charAt(5 * aRow + bCol);
-	        plainText += shortAlpha.charAt(5 * bRow + aCol);
+	        plainText[i] = shortAlpha.charAt(5 * aRow + bCol);
+	        plainText[i + 1] = shortAlpha.charAt(5 * bRow + aCol);
 	    }
 	   
 	    return plainText;

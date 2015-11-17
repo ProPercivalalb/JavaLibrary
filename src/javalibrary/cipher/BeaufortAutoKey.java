@@ -5,7 +5,7 @@ import javalibrary.math.MathHelper;
 /**
  * @author Alex Barter (10AS)
  */
-public class BeaufortAutoKey {
+public class BeaufortAutokey {
 	
 	public static String encode(String plainText, String key) {
 		String autoKey = key + plainText;
@@ -17,13 +17,13 @@ public class BeaufortAutoKey {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, String key) {
+	public static char[] decode(char[] cipherText, String key) {
 		String autoKey = key;
-		String plainText = "";
+		char[] plainText = new char[cipherText.length];
 		
-		for(int index = 0; index < cipherText.length(); index++) {
-			char newCh = (char)(MathHelper.mod(autoKey.charAt(index) - cipherText.charAt(index), 26) + 'A');
-			plainText += newCh;
+		for(int index = 0; index < cipherText.length; index++) {
+			char newCh = (char)(MathHelper.mod(autoKey.charAt(index) - cipherText[index], 26) + 'A');
+			plainText[index] = newCh;
 			autoKey += newCh;
 		}
 		

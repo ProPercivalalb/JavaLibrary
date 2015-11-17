@@ -13,11 +13,12 @@ public class Variant {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, String key) {
-		String plainText = "";
+	public static char[] decode(char[] cipherText, String key) {
+
+		char[] plainText = new char[cipherText.length];
 		
-		for(int index = 0; index < cipherText.length(); index++)
-			plainText += (char)(MathHelper.mod(cipherText.charAt(index) + key.charAt(index % key.length()), 26) + 'A');
+		for(int index = 0; index < cipherText.length; index++)
+			plainText[index] = (char)((cipherText[index] + key.charAt(index % key.length())) % 26 + 'A');
 		
 		return plainText;
 	}

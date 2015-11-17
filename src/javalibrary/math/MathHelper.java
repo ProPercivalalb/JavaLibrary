@@ -122,6 +122,19 @@ public class MathHelper {
 		return factors.size() <= 2;
 	}
 	
+	public static List<Integer> getSquareFactors(int target) {
+		//Gets all the factors of the given number
+		List<Integer> factors = getFactors(target);
+		List<Integer> squareFactors = new ArrayList<Integer>();
+		
+		for(Integer factor : factors) {
+			int n = (int)Math.floor(Math.sqrt(factor));
+			if(Math.pow(n, 2) == factor)
+				squareFactors.add(factor);
+		}
+		return squareFactors;
+	}
+	
 	public static List<Integer> getFactors(int target) {
 		List<Integer> factors = new ArrayList<Integer>();
 		int incrementer = 1;

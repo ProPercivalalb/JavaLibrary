@@ -1,14 +1,13 @@
-package javalibrary.cipher.wip;
+package javalibrary.cipher;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import javalibrary.math.MathHelper;
+import javalibrary.util.RandomUtil;
 
 public class Homophonic {
-
-	public static Random rand = new Random(System.currentTimeMillis());
 	
 	public static String encode(String plainText, String key) {
 		String cipherText = "";
@@ -31,14 +30,14 @@ public class Homophonic {
 			int charIndex = plainText.charAt(i) - 'A';
 			if(charIndex >= 9) charIndex--;
 			
-			cipherText += rows.get(rand.nextInt(4) * 25 + charIndex);
+			cipherText += rows.get(RandomUtil.pickRandomInt(4) * 25 + charIndex);
 		}
 		
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, String key) {
-		String plainText = "";
+	public static char[] decode(char[] cipherText, String key) {
+		char[] plainText = new char[cipherText.length / 2];
 		
 		List<String> rows = new ArrayList<String>();
 		String shortAlpha = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
@@ -55,10 +54,10 @@ public class Homophonic {
 			}
 		}
 		
-		for(int i = 0; i < cipherText.length(); i += 2) {
-			String s = cipherText.substring(i, i + 2);
+		for(int i = 0; i < plainText.length; i++) {
+			String s = new String(cipherText, i * 2, 2);
 			int col = rows.indexOf(s) % 25;
-			plainText += shortAlpha.charAt(col);
+			plainText[i] = shortAlpha.charAt(col);
 		}
 		
 		return plainText;

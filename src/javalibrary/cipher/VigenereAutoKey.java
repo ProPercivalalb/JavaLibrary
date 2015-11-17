@@ -5,7 +5,7 @@ import javalibrary.math.MathHelper;
 /**
  * @author Alex Barter (10AS)
  */
-public class VigenereAutoKey {
+public class VigenereAutokey {
 	
 	public static String encode(String plainText, String key) {
 		String autoKey = key + plainText;
@@ -17,13 +17,13 @@ public class VigenereAutoKey {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, String key) {
+	public static char[] decode(char[] cipherText, String key) {
 		String autoKey = key;
-		String plainText = "";
+		char[] plainText = new char[cipherText.length];
 		
-		for(int index = 0; index < cipherText.length(); index++) {
-			char newCh = (char)(MathHelper.mod(cipherText.charAt(index) - autoKey.charAt(index), 26) + 'A');
-			plainText += newCh;
+		for(int index = 0; index < cipherText.length; index++) {
+			char newCh = (char)((26 + cipherText[index] - autoKey.charAt(index)) % 26 + 'A');
+			plainText[index] = newCh;
 			autoKey += newCh;
 		}
 		

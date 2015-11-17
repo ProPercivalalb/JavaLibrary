@@ -18,10 +18,10 @@ public class AMSCO {
 			}
 		}
 		
-		return decode(cipherText, reversed, order);
+		return new String(decode(cipherText.toCharArray(), reversed, order));
 	}
 	
-	public static String decode(String cipherText, boolean reversed, int[] order) {
+	public static char[] decode(char[] cipherText, boolean reversed, int[] order) {
 		String plainText = "";
 		int index = 0;
 		int no_column = order.length;
@@ -39,13 +39,13 @@ public class AMSCO {
 				int trueColumn = reversedOrder[column];
 				
 				for(int i = 0; i < (((row - trueColumn) % 2 == 0) ? reversed ? 2 : 1 : reversed ? 1 : 2); i++) {
-					if(charactersBefore(reversed, false, no_column, row, trueColumn) >= cipherText.length())
+					if(charactersBefore(reversed, false, no_column, row, trueColumn) >= cipherText.length)
 						continue; //break;
 					
-					if(index >= cipherText.length())
+					if(index >= cipherText.length)
 						break;
 
-					char character = cipherText.charAt(index);
+					char character = cipherText[index];
 					
 					if(grid[row][trueColumn] == null)
 						grid[row][trueColumn] = "" + character;
@@ -64,19 +64,19 @@ public class AMSCO {
 			}
 		}
 
-		return plainText;
+		return plainText.toCharArray();
 	}
 
 	/**
 	 * @param cipherText The cipher text that is trying to be decrypted
 	 * @return The number of rows ranging from 1 - INFINATE
 	 */
-	public static int[] calcualteTotalSize(String cipherText, boolean reversed, int no_columns) {
+	public static int[] calcualteTotalSize(char[] cipherText, boolean reversed, int no_columns) {
 		int row = 0;
 		int column = 0;
 		while(true) {
 			int cb = charactersBefore(reversed, true, no_columns, row, column);
-			if(cipherText.length() <= cb)
+			if(cipherText.length <= cb)
 				return new int[] {row + 1, column + 1};
 			
 			column += 1;

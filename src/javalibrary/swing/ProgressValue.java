@@ -45,4 +45,10 @@ public class ProgressValue {
 	public int getPercentageDone() {
 		return this.value.multiply(this.scale).divide(this.maxValue).intValue();
 	}
+	
+	public void setIndeterminate(boolean newValue) {
+		this.progressBar.setIndeterminate(newValue);
+		if(newValue)
+			this.progressBar.setString("Searching...");
+	}
 }

@@ -99,6 +99,16 @@ public class StringTransformer {
         return accumulator;
     }
     
+    public static String getEveryNthBlock(String text, int blockSize, int start, int n) {
+    	String accumulator = "";
+        for(int i = 0; i < text.length() / blockSize; i++) {
+            if((i % n) == start) {
+                accumulator += text.substring(i * blockSize + blockSize);
+            }
+        }
+        return accumulator;
+    }
+    
     public static String rotateRight(String text, int n) {
 		int cuttingPoint = text.length() - (n % text.length());
 	    return text.substring(cuttingPoint, text.length()) + text.substring(0, cuttingPoint);

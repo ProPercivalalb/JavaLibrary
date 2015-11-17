@@ -7,7 +7,7 @@ import javalibrary.math.MathHelper;
  */
 public class Cadenus {
 	
-	public static String decode(String cipherText, String key) {
+	public static char[] decode(char[] cipherText, String key) {
 		int keyLength = key.length();
 
 		int[] order = new int[keyLength];
@@ -20,19 +20,18 @@ public class Cadenus {
 		}
 		
 		//Creates grid
-		char[] start_grid = cipherText.toCharArray();
-		char[] temp_grid = new char[cipherText.length()];
+		char[] temp_grid = new char[cipherText.length];
 		
 		for(int j = 0; j < 25; j++) {
 			for(int i = 0; i < keyLength; i++) {
 				int newColumn = order[i];
 				int move = MathHelper.wrap(25 - charValue(key.charAt(newColumn)), 0, 25);
 				int newIndex = MathHelper.wrap(j + move, 0, 25);
-				temp_grid[newIndex * keyLength + newColumn] = start_grid[j * keyLength + i];
+				temp_grid[newIndex * keyLength + newColumn] = cipherText[j * keyLength + i];
 			}
 		}
 
-		return new String(temp_grid);
+		return temp_grid;
 	}
 	
 	public static int charValue(char character) {

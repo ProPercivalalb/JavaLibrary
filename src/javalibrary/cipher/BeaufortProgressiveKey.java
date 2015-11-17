@@ -7,8 +7,8 @@ public class BeaufortProgressiveKey {
 		return ProgressiveKey.encodeBase(encodedText, period, progressiveKey);
 	}
 	
-	public static String decode(String plainText, String keyword, int period, int progressiveKey) {
-		String decodedText = Beaufort.decode(plainText, keyword);
+	public static char[] decode(char[] plainText, String keyword, int period, int progressiveKey) {
+		char[] decodedText = Beaufort.decode(plainText, keyword);
 		return ProgressiveKey.decodeBase(decodedText, period, progressiveKey);
 	}
 }

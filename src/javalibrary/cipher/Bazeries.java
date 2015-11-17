@@ -41,7 +41,7 @@ public class Bazeries {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, int numberKey) {
+	public static char[] decode(char[] cipherText, int numberKey) {
 		String alphabetSquare = "AFLQVBGMRWCHNSXDIOTYEKPUZ";
 		
 		String numberSquare = "";
@@ -60,20 +60,21 @@ public class Bazeries {
 		int count = 0;
 		int split = s.charAt(0) - '0';
 		while(true) {
+			
 			for(int j = textPos + split - 1; j >= textPos; --j) {
-				if(j < cipherText.length()) {
-					char c = cipherText.charAt(j);
+				if(j < cipherText.length) {
+					char c = cipherText[j];
 					if(c == 'J') c = 'I';
 					plainText += alphabetSquare.charAt(numberSquare.indexOf(c));
 				}
 			}
-			if(textPos + split >= cipherText.length())
+			if(textPos + split >= cipherText.length)
 				break;
 			
 			textPos += split;
 			count += 1;
 			split = s.charAt(count % s.length()) - '0';
 		}
-		return plainText;
+		return plainText.toCharArray();
 	}
 }

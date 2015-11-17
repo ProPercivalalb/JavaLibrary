@@ -8,31 +8,31 @@ import javalibrary.math.MathHelper;
 public class Porta {
 
 	public static String encode(String plainText, String keyword, boolean move) {
-		return decode(plainText, keyword, move);
+		return new String(decode(plainText.toCharArray(), keyword, move));
 	}
 	
 	/**
-	 * @param move 'true' for rotates right, 'false' for rotates left
+	 * @param shiftRight 'true' for rotates right, 'false' for rotates left
 	 * 	   true           false
 	 * NOPQRSTUVWXYZ  NOPQRSTUVWXYZ
 	 * ZNOPQRSTUVWXY  OPQRSTUVWXYZN
 	 * YZNOPQRSTUVWX  PQRSTUVWXYZNO
 	 */
-	public static String decode(String cipherText, String keyword, boolean move) {
-		String plainText = "";
+	public static char[] decode(char[] cipherText, String keyword, boolean shiftRight) {
+		char[] plainText = new char[cipherText.length];
 		
-		for(int pos = 0; pos < cipherText.length(); pos++){
+		for(int pos = 0; pos < cipherText.length; pos++){
 			int rowNo = (int)Math.floor((keyword.charAt(pos % keyword.length()) - 'A') / 2);
 			String row = "";
 			
 			for(int j = 0; j < 13; j++)
-				row += (char)(MathHelper.mod(j + (move ? -1 : 1) * rowNo, 13) + 'N');
+				row += (char)(MathHelper.mod(j + (shiftRight ? -1 : 1) * rowNo, 13) + 'N');
 			
-			int inGrid = row.indexOf(cipherText.charAt(pos));
+			int inGrid = row.indexOf(cipherText[pos]);
 			if(inGrid >= 0)
-				plainText += (char)(inGrid + 'A');
+				plainText[pos] = (char)(inGrid + 'A');
 			else
-				plainText += row.charAt(cipherText.charAt(pos) - 'A');
+				plainText[pos] = row.charAt(cipherText[pos] - 'A');
 		}
 	 
 		return plainText;

@@ -26,12 +26,12 @@ public class TwoSquare {
 	    return plainText;
 	}
 	
-	public static String decode(String cipherText, String keysquare1, String keysquare2) {
-	    String plainText = "";
+	public static char[] decode(char[] cipherText, String keysquare1, String keysquare2) {
+	    char[] plainText = new char[cipherText.length];
 	    
-	    for(int i = 0; i < cipherText.length(); i += 2){
-	        char a = cipherText.charAt(i);
-	        char b = cipherText.charAt(i + 1);
+	    for(int i = 0; i < cipherText.length; i += 2){
+	        char a = cipherText[i];
+	        char b = cipherText[i + 1];
 	        int aIndex = keysquare2.indexOf(a);
 	        int bIndex = keysquare1.indexOf(b);
 	        int aRow = (int)Math.floor(aIndex / 5);
@@ -39,11 +39,14 @@ public class TwoSquare {
 	        int aCol = aIndex % 5;
 	        int bCol = bIndex % 5;
 	        
-	        if(aRow == bRow)
-	        	plainText += "" + b + "" + a;
+	        if(aRow == bRow) {
+	        	plainText[i] = b;
+	        	plainText[i + 1] = a;
+	        }
 	        else {
-		        plainText += keysquare1.charAt(5 * aRow + bCol);
-	 	        plainText += keysquare2.charAt(5 * bRow + aCol);
+	        	plainText[i] = keysquare1.charAt(5 * aRow + bCol);
+	        	plainText[i + 1] = keysquare2.charAt(5 * bRow + aCol);
+
 	        }
 	    }
 	   

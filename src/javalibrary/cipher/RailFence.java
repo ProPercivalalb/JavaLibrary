@@ -11,11 +11,11 @@ public class RailFence {
 		for(int i = 0; i < rows; ++i)
 			cipherText[i] = new StringBuilder();
 		
-		int no_per_ite = rows * 2 - 2;
+		int branchTotal = rows * 2 - 2;
 		
 		for(int i = 0; i < plainText.length(); ++i) {
 			char character = plainText.charAt(i);
-			int index_in_ite = i % no_per_ite;
+			int index_in_ite = i % branchTotal;
 			if(index_in_ite < rows)
 				cipherText[index_in_ite].append(character);
 			else
@@ -31,42 +31,44 @@ public class RailFence {
 	
 	public static char[] decode(char[] cipherText, int rows) {
 		char[] plainText = new char[cipherText.length];
-		int no_per_ite = rows * 2 - 2;
-		double total = (double)cipherText.length / no_per_ite;
-		int total_ite = (int)total;
-		int total_left = (int)((total - total_ite) * no_per_ite);
+		
+		int branchTotal = 2 * (rows - 1);
+		int branchs = cipherText.length / branchTotal;
+		int noUnassigned = cipherText.length - (branchs * branchTotal);
 		
 		int index = 0;
-		for(int c_row = 1; c_row <= rows; c_row++) {
+		for(int row = 1; row <= rows; row++) {
 			if(index >= cipherText.length) break;
 			
-			int times = total_ite;
-			if(c_row != 1 && c_row != rows)
-				times *= 2;
+			int occurs = branchs; //Times a letter occurs in a row
+			
+			if(row > 1 && row < rows) occurs *= 2;
 
-			if(total_left >= c_row)
-				times += 1;
+			if(noUnassigned >= row) {
+				occurs += 1;
+				
+				if(row < rows && row + (rows - row) * 2 <= noUnassigned)
+					occurs += 1;
+			}
 			
-			if(c_row != rows && rows - c_row <= total_left - rows)
-				times += 1;
-			
-			for(int i = 0; i < times && index < cipherText.length; i++) {
+			for(int i = 0; i < occurs; i++) {
 				int newIndex = 0;
 				
-				if(c_row == 1 || c_row == rows)
-					newIndex = i * no_per_ite + c_row - 1;
-				else {
-					int x = (int)(i / 2);
-					newIndex = x * no_per_ite + c_row - 1;
+				if(row > 1 && row < rows) {
+					int branch = (int)(i / 2);
+					newIndex = branch * branchTotal + row - 1;
 					
 					if(i % 2 == 1)
-						newIndex += (rows - c_row) * 2;			
+						newIndex += (rows - row) * 2;	
 				}
+				else
+					newIndex = i * branchTotal + row - 1;
 				
 				plainText[newIndex] = cipherText[index];
 				index++;
 			}
 		}
+		
 		return plainText;
 	}
 }

@@ -1,11 +1,8 @@
 package javalibrary.cipher;
 
-/**
- * @author Alex Barter (10AS)
- */
-public class Bifid {
+public class ConjugatedBifid {
 
-	public static String encode(String plainText, String keysquare, int period) {
+	public static String encode(String plainText, String create, String recreate, int period) {
 		if(period == 0)
 			period = plainText.length();
 		
@@ -13,7 +10,7 @@ public class Bifid {
 		for(int i = 0; i < plainText.length(); i++) {
 			char c = plainText.charAt(i);
 			if(c == 'J') c = 'I';
-			int charIndex = keysquare.indexOf(c);
+			int charIndex = create.indexOf(c);
 		    int charRow = (int)Math.floor(charIndex / 5);
 		    int charCol = charIndex % 5;
 		    
@@ -30,19 +27,19 @@ public class Bifid {
 		for(int i = 0; i < digits.length; i += 2) {
 		    int row = digits[i];
 		    int column = digits[i + 1];
-		    cipherText += keysquare.charAt(row * 5 + column);
+		    cipherText += recreate.charAt(row * 5 + column);
 		}
 		
 	    return cipherText;
 	}
 	
-	public static char[] decode(char[] cipherText, String keysquare, int period) {
+	public static char[] decode(char[] cipherText, String create, String recreate, int period) {
 		if(period == 0)
 			period = cipherText.length;
 		
 	    String numberText = "";
 	    for(int i = 0; i < cipherText.length; i++){
-	        int index = keysquare.indexOf(cipherText[i]);
+	        int index = recreate.indexOf(cipherText[i]);
 	        int row = (int)Math.floor(index / 5);
 	        int column = index % 5;
 	        numberText += row + "" + column;
@@ -67,9 +64,10 @@ public class Bifid {
 	    for(int i = 0; i < numberRowText.length(); i++) {
 	    	int row = numberRowText.charAt(i) - '0';
 	    	int column = numberColumnText.charAt(i) - '0';
-	    	plainText[i] = keysquare.charAt(row * 5 + column);
+	    	plainText[i] = create.charAt(row * 5 + column);
 	    }
 	    
 	    return plainText;
 	}
+
 }

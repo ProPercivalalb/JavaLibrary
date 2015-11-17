@@ -23,7 +23,7 @@ public class Dictionary {
 				if(line == null) break;
 				if(line.isEmpty() || line.startsWith("#")) continue;
 	
-				words.add(line.split(" ")[0]);
+				words.add(line.split(" ")[0].toUpperCase());
 			}
 		}
 		catch(Exception e) {

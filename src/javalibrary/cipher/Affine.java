@@ -32,7 +32,7 @@ public class Affine implements ICipher {
 		return cipherText;
 	}
 	
-	public static String decode(char[] cipherText, int a, int b) {
+	public static char[] decode(char[] cipherText, int a, int b) {
 		
 		char[] plainText = new char[cipherText.length];
 		
@@ -42,7 +42,7 @@ public class Affine implements ICipher {
 		for(int i = 0; i < cipherText.length; i++)
 			plainText[i] = (char) (MathHelper.mod(multiplicativeInverse * (cipherText[i] - 'A' - b), 26) + 'A');
 
-		return new String(plainText);
+		return plainText;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class Affine implements ICipher {
 
 	@Override
 	public String decode(String cipherText, EncryptionData data) {
-		return decode(cipherText.toCharArray(), data.getData(EncryptionKeys.AFFINE_A, Integer.TYPE), data.getData(EncryptionKeys.AFFINE_B, Integer.TYPE));
+		return new String(decode(cipherText.toCharArray(), data.getData(EncryptionKeys.AFFINE_A, Integer.TYPE), data.getData(EncryptionKeys.AFFINE_B, Integer.TYPE)));
 	}
 
 	@Override

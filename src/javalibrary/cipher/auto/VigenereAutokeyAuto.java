@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 import javalibrary.EncryptionData;
 import javalibrary.IForceDecrypt;
 import javalibrary.Output;
-import javalibrary.cipher.VigenereAutoKey;
+import javalibrary.cipher.VigenereAutokey;
 import javalibrary.fitness.TextFitness;
 import javalibrary.language.ILanguage;
 import javalibrary.swing.ProgressValue;
@@ -63,7 +63,7 @@ public class VigenereAutokeyAuto implements IForceDecrypt {
 			
 		@Override
 		public void onKeyCreate(String key) {
-			this.lastText = VigenereAutoKey.decode(this.cipherText, key);
+			this.lastText = VigenereAutokey.decode(this.cipherText, key);
 				
 			this.currentScore = TextFitness.scoreFitnessQuadgrams(this.lastText, this.language);
 			

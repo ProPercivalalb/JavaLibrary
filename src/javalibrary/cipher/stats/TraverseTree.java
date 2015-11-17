@@ -9,8 +9,6 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 
-import nationalciphernew.cipher.stats.StatCalculator;
-
 public class TraverseTree {
 
 	public static List<Integer> numerical_attributes = Arrays.asList(0,1,2,3,4,5,6,7,8,22,23,24,25,26,27,28,29,30,31,33,34,35,36);
@@ -107,15 +105,7 @@ public class TraverseTree {
 		    
 		    
 		    
-		    
-			BufferedReader updateReader3 = new BufferedReader(new InputStreamReader(StatCalculator.class.getResourceAsStream("/javalibrary/cipher/stats/trigraph.txt")));
-
-			String[] split = updateReader3.readLine().split(",");
-			int i = 0;
-			for(String s : split) {
-				StatCalculator.bstd[i] = Integer.valueOf(s);
-				i += 1;
-			}
+		  
 		}
 		catch(Exception e) {
 			e.printStackTrace();

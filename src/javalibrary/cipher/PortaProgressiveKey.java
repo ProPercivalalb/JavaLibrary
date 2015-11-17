@@ -7,8 +7,8 @@ public class PortaProgressiveKey {
 		return ProgressiveKey.encodeBase(encodedText, period, progressiveKey);
 	}
 	
-	public static String decode(String plainText, String keyword, int period, int progressiveKey) {
-		String decodedText = Porta.decode(plainText, keyword, false);
+	public static char[] decode(char[] plainText, String keyword, int period, int progressiveKey) {
+		char[] decodedText = Porta.decode(plainText, keyword, false);
 		return ProgressiveKey.decodeBase(decodedText, period, progressiveKey);
 	}
 }

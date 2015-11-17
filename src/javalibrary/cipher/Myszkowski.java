@@ -21,10 +21,10 @@ public class Myszkowski {
 		return cipherText;
 	}
 	
-	public static String decode(String cipherText, String keyword) {
-		char[] plainText = new char[cipherText.length()];
+	public static char[] decode(char[] cipherText, String keyword) {
+		char[] plainText = new char[cipherText.length];
 		
-		int rows = (int)Math.ceil(cipherText.length() / (double)keyword.length());
+		int rows = (int)Math.ceil(cipherText.length / (double)keyword.length());
 		
 		int index = 0;
 		for(char c = 'A'; c <= 'Z'; c++) {
@@ -34,10 +34,10 @@ public class Myszkowski {
 			for(int row = 0; row < rows; row++)
 				for(int i = 0; i < keyword.length(); i++) 
 					if(c == keyword.charAt(i))
-						if(row * keyword.length() + i < cipherText.length())
-							plainText[row * keyword.length() + i] = cipherText.charAt(index++);
+						if(row * keyword.length() + i < cipherText.length)
+							plainText[row * keyword.length() + i] = cipherText[index++];
 		}
 		
-		return new String(plainText);	
+		return plainText;	
 	}
 }

@@ -62,6 +62,16 @@ public class DocumentUtil {
     	}
     }
 	
+	public static class DocumentIntegerRangeInput extends DocumentFilter {
+		
+    	@Override
+    	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+    		text = text.replaceAll("[^0-9-]", "");
+    		 
+    		super.replace(fb, offset, length, text, attrs);
+    	}
+    }
+	
 	public static abstract class DocumentChangeAdapter implements DocumentListener {
 
 		@Override

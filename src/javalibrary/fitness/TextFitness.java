@@ -58,7 +58,7 @@ public class TextFitness {
 	
 	public static double getEstimatedFitness(String text, ILanguage language) {
 		NGramData quadgramData = language.getQuadgramData();
-		return quadgramData.fitnessPerChar * text.length();
+		return quadgramData.fitnessPerChar * Math.max(0, text.length() - 3);
 	}
 	
 	public static NGramData loadFile(String resourcePath) {

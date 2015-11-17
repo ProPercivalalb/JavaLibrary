@@ -15,12 +15,12 @@ public class ProgressiveKey {
 		return cipherText;
 	}
 	
-	protected static String decodeBase(String cipherText, int period, int progressiveKey) {
-		String decodedText = "";
+	protected static char[] decodeBase(char[] cipherText, int period, int progressiveKey) {
+		char[] decodedText = new char[cipherText.length];
 
-		for(int index = 0; index < cipherText.length(); index++) {
+		for(int index = 0; index < cipherText.length; index++) {
 			int progression = (int)Math.floor(index / period) * progressiveKey;
-			decodedText += (char)(MathHelper.mod((cipherText.charAt(index) - 'A' - progression), 26) + 'A');
+			decodedText[index] = (char)(MathHelper.mod((cipherText[index] - 'A' - progression), 26) + 'A');
 		}
 		
 		return decodedText;
