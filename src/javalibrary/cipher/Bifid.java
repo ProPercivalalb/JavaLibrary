@@ -6,8 +6,7 @@ package javalibrary.cipher;
 public class Bifid {
 
 	public static String encode(String plainText, String keysquare, int period) {
-		if(period == 0)
-			period = plainText.length();
+		if(period == 0) period = plainText.length();
 		
 		int[] digits = new int[plainText.length() * 2];
 		for(int i = 0; i < plainText.length(); i++) {

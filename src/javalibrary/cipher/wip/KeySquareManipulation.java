@@ -1,6 +1,11 @@
 package javalibrary.cipher.wip;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+
+import javalibrary.util.RandomUtil;
 
 /**
  * @author Alex Barter (10AS)
@@ -110,5 +115,18 @@ public class KeySquareManipulation {
 		}
 		
 		return keySquare;
+	}
+	
+	public static String generateRandTrifidKey(char nullChar) {
+		List<Character> characters = new ArrayList<Character>(Arrays.asList('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z', nullChar));
+		String key = "";
+		while(!characters.isEmpty()) {
+			char rC = RandomUtil.pickRandomElement(characters);
+			key += rC;
+			characters.remove((Character)rC);
+		}
+
+		
+		return key;
 	}
 }

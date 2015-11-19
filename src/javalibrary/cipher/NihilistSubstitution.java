@@ -37,7 +37,7 @@ public class NihilistSubstitution {
 
 			int row = (no - column) / 10 - 1;
 			
-			if(row * 5 + column - 1 >= keysquare.length() || row * 5 + column - 1 < 0 ) return StringTransformer.repeat("Z", plainText.length).toCharArray();
+			if(row * 5 + column - 1 >= keysquare.length() || row * 5 + column - 1 < 0) return StringTransformer.repeat("Z", plainText.length).toCharArray();
 			plainText[i] = keysquare.charAt(row * 5 + column - 1);
 		}
 		
