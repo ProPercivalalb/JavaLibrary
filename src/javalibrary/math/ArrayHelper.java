@@ -1,6 +1,7 @@
 package javalibrary.math;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * @author Alex Barter (10AS)
@@ -49,5 +50,24 @@ public class ArrayHelper {
 	    for(int i = 0; i < length; i++)
 	        arr[i] = filler;
 	    return arr;
+	}
+	
+	public static <T> T[] concat(T[] first, T[] second) {
+		T[] result = Arrays.copyOf(first, first.length + second.length);
+		System.arraycopy(second, 0, result, first.length, second.length);
+		return result;
+	}
+	
+	public static char[] concat(char[] a, char[] b) {
+		int aLen = a.length;
+		int bLen = b.length;
+		char[] c = new char[aLen + bLen];
+		System.arraycopy(a, 0, c, 0, aLen);
+		System.arraycopy(b, 0, c, aLen, bLen);
+		return c;
+	}
+	
+	public static char[] copyOfRange(char[] array, int startIndex, int length) {
+		return Arrays.copyOfRange(array, startIndex, startIndex + length);
 	}
 }

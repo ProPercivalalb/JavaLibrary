@@ -99,11 +99,21 @@ public class StringTransformer {
         return accumulator;
     }
     
+    public static String getEveryNthChar(char[] text, int start, int n) {
+    	String accumulator = "";
+        for(int i = 0; i < text.length; ++i) {
+            if((i % n) == start) {
+                accumulator += text[i];
+            }
+        }
+        return accumulator;
+    }
+    
     public static String getEveryNthBlock(String text, int blockSize, int start, int n) {
     	String accumulator = "";
         for(int i = 0; i < text.length() / blockSize; i++) {
             if((i % n) == start) {
-                accumulator += text.substring(i * blockSize + blockSize);
+                accumulator += text.substring(i * blockSize, i * blockSize + blockSize);
             }
         }
         return accumulator;
@@ -132,7 +142,7 @@ public class StringTransformer {
     public static List<String> splitInto(String text, int size) {
     	List<String> list = new ArrayList<String>();
     	for(int i = 0; i < text.length(); i += size)
-    		list.add(text.substring(i, Bound.bound(i + size, 0, text.length())));
+    		list.add(text.substring(i, Math.min(i + size, text.length())));
     	return list;
     }
     

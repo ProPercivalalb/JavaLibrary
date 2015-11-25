@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import nationalciphernew.cipher.stats.StatisticRange;
-import nationalciphernew.cipher.stats.StatisticType;
-
 public class CipherStatisticsOld {
 
+/**
 	public static HashMap<String, List<StatisticRange>> getOtherCipherStatistics() {
 		HashMap<String, List<StatisticRange>> map = new	HashMap<String, List<StatisticRange>>();
 		List<StatisticRange> plaintextList = new ArrayList<StatisticRange>();
@@ -628,5 +626,5 @@ public class CipherStatisticsOld {
 		routetranspList.add(new StatisticRange(StatisticType.SINGLE_LETTER_DIGRAPH, 162.0D, 50.0D));
 		map.put("Route Transp", routetranspList);
 		return map;
-	}
+	}**/
 }

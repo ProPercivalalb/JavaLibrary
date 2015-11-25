@@ -146,22 +146,22 @@ public class StringAnalyzer {
 		return getEmbeddedStrings(text, minLength, maxLength, true);
 	}
 	
-	public static TreeMap<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength, boolean including) {
+	public static TreeMap<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength, boolean overlap) {
 		
 		
-		return getEmbeddedStrings(text.toCharArray(), minLength, maxLength, including);
+		return getEmbeddedStrings(text.toCharArray(), minLength, maxLength, overlap);
 	}
 	
 	public static TreeMap<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength) {
 		return getEmbeddedStrings(text, minLength, maxLength, true);
 	}
 	
-	public static TreeMap<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength, boolean including) {
+	public static TreeMap<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength, boolean overlap) {
 		TreeMap<String, Integer> map = new TreeMap<String, Integer>();
 
 		if(text.length >= minLength) {
 			for(int length = minLength; length <= maxLength; ++length) {
-				for(int k = 0; k < (text.length - length + 1); k += (including ? 1 : length)) {
+				for(int k = 0; k < (text.length - length + 1); k += (overlap ? 1 : length)) {
 					String s = new String(text, k, length);
 					map.put(s, 1 + (map.containsKey(s) ? map.get(s) : 0));
 				}
