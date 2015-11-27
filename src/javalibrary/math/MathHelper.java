@@ -135,6 +135,18 @@ public class MathHelper {
 		return squareFactors;
 	}
 	
+	public static List<Integer> getOddFactors(int target) {
+		//Gets all the factors of the given number
+		List<Integer> factors = getFactors(target);
+		List<Integer> oddFactors = new ArrayList<Integer>();
+		
+		for(Integer factor : factors) {
+			if(factor % 2 == 1)
+				oddFactors.add(factor);
+		}
+		return oddFactors;
+	}
+	
 	public static List<Integer> getFactors(int target) {
 		List<Integer> factors = new ArrayList<Integer>();
 		int incrementer = 1;
