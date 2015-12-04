@@ -54,8 +54,16 @@ public class DocumentUtil {
 		
     	@Override
     	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-    		//if(this.textComponent.getText().indexOf('.') != -1 && text.contains("."))
-    		//	text = text.replaceAll(".", "");
+    		String textFull = this.textComponent.getText();
+    		String textLeft = textFull.substring(0, offset) + textFull.substring(offset + length, textFull.length());
+    	
+    		if(textLeft.isEmpty() && text.startsWith(".")) {
+    			text = "0" + text;
+    		}
+    		if(textLeft.indexOf('.') != -1 && text.contains("."))
+    			text = text.replaceAll(".", "");
+    		
+    		
     		text = text.replaceAll("[^0-9.]", "");
     		 
     		super.replace(fb, offset, length, text, attrs);
@@ -64,8 +72,19 @@ public class DocumentUtil {
 	
 	public static class DocumentIntegerRangeInput extends DocumentFilter {
 		
+		private JTextComponent textComponent;
+		
+		public DocumentIntegerRangeInput(JTextComponent textComponent) {
+			this.textComponent = textComponent;
+		} 
+		
     	@Override
     	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+    		String textFull = this.textComponent.getText();
+    		String textLeft = textFull.substring(0, offset) + textFull.substring(offset + length, textFull.length());
+    	
+    		if(textLeft.indexOf('-') != -1 && text.contains("-"))
+    			text = text.replaceAll("-", "");
     		text = text.replaceAll("[^0-9-]", "");
     		 
     		super.replace(fb, offset, length, text, attrs);

@@ -13,13 +13,16 @@ public class WordSplit {
 	public static HashMap<String, Double> mappingWords2 = new HashMap<String, Double>();
 	
 	public static String splitText(String text) {
-		char[] charArray = text.toCharArray();
+		return splitText(text.toCharArray());
+	}
+	
+	public static String splitText(char[] charArray) {
 		
-		int maxwordLength = Math.min(text.length(), 20);
+		int maxwordLength = Math.min(charArray.length, 20);
 		
-		double[][] scores = new double[text.length()][maxwordLength];
-		String[][] texts = new String[text.length()][maxwordLength];
-		String[][] words = new String[text.length()][maxwordLength];
+		double[][] scores = new double[charArray.length][maxwordLength];
+		String[][] texts = new String[charArray.length][maxwordLength];
+		String[][] words = new String[charArray.length][maxwordLength];
 		
 		for(int j = 0; j < maxwordLength; j++) {
 			String s = new String(charArray, 0, j + 1);
@@ -28,9 +31,9 @@ public class WordSplit {
 			words[0][j] = s;
 		}
 		
-		for(int i = 1; i < text.length(); i++) {
+		for(int i = 1; i < charArray.length; i++) {
 			for(int j = 0; j < maxwordLength; j++) {
-				if(i + j + 1 > text.length()) break;
+				if(i + j + 1 > charArray.length) break;
 				
 				String bestTempWord = "";
 				String bestTempText = "";
@@ -66,9 +69,12 @@ public class WordSplit {
 				bestTempText = texts[texts.length - i - 1][i];
 			}
 		}
-		System.out.println("" + bestTempScore);
+		lastScore = bestTempScore;
+		//System.out.println("" + bestTempScore);
 		return bestTempText;
 	}
+	
+	public static double lastScore = Double.NEGATIVE_INFINITY;
 	
 	public static double scoreWord(String word) {
 		return scoreWordDuo(word, "");
