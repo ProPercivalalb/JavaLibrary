@@ -25,6 +25,8 @@ public interface Output {
 	
 	public void println(String text, Object... format);
 	
+	public boolean clear();
+	
 	public static class Default implements Output {
 
 		@Override
@@ -36,6 +38,11 @@ public interface Output {
 		public void println(String text, Object... format) {
 			System.out.println(String.format(text, format));
 			
+		}
+
+		@Override
+		public boolean clear() {
+			return false;
 		}
 	}
 	
@@ -88,7 +95,12 @@ public interface Output {
 		@Override
 		public void println(String text, Object... format) {
 			this.print(text + "\n", format);
-			
+		}
+		
+		@Override
+		public boolean clear() {
+			this.textComponent.setText("");
+			return true;
 		}
 
 	}

@@ -10,6 +10,7 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -29,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +38,17 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -62,14 +68,22 @@ import javax.swing.text.DocumentFilter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import javalibrary.math.Rounder;
+import javalibrary.network.algorithm.Algorithm;
+import javalibrary.network.algorithm.ChinesePostman;
+import javalibrary.network.algorithm.ShortestPath;
+import javalibrary.network.algorithm.SpanningTree;
+import javalibrary.network.algorithm.TravellingSalesman;
 import javalibrary.string.ValueFormat;
+import javalibrary.swing.DocumentUtil;
+import javalibrary.swing.ExitAction;
 import javalibrary.swing.ImageUtil;
 import javalibrary.thread.Threads;
 import javalibrary.util.RandomUtil;
 
-public class Zoom extends JFrame {
+public class GraphicNetworkTool extends JFrame {
 
-	private static DrawingPanel p;
+	private static NetworkDisplay display;
 	private double factor = 1;
 	private int currentX, currentY, oldX, oldY;
 	private int moveX, moveY;
@@ -79,8 +93,13 @@ public class Zoom extends JFrame {
 	
 	public Node nodeAbove;
 	
+	public JDialog arcListDialog;
 	public static JTable tbl;
 	public static DefaultTableModel dtm;
+	
+	public final JSlider showSpeedSlider;
+	public final JMenuItem showNodeIdItem;
+	public final JMenuItem showArcLengthItem;
 	
 	public int currentId = 0;
 	public ArrayList<Arc> tableOrder = new ArrayList<Arc>();
@@ -90,32 +109,28 @@ public class Zoom extends JFrame {
 	public HashMap<Arc, List<Boolean>> arrow = new HashMap<Arc, List<Boolean>>();
 	public Arc lastest;
 	
-	public Zoom() {
-		super("ZOOM");
-
-		p = new DrawingPanel();
-		add(p, BorderLayout.CENTER);
-
-		Box box = Box.createHorizontalBox();
-
-		//box.add(Box.createHorizontalGlue());
+	public GraphicNetworkTool() {
+		super("Graphic Network Tool");
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("javalibrary/network/brick.png")));
+		
+		
+		display = new NetworkDisplay();
+		add(display, BorderLayout.CENTER);
 		
 		
 		JMenuBar menuBar = new JMenuBar();
-		JMenu file = new JMenu("File");
-		JMenuItem newFile = new JMenuItem("New");
-		newFile.setPreferredSize(new Dimension(200, 25));
+		JMenu fileMenu = new JMenu("File");
+		JMenuItem newFile = new JMenuItem("New", ImageUtil.createImageIcon("/javalibrary/network/page_white.png", "New"));
 		newFile.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				p.clearAll();
+				display.clearAll();
 				
-				p.repaint();
+				display.repaint();
 			}
 		});
-		JMenuItem load = new JMenuItem("Load", ImageUtil.createImageIcon("/javalibrary/network/Edit File-20.png", "Edit"));
-		load.setPreferredSize(new Dimension(200, 25));
+		JMenuItem load = new JMenuItem("Load", ImageUtil.createImageIcon("/javalibrary/network/folder_explore.png", "Edit"));
 		load.addActionListener(new ActionListener() {
 
 			@Override
@@ -124,12 +139,10 @@ public class Zoom extends JFrame {
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				fc.setAcceptAllFileFilterUsed(false);
 				fc.addChoosableFileFilter(new FileNameExtensionFilter("JSON Files", "json"));
-
-				File workingDirectory = new File(System.getProperty("user.dir"));
-				fc.setCurrentDirectory(workingDirectory);
+				fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 				
 				fc.setApproveButtonText("Load Network");
-				int returnVal = fc.showDialog(Zoom.this, "Load");
+				int returnVal = fc.showDialog(GraphicNetworkTool.this, "Load");
 				
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
@@ -139,7 +152,7 @@ public class Zoom extends JFrame {
 							FileInputStream fIn = new FileInputStream(file);
 						    BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
 			
-						    p.clearAll();
+						    display.clearAll();
 		
 							HashMap<String, List<Map<String, Object>>> map = new Gson().fromJson(myReader, new TypeToken<HashMap<String, List<Map<String, Object>>>>(){}.getType());
 							HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
@@ -148,18 +161,18 @@ public class Zoom extends JFrame {
 							for(Map<String, Object> nodeData : nodes) {
 								Node node = new Node(((Double)nodeData.get("id")).intValue(), ((Double)nodeData.get("x")).intValue(), ((Double)nodeData.get("y")).intValue());
 								nodeMap.put(((Double)nodeData.get("id")).intValue(), node);
-								p.getNetworkBase().addNode(node);
+								display.getNetworkBase().addNode(node);
 							}
 							
 							List<Map<String, Object>> edges = map.get("edges");
 							for(Map<String, Object> edgeData : edges) {
 								Arc arc = new Arc(((Double)edgeData.get("source")).intValue(), ((Double)edgeData.get("target")).intValue(), (Double)edgeData.get("distance"));
-								p.getNetworkBase().addArc(arc);
+								display.getNetworkBase().addArc(arc);
 								tableOrder.add(arc);
 								dtm.addRow(new Object[] {arc.id1, arc.id2, arc.getTotalDistance()});
 							}
 							
-							p.repaint();
+							display.repaint();
 						      
 						    myReader.close();
 						}	
@@ -172,8 +185,7 @@ public class Zoom extends JFrame {
 			
 		});
 		
-		JMenuItem save = new JMenuItem("Save", ImageUtil.createImageIcon("/javalibrary/network/Save-20.png", "Save"));
-		save.setPreferredSize(new Dimension(200, 25));
+		JMenuItem save = new JMenuItem("Save", ImageUtil.createImageIcon("/javalibrary/network/disk.png", "Save"));
 		save.addActionListener(new ActionListener() {
 
 			@Override
@@ -186,7 +198,7 @@ public class Zoom extends JFrame {
 				fc.setCurrentDirectory(workingDirectory);
 				
 				fc.setApproveButtonText("Save Network");
-				int returnVal = fc.showDialog(Zoom.this, "Save");
+				int returnVal = fc.showDialog(GraphicNetworkTool.this, "Save");
 				
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
@@ -197,12 +209,12 @@ public class Zoom extends JFrame {
 							file.createNewFile();
 						
 						BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-							
+						
 						HashMap<String, List<Map<String, Object>>> map = new HashMap<String, List<Map<String, Object>>>();
 
 						
 						List<Map<String, Object>> nodeData = new ArrayList<Map<String, Object>>();
-						for(Node node : p.base.NODES.values()) {
+						for(Node node : display.base.NODES.values()) {
 							Map<String, Object> data = new HashMap<String, Object>();
 							data.put("id", node.getId());
 							data.put("x", node.x);
@@ -212,7 +224,7 @@ public class Zoom extends JFrame {
 						map.put("nodes", nodeData);
 						
 						List<Map<String, Object>> edgesData = new ArrayList<Map<String, Object>>();
-						for(Arc arc : p.base.CONNECTIONS) {
+						for(Arc arc : display.base.CONNECTIONS) {
 							Map<String, Object> data = new HashMap<String, Object>();
 							data.put("source", arc.id1);
 							data.put("target", arc.id2);
@@ -233,129 +245,104 @@ public class Zoom extends JFrame {
 			}
 			
 		});
-		JMenuItem exit = new JMenuItem("Exit");
-		file.add(newFile);
-		file.add(load);
-		file.add(save);
-		file.addSeparator();
-		file.add(exit);
-		menuBar.add(file);
 		
-		this.setJMenuBar(menuBar);
+		fileMenu.add(newFile);
+		fileMenu.add(load);
+		fileMenu.add(save);
+		fileMenu.addSeparator();
+		fileMenu.add(ExitAction.createExit("Exit"));
+		menuBar.add(fileMenu);
+		
+		JMenu editMenu = new JMenu("Edit");
+		
+		JMenuItem showNodeItem = new JMenuItem("Node Table");
+		
+		showNodeItem.addActionListener(new ActionListener() {
 
-		// create object of table and table model
-		tbl = new JTable() {
 			@Override
-            public TableCellEditor getCellEditor(final int row, int column) {
-                int modelColumn = convertColumnIndexToModel(column);
-                
-                final JTextField textfield = new JTextField();
-                ((AbstractDocument) textfield.getDocument()).setDocumentFilter(new DocumentFilter() {
-
-                	@Override
-                	public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                		if(textfield.getText().indexOf('.') != -1 && text.contains("."))
-                			text = text.replaceAll(".", "");
-                		text = text.replaceAll("[^0-9.]", "");
-                		 
-                		super.replace(fb, offset, length, text, attrs);
-                	}
-                });
-                
-                textfield.getDocument().addDocumentListener(new DocumentListener() {
-                	@Override
-                	public void changedUpdate(DocumentEvent event) {
-                		
-                	}
-                	@Override
-                	public void removeUpdate(DocumentEvent event) {
-                		try {
-	                		double v = Double.parseDouble(textfield.getText());
-	                		p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, v);
-							p.displayBase = p.base;
-	                		p.repaint();
-                		}
-                		catch(NumberFormatException e) {
-                			p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, 0.0D);
-							p.displayBase = p.base;
-							p.repaint();
-                		}
-                	}
-                	@Override
-                	public void insertUpdate(DocumentEvent event) {
-                		try {
-	                		double v = Double.parseDouble(textfield.getText());
-	                		p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, v);
-							p.displayBase = p.base;
-	                		p.repaint();
-                		}
-                		catch(NumberFormatException e) {
-                			p.base.CONNECTIONS.get(p.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, 0.0D);
-							p.displayBase = p.base;
-							p.repaint();
-                		}
-                	}
-                });
-                
-                if (modelColumn == 2)
-                    return new DefaultCellEditor(textfield);
-                else
-                    return super.getCellEditor(row, column);
-  
-            }
-		};
-		
-		tbl.getTableHeader().setReorderingAllowed(false);
-		tbl.getTableHeader().setResizingAllowed(false);
-		tbl.setRowHeight(20);
-		tbl.setAutoCreateColumnsFromModel(true);
-		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		JScrollPane scrollPane = new JScrollPane(tbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.getViewport().setPreferredSize(new Dimension(225, 500));
-		dtm = new DefaultTableModel(0, 0) {
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return columnIndex == 2;
+			public void actionPerformed(ActionEvent event) {
+				//arcListDialog.setVisible(true);
 			}
-		};
-		
-		dtm.setColumnIdentifiers(new String[] {"Node", "Node", "Distance"});
-		tbl.setModel(dtm);
-		tbl.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseReleased(MouseEvent event) {
-				if(SwingUtilities.isMiddleMouseButton(event)) {
-					int row = tbl.rowAtPoint(event.getPoint());
-			        if (row >= 0) {
-			        	dtm.removeRow(row);
-			        	p.base.CONNECTIONS.remove(tableOrder.get(row));
-			        	p.displayBase = p.base;
-			        	tableOrder.remove(row);
-			        	p.repaint();
-			        }
-				}
-			}
+		});
 			
+			
+		JMenuItem showArcsItem = new JMenuItem("Arc Table");
+		showArcsItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				arcListDialog.setVisible(true);
+			}
 		});
 		
-		box.add(scrollPane);
-		//box.add(Box.createVerticalStrut(15));
-		JButton spanningTree = new JButton("Mininum Spanning Tree");
-		spanningTree.addActionListener(new ActionListener() {
+		JMenuItem assignDistancesItem = new JMenuItem("Deduce Distances", ImageUtil.createImageIcon("/javalibrary/network/calculator_link.png", "Calculate"));
+		assignDistancesItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				
+				highlightRoute.clear();
+				highlightArrowRoute.clear();
+				arrow.clear();
+				lastest = null;
+				
+				for(Arc arc : display.base.CONNECTIONS) {
+					arc.distances.clear();
+					Node node1 = display.base.NODES.get(arc.id1);
+					Node node2 = display.base.NODES.get(arc.id2);
+					double distance = Rounder.round(Math.sqrt(Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2)), 2);
+					
+					arc.distances.add(distance);
+					tbl.setValueAt(distance, tableOrder.indexOf(arc), 2);
+				}
+				
+				tbl.repaint();
+				display.repaint();
+			}
+		});
+		
+		JMenuItem deleteLoneNodesItem = new JMenuItem("Delete Lone Nodes", ImageUtil.createImageIcon("/javalibrary/network/cross.png", "Delete"));
+		deleteLoneNodesItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				for(int nodeId : new ArrayList<Integer>(display.base.NODES.keySet())) {
+					if(display.base.getAllPathsConnectedToNode(nodeId).size() <= 0) {
+						display.base.NODES.remove(nodeId);
+					}
+				}
+				display.repaint();
+			}
+		});
+		
+		editMenu.add(showNodeItem);
+		editMenu.add(showArcsItem);
+		editMenu.addSeparator();
+		editMenu.add(assignDistancesItem);
+		editMenu.add(deleteLoneNodesItem);
+		menuBar.add(editMenu);
+		
+		JMenu algorithmMenu = new JMenu("Algorithms");
+		JMenuItem chinesePostmanItem = new JMenuItem("Chinese Postman");
+		JMenuItem shortestPathItem = new JMenuItem("Shortest Path");
+		JMenu spanningTreeItem = new JMenu("Spanning Tree");
+		JMenuItem spanningTreeItemKruskal = new JMenuItem("Kruskal");
+		JMenuItem spanningTreeItemPrim = new JMenuItem("Prim");
+		JMenuItem travellingSalesmanItem = new JMenuItem("Travelling Salesman");
+		
+		spanningTreeItemPrim.addActionListener(new ActionListener() {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
 				highlightRoute.clear();
 				highlightArrowRoute.clear();
 				arrow.clear();
 				lastest = null;
-				NetworkBase base = p.getNetworkBase();
-				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.PRIM);
-				p.displayBase = base;
+				NetworkBase base = display.getNetworkBase();
+				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.KRUSKAL);
+				display.displayBase = base;
 				for(Arc arc : spanningTree.CONNECTIONS) {
 					Arc finalShape = null;
-					for(Arc shape : p.base.CONNECTIONS) {
+					for(Arc shape : display.base.CONNECTIONS) {
 						if(shape.equals(arc)){
 							finalShape = shape;
 							break;
@@ -364,22 +351,46 @@ public class Zoom extends JFrame {
 					highlightRoute.add(finalShape);
 				}
 				
-				p.repaint();
+				display.repaint();
 		    }
 		});
-		box.add(spanningTree);
-		JButton shortestPath = new JButton("Shortest Path");
-		shortestPath.addActionListener(new ActionListener() {
+		
+		spanningTreeItemPrim.addActionListener(new ActionListener() {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
 				highlightRoute.clear();
 				highlightArrowRoute.clear();
 				arrow.clear();
 				lastest = null;
-				NetworkBase base = p.getNetworkBase();
+				NetworkBase base = display.getNetworkBase();
+				SpanningTree spanningTree = SpanningTree.findMinSpanningTree(base, Algorithm.PRIM);
+				display.displayBase = base;
+				for(Arc arc : spanningTree.CONNECTIONS) {
+					Arc finalShape = null;
+					for(Arc shape : display.base.CONNECTIONS) {
+						if(shape.equals(arc)){
+							finalShape = shape;
+							break;
+						}
+					}
+					highlightRoute.add(finalShape);
+				}
+				
+				display.repaint();
+		    }
+		});
+	
+		shortestPathItem.addActionListener(new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent event) {
+				highlightRoute.clear();
+				highlightArrowRoute.clear();
+				arrow.clear();
+				lastest = null;
+				NetworkBase base = display.getNetworkBase();
 				
 				ShortestPath shortestPath = ShortestPath.findShortestPath(base, base.getSmallestNode(), base.getLargestNode(), Algorithm.DIJKSTRA);
-				p.displayBase = base;
+				display.displayBase = base;
 				
 				List<Integer> routeIds = shortestPath.getRouteIds();
 				
@@ -389,7 +400,7 @@ public class Zoom extends JFrame {
 					
 					Arc finalShape = null;
 					boolean direction = false;
-					for(Arc shape : p.base.CONNECTIONS) {
+					for(Arc shape : display.base.CONNECTIONS) {
 						if((shape.id1 == id1 && shape.id2 == id2)) {
 							finalShape = shape;
 							direction = true;
@@ -405,14 +416,12 @@ public class Zoom extends JFrame {
 						arrow.put(finalShape, Arrays.asList(direction));
 					}
 				}
-				p.repaint();
+				display.repaint();
 				shortestPath.print();
 		    }
 		});
-		box.add(shortestPath);
 		
-		JButton chinesePostman = new JButton("Chinese Postman");
-		chinesePostman.addActionListener(new ActionListener() {
+		chinesePostmanItem.addActionListener(new ActionListener() {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
 				Threads.runTask(new Runnable() {
@@ -423,10 +432,10 @@ public class Zoom extends JFrame {
 						highlightArrowRoute.clear();
 						arrow.clear();
 						lastest = null;
-						NetworkBase base = p.getNetworkBase();
+						NetworkBase base = display.getNetworkBase();
 
-						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, base.getSmallestNodeId(), base.getLargestNodeId());
-						p.displayBase = chinesePostman;
+						ChinesePostman chinesePostman = ChinesePostman.findRouteAll(base, base.getSmallestNodeId(), base.getSmallestNodeId());
+						display.displayBase = chinesePostman;
 						List<Integer> routeIds = chinesePostman.getRouteIds();
 						System.out.println(routeIds);
 						for(int i = 0; i < routeIds.size() - 1; i++) {
@@ -435,7 +444,7 @@ public class Zoom extends JFrame {
 							
 							Arc finalShape = null;
 							boolean direction = false;
-							for(Arc shape : p.base.CONNECTIONS) {
+							for(Arc shape : display.base.CONNECTIONS) {
 								if((shape.id1 == id1 && shape.id2 == id2)) {
 									finalShape = shape;
 									direction = true;
@@ -451,13 +460,17 @@ public class Zoom extends JFrame {
 								arrow.put(finalShape, new ArrayList<Boolean>());
 							arrow.get(finalShape).add(direction);
 							lastest = finalShape;
-							p.repaint();
-							try {
-								Thread.sleep(400);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							display.repaint();
+							
+							int value = showSpeedSlider.getValue();
+							
+								try {
+									Thread.sleep(1000 - value);
+								}
+								catch(InterruptedException e) {
+									e.printStackTrace();
+								}
+							
 						}
 	
 						
@@ -466,20 +479,18 @@ public class Zoom extends JFrame {
 				});
 		    }
 		});
-		box.add(chinesePostman);
 		
-		JButton travellingSalesman = new JButton("Travelling Salesman");
-		travellingSalesman.addActionListener(new ActionListener() {
+		travellingSalesmanItem.addActionListener(new ActionListener() {
 			@Override
 		    public void actionPerformed(ActionEvent event) {
 				highlightRoute.clear();
 				highlightArrowRoute.clear();
 				arrow.clear();
 				lastest = null;
-				NetworkBase base = p.getNetworkBase();
+				NetworkBase base = display.getNetworkBase();
 				
 				TravellingSalesman travellingSalesman = TravellingSalesman.findRouteAll(base, base.getSmallestNodeId());
-				p.displayBase = travellingSalesman;
+				display.displayBase = travellingSalesman;
 				
 				/**
 				List<Integer> routeIds = shortestPath.getRouteIds();
@@ -506,15 +517,169 @@ public class Zoom extends JFrame {
 						arrow.put(finalShape, Arrays.asList(direction));
 					}
 				}**/
-				p.repaint();
+				display.repaint();
 				travellingSalesman.print();
 		    }
 		});
-		box.add(travellingSalesman);
 		
-		add(box, BorderLayout.SOUTH);
+		algorithmMenu.add(chinesePostmanItem);
+		algorithmMenu.add(shortestPathItem);
+		spanningTreeItem.add(spanningTreeItemKruskal);
+		spanningTreeItem.add(spanningTreeItemPrim);
+		algorithmMenu.add(spanningTreeItem);
+		algorithmMenu.add(travellingSalesmanItem);
+		algorithmMenu.addSeparator();
+		this.showSpeedSlider = new JSlider(JSlider.HORIZONTAL);
+	    Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+	    labelTable.put(0, new JLabel("1000ms"));
+	    labelTable.put(500, new JLabel("500ms"));
+	    labelTable.put(1000, new JLabel("0ms"));
+	    this.showSpeedSlider.setLabelTable(labelTable);
+	    this.showSpeedSlider.setValue(200);
+	    this.showSpeedSlider.setMinimum(0);
+	    this.showSpeedSlider.setMaximum(1000);
+	    this.showSpeedSlider.setMinorTickSpacing(250);
+	    this.showSpeedSlider.setMajorTickSpacing(500);
+	    this.showSpeedSlider.setPaintTicks(true);
+	    this.showSpeedSlider.setPaintLabels(true);
+	    this.showSpeedSlider.setFocusable(false);
+	    algorithmMenu.add(this.showSpeedSlider);
+	    algorithmMenu.addSeparator();
+	    
+		menuBar.add(algorithmMenu);
+		
+		
+		
+		JMenu displayMenu = new JMenu("Display");
+		JMenuItem findNode = new JMenuItem("Find", ImageUtil.createImageIcon("/javalibrary/network/find.png", "Find"));
+		this.showNodeIdItem = new JCheckBoxMenuItem("Show Node Ids", true);
+		this.showArcLengthItem = new JCheckBoxMenuItem("Show Arc Length", true);
+		
+		this.showNodeIdItem.addActionListener(new UpdateNetworkDisplayAction());
+		this.showArcLengthItem.addActionListener(new UpdateNetworkDisplayAction());
+		
+	    JMenuItem resetItem = new JMenuItem("Reset Highlighting", ImageUtil.createImageIcon("/javalibrary/network/pencil_delete.png", "Highlighting"));
+	    resetItem.addActionListener(new ActionListener() {
 
-		add(scrollPane, BorderLayout.EAST);
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				highlightRoute.clear();
+				highlightArrowRoute.clear();
+				arrow.clear();
+				lastest = null;
+				display.repaint();
+			}
+		});
+	    algorithmMenu.add(resetItem);
+		
+		displayMenu.add(findNode);
+		displayMenu.addSeparator();
+		displayMenu.add(this.showNodeIdItem);
+		displayMenu.add(this.showArcLengthItem);
+		displayMenu.add(resetItem);
+		menuBar.add(displayMenu);
+		
+		
+		this.setJMenuBar(menuBar);
+
+		
+		this.arcListDialog = new JDialog();
+		//this.dialog.addWindowListener(new JDialogCloseEvent(this.dialog));
+		this.arcListDialog.setTitle("Arc List");
+		this.arcListDialog.setAlwaysOnTop(true);
+		this.arcListDialog.setModal(false);
+		this.arcListDialog.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("javalibrary/network/brick.png")));
+		
+		// create object of table and table model
+		tbl = new JTable() {
+			@Override
+            public TableCellEditor getCellEditor(final int row, int column) {
+                int modelColumn = convertColumnIndexToModel(column);
+                
+                final JTextField textfield = new JTextField();
+                ((AbstractDocument)textfield.getDocument()).setDocumentFilter(new DocumentUtil.DocumentDoubleInput(textfield));
+               
+                
+                textfield.getDocument().addDocumentListener(new DocumentListener() {
+                	@Override
+                	public void changedUpdate(DocumentEvent event) {
+                		
+                	}
+                	@Override
+                	public void removeUpdate(DocumentEvent event) {
+                		try {
+	                		double v = Double.parseDouble(textfield.getText());
+	                		display.base.CONNECTIONS.get(display.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, v);
+							display.displayBase = display.base;
+	                		display.repaint();
+                		}
+                		catch(NumberFormatException e) {
+                			display.base.CONNECTIONS.get(display.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, 0.0D);
+							display.displayBase = display.base;
+							display.repaint();
+                		}
+                	}
+                	@Override
+                	public void insertUpdate(DocumentEvent event) {
+                		try {
+	                		double v = Double.parseDouble(textfield.getText());
+	                		display.base.CONNECTIONS.get(display.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, v);
+							display.displayBase = display.base;
+	                		display.repaint();
+                		}
+                		catch(NumberFormatException e) {
+                			display.base.CONNECTIONS.get(display.base.CONNECTIONS.indexOf(tableOrder.get(row))).distances.set(0, 0.0D);
+							display.displayBase = display.base;
+							display.repaint();
+                		}
+                	}
+                });
+                
+                if (modelColumn == 2)
+                    return new DefaultCellEditor(textfield);
+                else
+                    return super.getCellEditor(row, column);
+  
+            }
+		};
+		
+		tbl.getTableHeader().setReorderingAllowed(false);
+		tbl.getTableHeader().setResizingAllowed(false);
+		tbl.setRowHeight(20);
+		tbl.setAutoCreateColumnsFromModel(true);
+		
+		JScrollPane scrollPane = new JScrollPane(tbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getViewport().setPreferredSize(new Dimension(225, 500));
+		dtm = new DefaultTableModel(0, 0) {
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return columnIndex == 2;
+			}
+		};
+		
+		dtm.setColumnIdentifiers(new String[] {"Node", "Node", "Distance"});
+		tbl.setModel(dtm);
+		tbl.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseReleased(MouseEvent event) {
+				if(SwingUtilities.isMiddleMouseButton(event)) {
+					int row = tbl.rowAtPoint(event.getPoint());
+			        if (row >= 0) {
+			        	dtm.removeRow(row);
+			        	display.base.CONNECTIONS.remove(tableOrder.get(row));
+			        	display.displayBase = display.base;
+			        	tableOrder.remove(row);
+			        	display.repaint();
+			        }
+				}
+			}
+			
+		});
+		
+	
+		arcListDialog.add(scrollPane);
+		arcListDialog.pack();
 		
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -527,11 +692,11 @@ public class Zoom extends JFrame {
 					}
 				}
 		
-				p.repaint();
+				display.repaint();
 		    }
 		});
 
-		p.addMouseWheelListener(new MouseWheelListener() {
+		display.addMouseWheelListener(new MouseWheelListener() {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent event) {
@@ -550,12 +715,12 @@ public class Zoom extends JFrame {
 			    moveY += (int)((endY - startY) * factor);
 			    currentHoldX = (int)((currentX - moveX) / factor);
 				currentHoldY = (int)((currentY - moveY) / factor);
-                p.repaint();
+                display.repaint();
 			}
 			
 		});
 		
-		p.addMouseMotionListener(new MouseMotionAdapter() {
+		display.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 	        public void mouseDragged(MouseEvent event) {
 				currentX = event.getX();
@@ -575,7 +740,7 @@ public class Zoom extends JFrame {
 					
 					boolean tooClose = false;
 					
-					for(Node node : p.base.NODES.values()) {
+					for(Node node : display.base.NODES.values()) {
 						if(nodeAbove == node) continue;
 						if(Math.pow(node.x - newX, 2) + Math.pow(node.y - newY, 2) <= Math.pow(6 * 2, 2)) {
 							tooClose = true;
@@ -592,11 +757,11 @@ public class Zoom extends JFrame {
 				oldX = currentX;
 				oldY = currentY;
 
-				p.repaint();
+				display.repaint();
 	        }
 		});
 		
-		p.addMouseListener(new MouseAdapter() {
+		display.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent event) {
 				System.out.println(event.getButton());
@@ -612,7 +777,7 @@ public class Zoom extends JFrame {
 					int scaledX = (int)((holdX - moveX) / factor);
 					int scaledY = (int)((holdY - moveY) / factor);
 					
-					for(Node node : p.base.NODES.values()) {
+					for(Node node : display.base.NODES.values()) {
 						if(Math.abs(node.x - scaledX) < 6 && Math.abs(node.y - scaledY) < 6) {
 							startNode = node;
 							break;
@@ -623,7 +788,7 @@ public class Zoom extends JFrame {
 					holdY = (int)((holdY - moveY) / factor);
 					currentHoldX = holdX;
 					currentHoldY = holdY;
-					p.repaint();
+					display.repaint();
 				}
 				else if(SwingUtilities.isLeftMouseButton(event)) {
 					int scaledX = (int)((event.getX() - moveX) / factor);
@@ -631,7 +796,7 @@ public class Zoom extends JFrame {
 					
 					boolean tooClose = false;
 					
-					for(Node node :  p.base.NODES.values()) {
+					for(Node node :  display.base.NODES.values()) {
 						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6 * 2, 2)) {
 							tooClose = true;
 							break;
@@ -640,12 +805,12 @@ public class Zoom extends JFrame {
 					
 					if(!tooClose) {
 						int smallestId = 0;
-						while(p.base.NODES.containsKey(smallestId))
+						while(display.base.NODES.containsKey(smallestId))
 							smallestId += 1;
 						
-						if(p.base.addNode(new Node(smallestId, scaledX, scaledY))) {
-							p.displayBase = p.base;
-							p.repaint();
+						if(display.base.addNode(new Node(smallestId, scaledX, scaledY))) {
+							display.displayBase = display.base;
+							display.repaint();
 						}
 					}
 				}
@@ -653,7 +818,7 @@ public class Zoom extends JFrame {
 					int scaledX = (int)((oldX - moveX) / factor);
 					int scaledY = (int)((oldY - moveY) / factor);
 					
-					for(Node node :  p.base.NODES.values()) {
+					for(Node node :  display.base.NODES.values()) {
 						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6, 2)) {
 							nodeAbove = node;
 							break;	
@@ -670,7 +835,7 @@ public class Zoom extends JFrame {
 					
 			
 					
-					for(Node node :  p.base.NODES.values()) {
+					for(Node node :  display.base.NODES.values()) {
 						if(Math.pow(node.x - currentHoldX, 2) + Math.pow(node.y - currentHoldY, 2) <= Math.pow(6, 2)) {
 							endNode = node;
 							break;
@@ -679,8 +844,8 @@ public class Zoom extends JFrame {
 					
 					if(startNode != null && endNode != null && startNode != endNode) {
 						Arc arc = new Arc(startNode.getId(), endNode.getId(), RandomUtil.pickRandomInt(99) + 1);
-						if(p.base.addArc(arc)) {
-							p.displayBase = p.base;
+						if(display.base.addArc(arc)) {
+							display.displayBase = display.base;
 							tableOrder.add(arc);
 						    dtm.addRow(new Object[] {arc.id1, arc.id2, "" + arc.getTotalDistance()});
 						}
@@ -691,7 +856,7 @@ public class Zoom extends JFrame {
 					holdY = 0;
 					currentHoldX = 0;
 					currentHoldY = 0;
-					p.repaint();
+					display.repaint();
 				}
 				else if(SwingUtilities.isRightMouseButton(event) && controlDown) {
 					nodeAbove = null;
@@ -702,7 +867,7 @@ public class Zoom extends JFrame {
 					
 					Node nodeDelete = null;
 					
-					for(Node node : p.base.NODES.values()) {
+					for(Node node : display.base.NODES.values()) {
 						if(Math.pow(node.x - scaledX, 2) + Math.pow(node.y - scaledY, 2) <= Math.pow(6, 2)) {
 							nodeDelete = node;
 							break;
@@ -711,9 +876,9 @@ public class Zoom extends JFrame {
 					
 					if(nodeDelete != null) {
 		
-						List<Arc> connectedArcs = p.base.getArcsConnectedToNode(nodeDelete);
-						p.base.NODES.remove(nodeDelete.getId());
-						p.base.CONNECTIONS.removeAll(connectedArcs);
+						List<Arc> connectedArcs = display.base.getArcsConnectedToNode(nodeDelete);
+						display.base.NODES.remove(nodeDelete.getId());
+						display.base.CONNECTIONS.removeAll(connectedArcs);
 						
 						for(Arc arc : connectedArcs) {
 							int index = tableOrder.indexOf(arc);
@@ -723,7 +888,7 @@ public class Zoom extends JFrame {
 							}
 						}
 						
-						p.repaint();
+						display.repaint();
 					}
 				}
 			}
@@ -736,7 +901,7 @@ public class Zoom extends JFrame {
 				boolean before = controlDown;
 				controlDown = e.isShiftDown();
 				if(before != controlDown)
-					p.repaint();
+					display.repaint();
 		    	return false;
 		    }
 		});
@@ -748,15 +913,15 @@ public class Zoom extends JFrame {
 		this.setVisible(true);
 	}
 
-	public class DrawingPanel extends JPanel {
+	public class NetworkDisplay extends JPanel {
 		
 		public NetworkBase base;
 		public NetworkBase displayBase;
 		
-		public DrawingPanel() {
+		public NetworkDisplay() {
 			this.setBorder(BorderFactory.createEtchedBorder());
 			this.base = new NetworkBase();
-			this.displayBase = base;
+			this.displayBase = this.base;
 		}
 
 		@Override
@@ -770,11 +935,7 @@ public class Zoom extends JFrame {
 			
 			if(startNode != null)
 				graphics.drawLine((int)(startNode.x * factor) + moveX, (int)(startNode.y * factor) + moveY, (int)(currentHoldX * factor) + moveX, (int)(currentHoldY * factor) + moveY);
-			
-			Dimension dim = this.getSize();
-			int width = dim.width;
-			int height = dim.height;
-			
+
 			graphics.drawString(ValueFormat.getNumber(this.getTotalDistance()), 10, 20);
 			
 			double scaleFactor = factor;
@@ -842,7 +1003,8 @@ public class Zoom extends JFrame {
 					graphics.setColor(Color.black);
 					graphics.setFont(graphics.getFont().deriveFont((float) (6.0F * scaleFactor)));
 	
-					graphics.drawString(ValueFormat.getNumber(distance), Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
+					if(showArcLengthItem.isSelected())
+						graphics.drawString(ValueFormat.getNumber(distance), Math.min(x1, x2) + Math.abs(x1 - x2) / 2 - (int)(6 * scaleFactor), Math.min(y1, y2) + Math.abs(y1 - y2) / 2 +  (int)(2 * scaleFactor));
 					if(arrows != null && arrows.size() > count) {
 						if(arrows.get(count))
 							drawArrowHead(graphics, x2, y2, x1, y1, Color.black, count, node1.getId() < node2.getId());
@@ -873,7 +1035,8 @@ public class Zoom extends JFrame {
 				graphics.setStroke(stroke);
 				graphics.setFont(graphics.getFont().deriveFont((float) (12.0F * scaleFactor)));
 
-				graphics.drawString("" + node.getId(), renderX - (int)(2 * scaleFactor), renderY - (int)(1 * scaleFactor));
+				if(showNodeIdItem.isSelected())
+					graphics.drawString("" + node.getId(), renderX - (int)(2 * scaleFactor), renderY - (int)(1 * scaleFactor));
 			}
 		}
 		
@@ -939,9 +1102,18 @@ public class Zoom extends JFrame {
 		}
 	}
 	
+	public class UpdateNetworkDisplayAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			display.repaint();
+		}
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		new Zoom(); 
+		new GraphicNetworkTool(); 
 	}
 
 }

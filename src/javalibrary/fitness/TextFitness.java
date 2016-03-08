@@ -32,6 +32,27 @@ public class TextFitness {
 		return fitness;
 	}
 	
+	public static double scoreFitnessQuadgrams(char[] text, ILanguage language, double currentLowest) {
+		double fitness = 0.0D;
+		NGramData quadgramData = language.getQuadgramData();
+		
+		
+		for(int k = 0; k < (text.length - 4 + 1); k++) {
+			String s = new String(text, k, 4);
+				
+			fitness += scoreWord(s, quadgramData);
+			if(fitness < currentLowest)
+				return currentLowest;
+		}
+
+		return fitness;
+	}
+	
+	
+	public static double scoreWord(char[] s, NGramData quadgramData) {
+		return scoreWord(new String(s), quadgramData);
+	}
+	
 	public static double scoreWord(String s, NGramData quadgramData) {
 		if(quadgramData.mapping.containsKey(s))
 			return quadgramData.mapping.get(s);
@@ -57,8 +78,12 @@ public class TextFitness {
 	}
 	
 	public static double getEstimatedFitness(String text, ILanguage language) {
+		return getEstimatedFitness(text.length(), language);
+	}
+	
+	public static double getEstimatedFitness(int length, ILanguage language) {
 		NGramData quadgramData = language.getQuadgramData();
-		return quadgramData.fitnessPerChar * Math.max(0, text.length() - 3);
+		return quadgramData.fitnessPerChar * Math.max(0, length - 3);
 	}
 	
 	public static NGramData loadFile(String resourcePath) {

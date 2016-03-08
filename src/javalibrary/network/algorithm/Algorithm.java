@@ -1,4 +1,4 @@
-package javalibrary.network;
+package javalibrary.network.algorithm;
 
 import java.util.Arrays;
 import java.util.List;

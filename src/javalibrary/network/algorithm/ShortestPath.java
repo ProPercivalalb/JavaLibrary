@@ -1,9 +1,13 @@
-package javalibrary.network;
+package javalibrary.network.algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import javalibrary.network.Arc;
+import javalibrary.network.NetworkBase;
+import javalibrary.network.Node;
 
 public class ShortestPath extends NetworkBase {
 	

@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * @author Alex Barter (10AS)
  */
-public class ArrayHelper {
+public class ArrayUtil {
 
 	public static int[] range(int start, int end){
 	    int[] arr = new int[end - start];
@@ -37,7 +37,7 @@ public class ArrayHelper {
 	    return -1;
 	}
 	
-	public static  int indexOf(char[] array, char target) {
+	public static int indexOf(char[] array, char target) {
 		for(int i = 0; i < array.length; i++)
 	        if(array[i] == target) 
 	        	return i;
@@ -67,7 +67,56 @@ public class ArrayHelper {
 		return c;
 	}
 	
+	public static int[] concat(int[] a, int[] b) {
+		int aLen = a.length;
+		int bLen = b.length;
+		int[] c = new int[aLen + bLen];
+		System.arraycopy(a, 0, c, 0, aLen);
+		System.arraycopy(b, 0, c, aLen, bLen);
+		return c;
+	}
+	
 	public static char[] copyOfRange(char[] array, int startIndex, int length) {
 		return Arrays.copyOfRange(array, startIndex, startIndex + length);
+	}
+	
+	public static int[] copyOfRange(int[] array, int startIndex, int endIndex) {
+		return Arrays.copyOfRange(array, startIndex, endIndex);
+	}
+
+	public static int indexOf(int[] array, int length, int target) {
+		for(int i = 0; i < length; i++)
+	        if(array[i] == target) 
+	        	return i;
+
+	    return -1;
+	}
+
+	public static void shuffle(char[] key) {
+		int n = key.length;
+		for(int i = 0; i < key.length; i++) {
+		    int random = i + (int) (Math.random() * (n - i));
+		    
+		    char randomElement = key[random];
+		    key[random] = key[i];
+		    key[i] = randomElement;	
+		
+		}
+	}
+	
+	public static void shuffle(int[] key) {
+		int n = key.length;
+		for(int i = 0; i < key.length; i++) {
+		    int random = i + (int) (Math.random() * (n - i));
+		    
+		    int randomElement = key[random];
+		    key[random] = key[i];
+		    key[i] = randomElement;	
+		
+		}
+	}
+
+	public static boolean contains(int[] middleNotches, int i) {
+		return indexOf(middleNotches, middleNotches.length, i) != -1;
 	}
 }

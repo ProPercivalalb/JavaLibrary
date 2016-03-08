@@ -50,7 +50,7 @@ public class Arc {
 	}
 	
 	public double getTotalDistance() {
-		int distance = 0;
+		double distance = 0;
 		for(double d : this.distances)
 			distance += d;
 		return distance;

@@ -1,7 +1,9 @@
 package javalibrary.string;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javalibrary.lib.Alphabet;
 import javalibrary.math.Bound;
@@ -132,6 +134,14 @@ public class StringTransformer {
 		return total;
     }
     
+	public static String joinWith(int[] ints, String joiner) {
+		String total = "";
+		for(int i = 0; i < ints.length; ++i)
+			total += ints[i] + "" + (i == ints.length - 1 ? "" : joiner);
+		
+		return total;
+	}
+    
     public static String repeat(String repeat, int times) {
     	String total = "";
     	for(int i = 0; i < times; i++)
@@ -164,5 +174,16 @@ public class StringTransformer {
 	public static int countOtherChars(String text) {
 		text = text.replaceAll("[0-9a-zA-Z\\s+]", "");
     	return text.length();
+	}
+	public static int countUniqueChars(String inputText) {
+		char[] chars = inputText.toCharArray();
+		
+		int end = chars.length;
+		Set<Character> set = new HashSet<Character>();
+
+		for(int i = 0; i < end; i++)
+			set.add(chars[i]);
+		
+		return set.size();
 	}
 }

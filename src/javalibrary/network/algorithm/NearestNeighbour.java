@@ -1,8 +1,11 @@
-package javalibrary.network;
+package javalibrary.network.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javalibrary.network.Arc;
+import javalibrary.network.NetworkBase;
+import javalibrary.network.Node;
 import javalibrary.network.Arc.ArcIndex;
 
 public class NearestNeighbour extends NetworkBase {

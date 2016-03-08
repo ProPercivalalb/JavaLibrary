@@ -6,12 +6,16 @@ import java.util.List;
 
 import javalibrary.math.MathHelper;
 import javalibrary.network.Arc.ArcIndex;
+import javalibrary.network.algorithm.Algorithm;
+import javalibrary.network.algorithm.ChinesePostman;
+import javalibrary.network.algorithm.ShortestPath;
+import javalibrary.network.algorithm.SpanningTree;
 import javalibrary.util.RandomUtil;
 
 public class NetworkBase {
 
-	protected HashMap<Integer, Node> NODES = new HashMap<Integer, Node>();
-	protected ArrayList<Arc> CONNECTIONS = new ArrayList<Arc>();
+	public HashMap<Integer, Node> NODES = new HashMap<Integer, Node>();
+	public ArrayList<Arc> CONNECTIONS = new ArrayList<Arc>();
 	
 	public boolean addNode(Node node) {
 		if(!this.NODES.containsKey(node.getId())) {
@@ -135,8 +139,8 @@ public class NetworkBase {
 		return arcIndexs;
 	}
 	
-	public int getTotalDistance() {
-		int distance = 0;
+	public double getTotalDistance() {
+		double distance = 0.0D;
 		for(Arc arc : this.CONNECTIONS)
 			distance += arc.getTotalDistance();
 		return distance;
@@ -213,7 +217,7 @@ public class NetworkBase {
 	public boolean isNetworkBridged() {
 		int randomStartId = RandomUtil.pickRandomKey(this.NODES);
 		
-		ArrayList<Integer> nodesAccountedFor = getAllNodesAssosicatedWith(randomStartId);
+		ArrayList<Integer> nodesAccountedFor = this.getAllNodesAssosicatedWith(randomStartId);
 		
 		if(!nodesAccountedFor.contains(randomStartId))
 			nodesAccountedFor.add(randomStartId);

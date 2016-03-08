@@ -41,7 +41,7 @@ public class Statistics {
 			
 			for(double d : this.data) variance += Math.pow(mean - d, 2);
 			
-			this.variance = new StatCache(variance);
+			this.variance = new StatCache(variance / this.valueCount);
 		}
 		return this.variance.value;
 	}

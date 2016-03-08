@@ -28,6 +28,8 @@ public class FileReader {
 			String line = "";
 			while((line = reader.readLine()) != null)
 				list.add(line);
+			
+			fIn.close();
 		} 
 		catch(Exception e) {
 			e.printStackTrace();

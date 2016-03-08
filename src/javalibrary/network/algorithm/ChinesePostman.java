@@ -1,10 +1,13 @@
-package javalibrary.network;
+package javalibrary.network.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javalibrary.math.MathHelper;
+import javalibrary.network.Arc;
+import javalibrary.network.NetworkBase;
+import javalibrary.network.Node;
 import javalibrary.network.Arc.ArcIndex;
 import javalibrary.util.RandomUtil;
 
@@ -22,7 +25,8 @@ public class ChinesePostman extends NetworkBase {
 		
 		boolean isCircuit = startId == endId;
 		
-		int baseDistance = base.getTotalDistance();
+		double baseDistance = base.getTotalDistance();
+		System.out.println(startId + "s" + endId);
 		
 		/**for(Node node : base.NODES.values())
 			chinesePostman.addNode(node);
@@ -35,6 +39,7 @@ public class ChinesePostman extends NetworkBase {
 		
 		if(!isCircuit)
 			oddNodes.removeAll(Arrays.asList(startId, endId));
+		System.out.println("Odd Nodes " + oddNodes);
 		
 		if((oddNodes.size() & 1) == 1)
 			System.out.println("ERROR ODD NUMBER OF NODES");

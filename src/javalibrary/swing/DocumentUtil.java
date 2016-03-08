@@ -34,6 +34,16 @@ public class DocumentUtil {
     	}
     }
 	
+	public static class DocumentCardInput extends DocumentFilter {
+		
+    	@Override
+    	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+    		text = text.replaceAll("[^0-9ATJQKcdhs♣♦♥♠*xB,]", "");
+    		 
+    		super.replace(fb, offset, length, text, attrs);
+    	}
+    }
+	
 	public static class DocumentIntegerInput extends DocumentFilter {
 		
     	@Override
