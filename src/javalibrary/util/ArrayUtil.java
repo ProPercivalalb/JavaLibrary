@@ -1,4 +1,4 @@
-package javalibrary.math;
+package javalibrary.util;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -116,7 +116,14 @@ public class ArrayUtil {
 		}
 	}
 
-	public static boolean contains(int[] middleNotches, int i) {
-		return indexOf(middleNotches, middleNotches.length, i) != -1;
+	public static boolean contains(int[] arr, int i) {
+		return indexOf(arr, arr.length, i) != -1;
+	}
+	
+	public static int[] toIndexedArray(int[] arr) {
+		int[] inArr = new int[arr.length];
+		for(int i = 0; i < arr.length; i++)
+			inArr[arr[i]] = i;
+		return inArr;
 	}
 }

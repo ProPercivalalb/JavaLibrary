@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javalibrary.math.ArrayUtil;
 import javalibrary.string.StringTransformer;
 
 public class ListUtil {

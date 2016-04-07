@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javalibrary.math.ArrayUtil;
 import javalibrary.streams.FileReader;
+import javalibrary.util.ArrayUtil;
 
 public class WordSplit {
 	
