@@ -42,7 +42,7 @@ public class OSIdentifier {
         }
         
         if (!localFile.exists() && !localFile.mkdirs())
-        	throw new RuntimeException("The minecraft directory could not be created: " + localFile);
+        	throw new RuntimeException("The module directory could not be created: " + localFile);
         
         return localFile;
     }
