@@ -52,7 +52,7 @@ public class English extends ILanguage {
 	@Override
 	public void loadNGramData() {
 		quadgramData = TextFitness.loadFile("/javalibrary/fitness/english_quadgrams.txt");
-		diagramData = TextFitness.loadFile("/javalibrary/fitness/english_bigrams_1.txt");
+		//diagramData = TextFitness.loadFile("/javalibrary/fitness/english_bigrams_1.txt");
 	}
 	
 	@Override

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import javax.swing.border.Border;
 
-import javalibrary.math.MathHelper;
 import javalibrary.swing.graphic.CircleRenderer;
 
 /**

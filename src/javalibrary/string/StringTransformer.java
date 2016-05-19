@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import javalibrary.lib.Alphabet;
-import javalibrary.math.Bound;
 
 /**
  * @author Alex Barter

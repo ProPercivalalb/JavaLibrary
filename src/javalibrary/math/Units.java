@@ -24,6 +24,7 @@ public class Units {
 	
 	public enum Time {
 		
+		NANOSECOND(0.000000001),
 		MILLISECOND(0.001),
 		SECOND(1),
 		MINUTE(60),

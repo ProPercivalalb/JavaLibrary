@@ -1,16 +1,11 @@
 package javalibrary.cipher.stats;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javalibrary.streams.FileReader;
-import javalibrary.util.ArrayUtil;
 
 public class WordSplit {
 	

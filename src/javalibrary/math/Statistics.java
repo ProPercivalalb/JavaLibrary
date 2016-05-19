@@ -6,7 +6,7 @@ import java.util.List;
 public class Statistics {
 
 	private final List<Double> data;
-	private int valueCount;
+	private final int valueCount;
 	
 	private StatCache mean;
 	private StatCache variance;
@@ -19,13 +19,18 @@ public class Statistics {
 			
 			if(n instanceof Double)
 				this.data.add(((Double)n).doubleValue());
+			else if(n instanceof Long)
+				this.data.add(((Long)n).doubleValue());
+			else if(n instanceof Byte)
+				this.data.add(((Byte)n).doubleValue());
 			else if(n instanceof Integer)
 				this.data.add(((Integer)n).doubleValue());
 			else if(n instanceof String)
 				this.data.add(Double.valueOf((String)n).doubleValue());
 			
-			this.valueCount++;
 		}
+		
+		this.valueCount = this.data.size();
 	}
 	
 	public double getMean() {
@@ -53,6 +58,11 @@ public class Statistics {
 		return this.standardDeviation.value;
 	}
 
+	@Override 
+	public String toString() {
+		return String.format("Mean: %f, SD: %f ", this.getMean(), this.getStandardDeviation());
+	}
+	
 	private class StatCache {
 		public double value;
 		public StatCache(double value) {

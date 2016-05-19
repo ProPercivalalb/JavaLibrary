@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javalibrary.network.Arc;
+import javalibrary.network.Arc.ArcIndex;
 import javalibrary.network.NetworkBase;
 import javalibrary.network.Node;
-import javalibrary.network.Arc.ArcIndex;
 
 public class SpanningTree extends NetworkBase {
 

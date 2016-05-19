@@ -1,8 +1,5 @@
 package javalibrary.fitness;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,9 +21,8 @@ public class TextFitness {
 		
 		
 		for(int k = 0; k < (text.length - 4 + 1); k++) {
-			String s = new String(text, k, 4);
 				
-			fitness += scoreWord(s, quadgramData);
+			fitness += scoreWord(text, k, quadgramData);
 		}
 
 		return fitness;
@@ -38,9 +34,7 @@ public class TextFitness {
 		
 		
 		for(int k = 0; k < (text.length - 4 + 1); k++) {
-			String s = new String(text, k, 4);
-				
-			fitness += scoreWord(s, quadgramData);
+			fitness += scoreWord(text, k, quadgramData);
 			if(fitness < currentLowest)
 				return currentLowest;
 		}
@@ -49,33 +43,27 @@ public class TextFitness {
 	}
 	
 	
-	public static double scoreWord(char[] s, NGramData quadgramData) {
-		return scoreWord(new String(s), quadgramData);
+	public static double scoreWord(char[] s, int startIndex, NGramData quadgramData) {
+		return quadgramData.getValue(s, startIndex);
 	}
-	
-	public static double scoreWord(String s, NGramData quadgramData) {
-		if(quadgramData.mapping.containsKey(s))
-			return quadgramData.mapping.get(s);
-	
-		return quadgramData.floor;
-	}
-	
+
+/**	
 	public static double scoreFitnessDiagrams(String text, ILanguage language) {
 		double fitness = 0.0D;
 		char[] characters = text.toCharArray();
 
 		for(int k = 0; k < (text.length() - 2 + 1); k++) {
 			String s = new String(characters, k, 2);
-			NGramData trigramData = language.getDiagramData();
+			NGramData digramData = language.getDiagramData();
 			
-			if(trigramData.mapping.containsKey(s))
-				fitness += trigramData.mapping.get(s);
+			if(digramData.mapping.containsKey(s))
+				fitness += digramData.mapping.get(s);
 			else
-				fitness += trigramData.floor;
+				fitness += digramData.floor;
 		}
 
 		return fitness;
-	}
+	}**/
 	
 	public static double getEstimatedFitness(String text, ILanguage language) {
 		return getEstimatedFitness(text.length(), language);
@@ -104,7 +92,7 @@ public class TextFitness {
 			mapping.put(str[0], (double)count);
 		}
 			
-		floor = Math.log10(0.01F / total);
+		floor = Math.log10(0.01D / total);
 			
 		for(String gram : mapping.keySet()) {
 			double count = mapping.get(gram);

@@ -35,9 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -61,12 +59,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import javalibrary.math.Rounder;
 import javalibrary.network.algorithm.Algorithm;

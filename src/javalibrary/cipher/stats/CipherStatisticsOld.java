@@ -1,9 +1,5 @@
 package javalibrary.cipher.stats;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class CipherStatisticsOld {
 
 /**

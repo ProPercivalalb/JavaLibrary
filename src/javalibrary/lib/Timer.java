@@ -1,22 +1,27 @@
 package javalibrary.lib;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javalibrary.math.Statistics;
 import javalibrary.math.Units;
 import javalibrary.math.Units.Time;
 
 /**
  * @author Alex Barter
- * @since 30 Oct 2013
  */
 public class Timer {
 
 	private long startTime = 0;
+	public List<Long> recordedTimes;
 	
 	public Timer() {
-		this.startTime = System.currentTimeMillis();
+		this.startTime = System.nanoTime();
+		this.recordedTimes = new ArrayList<Long>();
 	}
 	
 	public void restart() {
-		this.startTime = System.currentTimeMillis();
+		this.startTime = System.nanoTime();
 	}
 	
 	public void pause() {
@@ -27,12 +32,32 @@ public class Timer {
 		
 	}
 	
+	/**
+	 * Adds the time since last reset t
+	 */
+	public void recordTime() {
+		this.recordedTimes.add((long)this.getTimeRunning(Time.MILLISECOND));
+		this.restart();
+	}
+	
+	public Statistics getRecordedTimesStats() {
+		return new Statistics(this.recordedTimes);
+		
+	}
+	
 	public void displayTime() {
 		System.out.println("Milliseconds: " + this.getTimeRunning(Time.MILLISECOND));
 	}
 	
-	public double getTimeRunning(Units.Time unit) {
-		double timeInMilliseconds = System.currentTimeMillis() - this.startTime;
-		return Units.Time.convert(timeInMilliseconds, Time.MILLISECOND, unit);
+	/**
+	 * @return The time in milliseconds since the object was created or startTime reset 
+	 */
+	public long getTimeRunning() {
+		return System.nanoTime() - this.startTime;
+	}
+	
+	public double getTimeRunning(Time unit) {
+		double timeInMilliseconds = System.nanoTime() - this.startTime;
+		return Units.Time.convert(timeInMilliseconds, Time.NANOSECOND, unit);
 	}
 }

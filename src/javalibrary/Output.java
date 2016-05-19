@@ -1,19 +1,11 @@
 package javalibrary;
 
-import java.awt.EventQueue;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.KeyEvent;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.JComponent;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultCaret;
 
 /**
