@@ -36,7 +36,7 @@ public class TextFitness {
 		for(int k = 0; k < (text.length - 4 + 1); k++) {
 			fitness += scoreWord(text, k, quadgramData);
 			if(fitness < currentLowest)
-				return currentLowest;
+				return currentLowest - 1D;
 		}
 
 		return fitness;

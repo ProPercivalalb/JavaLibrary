@@ -29,16 +29,20 @@ public class ProgressValue {
 	
 	public void setValue(int value) {
 		this.value = BigInteger.valueOf(value);
-		this.progressBar.setValue(this.getPercentageDone());
+		this.updateProgress();
 	}
 	
 	public void addValue(int add) {
 		this.value = this.value.add(BigInteger.valueOf(add));
-		this.progressBar.setValue(this.getPercentageDone());
+		this.updateProgress();
 	}
 	
 	public void increase() {
 		this.value = this.value.add(BigInteger.ONE);
+		this.updateProgress();
+	}
+	
+	public void updateProgress() {
 		this.progressBar.setValue(this.getPercentageDone());
 	}
 	
