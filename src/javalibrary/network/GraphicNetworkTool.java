@@ -60,6 +60,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.AbstractDocument;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import javalibrary.math.Rounder;
 import javalibrary.network.algorithm.Algorithm;
 import javalibrary.network.algorithm.ChinesePostman;

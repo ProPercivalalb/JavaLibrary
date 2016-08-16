@@ -8,6 +8,20 @@ import java.util.Arrays;
  */
 public class ArrayUtil {
 
+	
+	//Primitive array initializer
+	public static double[] createDouble(int length) {
+		return new double[length]; 
+	}
+	
+	public static int[] createInteger(int length) {
+		return new int[length];
+	}
+	
+	public static char[] createCharacter(int length) {
+		return new char[length];
+	}
+	
 	public static int[] range(int start, int end){
 	    int[] arr = new int[end - start];
 	    for(int i = 0; i < end - start; i++)
@@ -125,5 +139,16 @@ public class ArrayUtil {
 		for(int i = 0; i < arr.length; i++)
 			inArr[arr[i]] = i;
 		return inArr;
+	
+	}
+
+	/**
+	 * Converts an integer array to an identical array but in double type
+	 */
+	public static double[] convertNumType(int[] input) {
+		double[] output = new double[input.length];
+		for(int i = 0; i < input.length; i++)
+			output[i] = input[i];
+		return output;
 	}
 }
