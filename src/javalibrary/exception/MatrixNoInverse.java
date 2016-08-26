@@ -7,4 +7,7 @@ public class MatrixNoInverse extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
+	public MatrixNoInverse(String string) {
+		super(string);
+	}
 }

@@ -1,28 +1,21 @@
 package javalibrary.math.matrics;
 
+import java.math.BigInteger;
+
 import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.lib.Timer;
+import javalibrary.math.MathHelper;
+import javalibrary.string.StringTransformer;
 import javalibrary.string.ValueFormat;
 import javalibrary.util.ArrayUtil;
 
 public class MatrixNew {
-
-	public static void main(String[] args) {
-		MatrixNew m1 = new MatrixNew(new int[] {3, 4, 2}, 1, 3);
-	
-		MatrixNew m2 = new MatrixNew(new int[] {13,9,7,15,8,7,4,6,6,4,0,3}, 3, 4);
-		
-		MatrixNew product = new MatrixNew(new int[] {3, 0, 2, 2, 0, -2, 0, 1, 1}, 3, 3);//m1.multiply(m2);
-	
-		
-		System.out.println("" + new MatrixNew(new int[] {6,1,1,4,-2,5,2,8,7}, 3, 3).determinant());
-	}
 	
 	//Matrix data held in row to row order
 	public double[] data;
-	//Order of matrix rows x column
+	//Order of matrix rows * column
 	public int rows, columns;
 	
 	public MatrixNew(int[] data, int rows, int columns) {
@@ -39,7 +32,9 @@ public class MatrixNew {
 			throw new IllegalArgumentException("Matrix data array len doesn't match specified args.");
 	}
 	
-
+	/**
+	 * Creates a blank matrix -- MUST BE POPULATED --
+	 */
 	public MatrixNew(int rows, int columns) {
 		this(ArrayUtil.createDouble(rows * columns), rows, columns);
 	}
@@ -97,13 +92,46 @@ public class MatrixNew {
 		return product;
 	}
 	
-	public MatrixNew inverse() {
+	/**
+	 * A crude modular function adds or subtracts the given mod till each cell is within 0 and mod.
+	 */
+	public MatrixNew modular(int mod) {
+		MatrixNew result = new MatrixNew(this.rows, this.columns);
+		
+	    for(int r = 0; r < this.rows; r++)
+	        for(int c = 0; c < this.columns; c++)
+	        	result.data[r * result.columns + c] = MathHelper.wrap(this.data[r * result.columns + c], 0, mod);
+	    
+	    return result;
+	}
+	
+	/**
+	 * Returns the matrix which is the equivalent of dividing by said matrix
+	 */
+	public MatrixNew inverse() throws MatrixNoInverse {
 		double determinant = this.determinant();
 		
 		if(determinant == 0)
-			throw new MatrixNoInverse();
+			throw new MatrixNoInverse("Matrix has no inverse, determinant is 0.");
 		
 	    return this.minors().cofactor().adjugate().divide(determinant);
+	}
+	
+	/**
+	 * Returns the matrix which is the equivalent of multiplying by the multiplicative inverse matrix
+	 */
+	public MatrixNew inverseMod(int mod) throws MatrixNoInverse {
+		double determinant = this.determinant();
+		
+		int multiplicativeInverse = 0;
+		try {
+			multiplicativeInverse = BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValue();
+		}
+		catch(ArithmeticException e) {
+			throw new MatrixNoInverse("Matrix no inverse in mod " + mod + ", De: " + determinant  + ", MuIn of De: " + multiplicativeInverse);
+		}
+		
+	    return this.minors().cofactor().adjugate().modular(mod).multiply(multiplicativeInverse).modular(mod);
 	}
 	
 	/**
@@ -198,10 +226,20 @@ public class MatrixNew {
 	    }
 	    
 	    return minorCopy;
-	} 
+	}
+	
+	//TODO create a unquine index for each square matrix
+	//public int indexifier() {
+	//	
+	//}
 	
 	//Small internally used function that returns 1 when i is even and -1 when odd
 	private int changeSign(int i) {
 		return i % 2 == 0 ? 1 : -1;
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + StringTransformer.joinWithClean(this.data, ", ") + "] " + rows + "x" + columns;
 	}
 }

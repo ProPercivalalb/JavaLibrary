@@ -106,7 +106,7 @@ public class Matrix {
 	
 	public Matrix multiply(Matrix multiMatrix) {
 		if(!this.canMultiplyMatrixBy(multiMatrix))
-			throw new MatrixMutiplyException();
+			throw new MatrixMutiplyException("");
 		
 		double[][] newMatrix = new double[this.order[0]][multiMatrix.order[1]];
 		
@@ -125,7 +125,7 @@ public class Matrix {
 	
 	public int size() {
 	    if(!this.isSquare())
-	        throw new MatrixNotSquareException();
+	        throw new MatrixNotSquareException("");
 	    
 	    return this.order[0];
 	}
@@ -136,7 +136,7 @@ public class Matrix {
 	
 	public double determinant() {
 	    if(!this.isSquare())
-	        throw new MatrixNotSquareException();
+	        throw new MatrixNotSquareException("");
 	    
 	    if (this.order[0] == 1 && this.order[1] == 1)
 	    	return this.matrix[0][0];
@@ -217,19 +217,19 @@ public class Matrix {
 	
 	public Matrix inverse() {
 		if(!this.isSquare())
-	        throw new MatrixNotSquareException();
+	        throw new MatrixNotSquareException("");
 		
 		double determinant = this.determinant();
 		
 		if(determinant == 0)
-			throw new MatrixNoInverse();
+			throw new MatrixNoInverse("Matrix has no inverse, determinant is 0.");
 		
 	    return this.minors().cofactor().adjugate().multiply(1.0F / determinant);
 	}
 	
 	public Matrix inverseMod(int mod) throws MatrixNotSquareException, MatrixNoInverse {
 		if(!this.isSquare())
-	        throw new MatrixNotSquareException();
+	        throw new MatrixNotSquareException("");
 		
 		double determinant = this.determinant();
 		int multiplicativeInverse = 0;
@@ -237,7 +237,7 @@ public class Matrix {
 			multiplicativeInverse = BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValue();
 		}
 		catch(ArithmeticException e) {
-			throw new MatrixNoInverse();
+			throw new MatrixNoInverse("Matrix no inverse in mod " + mod + ", De: " + determinant  + ", MuIn of De: " + multiplicativeInverse);
 		}
 		
 		if(this.order[0] == 1 && this.order[1] == 1) {

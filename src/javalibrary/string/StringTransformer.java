@@ -140,6 +140,23 @@ public class StringTransformer {
 		
 		return total;
 	}
+	
+	
+	private static String joinWithBase(double[] ints, String joiner, boolean clean) {
+		String total = "";
+		for(int i = 0; i < ints.length; ++i)
+			total += (clean ? ValueFormat.getNumber(ints[i]) : ints[i]) + "" + (i == ints.length - 1 ? "" : joiner);
+		
+		return total;
+	}
+	
+	public static String joinWith(double[] ints, String joiner) {
+		return joinWithBase(ints, joiner, false);
+	}
+	
+	public static String joinWithClean(double[] ints, String joiner) {
+		return joinWithBase(ints, joiner, true);
+	}
     
     public static String repeat(String repeat, int times) {
     	String total = "";
