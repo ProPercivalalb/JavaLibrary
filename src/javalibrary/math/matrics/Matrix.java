@@ -5,233 +5,128 @@ import java.math.BigInteger;
 import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
+import javalibrary.lib.Timer;
 import javalibrary.math.MathHelper;
+import javalibrary.string.StringTransformer;
+import javalibrary.string.ValueFormat;
+import javalibrary.util.ArrayUtil;
 
-/**
- * @author Alex Barter (10AS)
- */
 public class Matrix {
-
-	public final int[] order = new int[2];
-	public final double[][] matrix;
 	
-	public Matrix(String... data) {
-		this.matrix = new double[data.length][data[0].contains(",") ? data[0].split(",").length : 1];
-		
-		for(int i = 0; i < data.length; ++i) {
-			
-			String[] values;
-			if(!data[i].contains(","))
-				values = new String[] {data[i]};
-			else
-				values = data[i].split(",");
-			
-			for(int k = 0; k < values.length; ++k)
-				this.matrix[i][k] = Double.parseDouble(values[k]);
-		}
-	
-		this.order[0] = this.matrix.length; //Number of rows (y)
-		this.order[1] = this.matrix[0].length; //Number of columns (x)
-	}
-	
-	public Matrix(double[][] data) {
-		this.matrix = data;
-		this.order[0] = this.matrix.length; //Number of rows (y)
-		this.order[1] = this.matrix[0].length; //Number of columns (x)
-	}
-	
-	public Matrix(int[][] data) {
-		this.matrix = new double[data.length][data[0].length];
-		
-		for(int y = 0; y < data.length; ++y) {
-	
-			for(int x = 0; x < data[y].length; ++x)
-				this.matrix[y][x] = new Double(data[y][x]);
-		}
-		this.order[0] = this.matrix.length; //Number of rows (y)
-		this.order[1] = this.matrix[0].length; //Number of columns (x)
-	}
+	//Matrix data held in row to row order
+	public double[] data;
+	//Order of matrix rows * column
+	public int rows, columns;
 	
 	public Matrix(int[] data, int rows, int columns) {
-		this.matrix = new double[rows][columns];
-		
-		for(int y = 0; y < rows; ++y) {
-	
-			for(int x = 0; x < columns; ++x)
-				this.matrix[y][x] = new Double(data[y * rows + x]);
-		}
-		this.order[0] = rows; //Number of rows (y)
-		this.order[1] = columns; //Number of columns (x)
+		this(ArrayUtil.convertNumType(data), rows, columns);
 	}
 	
+	public Matrix(double[] data, int rows, int columns) {
+		this.data = data;
+		this.rows = rows;
+		this.columns = columns;
+		
+		//Some error checking
+		if(rows * columns != data.length)
+			throw new IllegalArgumentException("Matrix data array len doesn't match specified args.");
+	}
+	
+	/**
+	 * Creates a blank matrix -- MUST BE POPULATED --
+	 */
+	public Matrix(int rows, int columns) {
+		this(ArrayUtil.createDouble(rows * columns), rows, columns);
+	}
+	
+	public Matrix(int size) {
+		this(size, size);
+	}
+
 	public void print() {
 		System.out.println("Matrix ");
-		for(int i = 0; i < this.order[0]; ++i) {
+		for(int i = 0; i < this.rows; ++i) {
 			String str = " ";
-			for(int k = 0; k < this.matrix[i].length; ++k) {
-				str += this.matrix[i][k];
-				if(k != this.matrix[i].length - 1)
+			for(int k = 0; k <  this.columns; ++k) {
+				str += ValueFormat.getNumber(this.data[i * this.columns + k]);
+				if(k != this.columns - 1)
 					str += ",";
 			}
 			System.out.println(str);
 		}
-		System.out.println(" Y Order: " + this.order[0]);
-		System.out.println(" X Order: " + this.order[1]);
+		System.out.println(" Y Order: " + this.rows);
+		System.out.println(" X Order: " + this.columns);
 		System.out.println("");
 	}
 	
-	public boolean canMultiplyMatrixBy(Matrix multiMatrix) {
-		return this.order[1] == multiMatrix.order[0];
+	public Matrix multiply(double scalar) {
+		Matrix product = new Matrix(this.rows, this.columns);
+		
+		for(int r = 0; r < this.rows; ++r)
+			for(int c = 0; c < this.columns; ++c)
+				product.data[r * product.columns + c] = this.data[r * this.columns + c] * scalar;
+		
+		return product;
 	}
 	
-	public Matrix modular(int mod) {
-		double[][] newMatrix = new double[this.order[0]][this.order[1]];
+	public Matrix divide(double scalar) {
+		Matrix product = new Matrix(this.rows, this.columns);
 		
-		for(int y = 0; y < this.order[0]; ++y)
-			for(int x = 0; x < this.order[1]; ++x)
-				newMatrix[y][x] = MathHelper.wrap(this.matrix[y][x], 0, mod);
+		for(int r = 0; r < this.rows; ++r)
+			for(int c = 0; c < this.columns; ++c)
+				product.data[r * product.columns + c] = this.data[r * this.columns + c] / scalar;
 		
-		return new Matrix(newMatrix);
+		return product;
 	}
-	
-	public Matrix multiply(double times) {
-		double[][] newMatrix = new double[this.order[0]][this.order[1]];
-		
-		for(int y = 0; y < this.order[0]; ++y)
-			for(int x = 0; x < this.order[1]; ++x)
-				newMatrix[y][x] = this.matrix[y][x] * times;
-		
-		return new Matrix(newMatrix);
-	}
-	
-	public Matrix multiply(Matrix multiMatrix) {
-		if(!this.canMultiplyMatrixBy(multiMatrix))
-			throw new MatrixMutiplyException("");
-		
-		double[][] newMatrix = new double[this.order[0]][multiMatrix.order[1]];
-		
-		for(int y = 0; y < multiMatrix.order[0]; ++y) {
-			for(int x = 0; x < this.order[1]; ++x) {
-				for(int pos = 0; pos < multiMatrix.order[1]; ++pos) {
-					double first = this.matrix[y][x];
-					double second = multiMatrix.matrix[x][pos];
-					newMatrix[y][pos] += first * second;
-				}
-			}
-		}
-		
-		return new Matrix(newMatrix);
-	}
-	
-	public int size() {
-	    if(!this.isSquare())
-	        throw new MatrixNotSquareException("");
-	    
-	    return this.order[0];
-	}
-	
-	public boolean isSquare() {
-		return this.order[0] == this.order[1];
-	}
-	
-	public double determinant() {
-	    if(!this.isSquare())
-	        throw new MatrixNotSquareException("");
-	    
-	    if (this.order[0] == 1 && this.order[1] == 1)
-	    	return this.matrix[0][0];
 
-	    if (this.order[0] == 2 && this.order[1] == 2)
-	        return this.matrix[0][0] * this.matrix[1][1] - this.matrix[0][1] * this.matrix[1][0];
+	public Matrix multiply(Matrix parent) {
+		if(this.columns != parent.rows)
+			throw new MatrixMutiplyException("Matrices are invlaid size for multiplication");
+		
+		Matrix product = new Matrix(this.rows, parent.columns);
+		
+		//Dot product each row from this matrix with each column from parent matrix
+		for(int rT = 0; rT < this.rows; ++rT)
+			for(int cP = 0; cP < parent.columns; ++cP)
+				for(int pos = 0; pos < this.columns; ++pos)
+					product.data[rT * product.columns + cP] += 
+							this.data[rT * this.columns + pos] *
+							parent.data[pos * parent.columns + cP];
+
+		return product;
+	}
+	
+	/**
+	 * A crude modular function adds or subtracts the given mod till each cell is within 0 and mod.
+	 */
+	public Matrix modular(int mod) {
+		Matrix result = new Matrix(this.rows, this.columns);
+		
+	    for(int r = 0; r < this.rows; r++)
+	        for(int c = 0; c < this.columns; c++)
+	        	result.data[r * result.columns + c] = MathHelper.wrap(this.data[r * result.columns + c], 0, mod);
 	    
-	    double sum = 0.0D;
-	    for (int i = 0; i < this.order[1]; i++)
-	        sum += this.changeSign(i) * this.matrix[0][i] * createSubMatrix(0, i).determinant();
-	    
-	    return sum;
+	    return result;
 	}
 	
-	public int changeSign(int column) {
-		return column % 2 == 0 ? 1 : -1;
-	}
-	
-	public Matrix createSubMatrix(int excluding_row, int excluding_col) {
-		double[][] newMatrix = new double[this.order[0] - 1][this.order[1] - 1];
-		
-	    int newRow = 0;
-	    for(int i = 0; i < this.order[0]; i++) {
-	        if(i == excluding_row)
-	            continue;
-	        
-	        int newColumn = 0;
-	        for(int j = 0; j < this.order[1]; j++) {
-	            if (j == excluding_col)
-	                continue;
-	            newMatrix[newRow][newColumn] = this.matrix[i][j];
-	            newColumn += 1;
-	        }
-            newRow += 1;
-	    }
-	    return new Matrix(newMatrix);
-	} 
-	
-	public Matrix adjugate() {
-		double[][] newMatrix = new double[this.order[1]][this.order[0]];
-		
-	    for (int i = 0; i < this.order[0]; i++)
-	        for (int j = 0; j < this.order[1]; j++)
-	        	newMatrix[j][i] = this.matrix[i][j];
-	    
-	    return new Matrix(newMatrix);
-	}
-	
-	public Matrix minors() {
-		if(this.order[0] == 1 && this.order[1] == 1) {
-			double[][] newMatrix = new double[][] {new double[] {this.matrix[0][0]}};
-			return new Matrix(newMatrix);
-		}
-		
-		if(this.order[0] == 2 && this.order[1] == 2) {
-			double[][] newMatrix = new double[][] {new double[] {this.matrix[1][1], this.matrix[1][0]}, new double[] {this.matrix[0][1], this.matrix[0][0]}};
-			return new Matrix(newMatrix);
-		}
-		
-		double[][] newMatrix = new double[this.order[0]][this.order[1]];
-		
-		for (int i = 0; i < this.order[0]; i++)
-	        for (int j = 0; j < this.order[1]; j++)
-	        	newMatrix[i][j] = createSubMatrix(i, j).determinant();
-		
-		 return new Matrix(newMatrix);
-	}
-	
-	public Matrix cofactor() {
-		double[][] newMatrix = new double[this.order[0]][this.order[1]];
-		
-	    for (int i = 0; i < this.order[0]; i++)
-	        for (int j = 0; j < this.order[1]; j++)
-	        	newMatrix[i][j] = changeSign(i) * changeSign(j) * this.matrix[i][j];
-	    
-	    return new Matrix(newMatrix);
-	}
-	
-	public Matrix inverse() {
-		if(!this.isSquare())
-	        throw new MatrixNotSquareException("");
-		
+	/**
+	 * Returns the matrix which is the equivalent of dividing by said matrix
+	 */
+	public Matrix inverse() throws MatrixNoInverse {
 		double determinant = this.determinant();
 		
 		if(determinant == 0)
 			throw new MatrixNoInverse("Matrix has no inverse, determinant is 0.");
 		
-	    return this.minors().cofactor().adjugate().multiply(1.0F / determinant);
+	    return this.minors().cofactor().adjugate().divide(determinant);
 	}
 	
-	public Matrix inverseMod(int mod) throws MatrixNotSquareException, MatrixNoInverse {
-		if(!this.isSquare())
-	        throw new MatrixNotSquareException("");
-		
+	/**
+	 * Returns the matrix which is the equivalent of multiplying by the multiplicative inverse matrix
+	 */
+	public Matrix inverseMod(int mod) throws MatrixNoInverse {
 		double determinant = this.determinant();
+		
 		int multiplicativeInverse = 0;
 		try {
 			multiplicativeInverse = BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValue();
@@ -240,52 +135,123 @@ public class Matrix {
 			throw new MatrixNoInverse("Matrix no inverse in mod " + mod + ", De: " + determinant  + ", MuIn of De: " + multiplicativeInverse);
 		}
 		
-		if(this.order[0] == 1 && this.order[1] == 1) {
-			return new Matrix(new double[][] {{multiplicativeInverse}});
-		}
-		
 	    return this.minors().cofactor().adjugate().modular(mod).multiply(multiplicativeInverse).modular(mod);
 	}
 	
-	
-	@Override
-	public Matrix clone() {
-		double[][] newMatrix = new double[this.order[0]][this.order[1]];
+	/**
+	 * Reflects the matrix in the main diagonal (which runs from top-left to bottom-right)
+	 */
+	public Matrix adjugate() {
+		Matrix result = new Matrix(this.columns, this.rows);
 		
-	    for (int y = 0; y < this.order[0]; y++)
-	        for (int x = 0; x < this.order[1]; x++)
-	        	newMatrix[y][x] = this.matrix[y][x];
+		for(int r = 0; r < this.rows; ++r)
+			for(int c = 0; c < this.columns; ++c)
+				result.data[c * result.columns + r] = this.data[r * this.columns + c];
 	    
-	    return new Matrix(newMatrix);
+	    return result;
 	}
 	
-	public int[] toArray() {
-		int[] array = new int[this.order[0] * this.order[1]];
+	/**
+	 * 1x1 and 2x2 are special otherwise the in minor matrix each term is the determinant
+	 * of the matrix excluding the row and column of which the term is in
+	 * Minor matrix is only defined for square matrices
+	 */
+	public Matrix minors() {
+		if(this.rows != this.columns)
+			throw new MatrixNotSquareException("The determinant can't be found for non-square matrices");
 		
-		for(int y = 0; y < this.order[0]; ++y) {
-			
-			for(int x = 0; x < this.order[1]; ++x)
-				array[y * this.order[0] + x] = (int)this.matrix[y][x];
+		Matrix result = new Matrix(this.rows, this.columns);
+		
+		switch(this.rows) {
+		case 1: //Simply the only number in the matrix
+			result.data[0] = this.data[0];
+	    	break;
+	    case 2: //2x2 matrices
+	    	result.data[0] = this.data[3];
+	    	result.data[1] = this.data[2];
+	    	result.data[2] = this.data[1];
+	    	result.data[3] = this.data[0];
+	    	break;
+	    default: //Matrices greater than 2x2  
+	    	for(int r = 0; r < this.rows; r++)
+		        for(int c = 0; c < this.columns; c++)
+		        	result.data[r * result.columns + c] = this.createMatrixExcluding(r, c).determinant();
 		}
 		
-		return array;
+		return result;
 	}
+	
+	/**
+	 * Then the cofactor matrix C has each element of M multiplied by its sign 
+	 * -1^{r+c} where r,c are the row and column number of each position.
+	 */
+	public Matrix cofactor() {
+		Matrix result = new Matrix(this.rows, this.columns);
+		
+	    for(int r = 0; r < this.rows; r++)
+	        for(int c = 0; c < this.columns; c++)
+	        	result.data[r * result.columns + c] = this.changeSign(r) * this.changeSign(c) * this.data[r * this.columns + c];
+	    
+	    return result;
+	}
+	
+	public double determinant() {
+	    if(this.rows != this.columns)
+	    	throw new MatrixNotSquareException("The determinant can't be found for non-square matrices");
+	    
+	    
+	    switch(this.rows) {
+	    case 1: //Simply the only number in the matrix
+	    	return this.data[0];
+	    case 2: //2x2 matrix ad - bc
+	    	return this.data[0] * this.data[3] - this.data[1] * this.data[2];
+	    default: //Matrices greater than 2x2  
+	    	double sum = 0.0D;
+	    	for(int i = 0; i < this.columns; i++)
+	    		sum += this.changeSign(i) * this.data[i] * this.createMatrixExcluding(0, i).determinant();   
+	    	return sum;		
+	    }
+	}
+	
+	public Matrix createMatrixExcluding(int rowT, int columnT) {
+		Matrix minorCopy = new Matrix(this.columns - 1, this.rows - 1);
+		
+	    int rowN = 0;
+	    for(int rowO = 0; rowO < this.rows; rowO++) {
+	        if(rowO == rowT) continue;
+	        
+	        int columnN = 0;
+	        for(int columnO = 0; columnO < this.columns; columnO++) {
+	            if(columnO == columnT) continue;
+	            minorCopy.data[rowN * minorCopy.columns + columnN] = this.data[rowO * this.columns + columnO];
+	            columnN += 1;
+	        }
+            rowN += 1;
+	    }
+	    
+	    return minorCopy;
+	}
+	
+	public int squareSize() {
+		if(this.rows != this.columns)
+			throw new MatrixNotSquareException("Non-square matrices do not have a square size!");
+		
+		return this.rows;
+	}
+	
 	
 	@Override
 	public String toString() {
-		String total = "[";
-		for(int i = 0; i < this.order[0]; ++i) {
-			String str = "";
-			for(int k = 0; k < this.matrix[i].length; ++k) {
-				str += (int)this.matrix[i][k];
-				if(k != this.matrix[i].length - 1)
-					str += ",";
-				else if(i != this.order[1] - 1)
-					str += " ";
-			}
-			total += str;
-		}
-		
-		return total + "]";
+		return "[" + StringTransformer.joinWithClean(this.data, ", ") + "] " + rows + "x" + columns;
 	}
- }
+	
+	//Small internally used function that returns 1 when i is even and -1 when odd
+	private int changeSign(int i) {
+		return i % 2 == 0 ? 1 : -1;
+	}
+	
+	//TODO create a unquine index for each square matrix
+	//public int indexifier() {
+	//	
+	//}
+}

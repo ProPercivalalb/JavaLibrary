@@ -39,6 +39,10 @@ public class FileReader {
 	}
 
 	public static List<String> compileTextFromResource(String resourcePath) {
+		return compileTextFromResource(resourcePath, false);
+	}
+	
+	public static List<String> compileTextFromResource(String resourcePath, boolean ignore) {
 		List<String> list = new ArrayList<String>();
 		
 		InputStream inputStream = TextFitness.class.getResourceAsStream(resourcePath);
@@ -47,8 +51,10 @@ public class FileReader {
 			
 		try {
 			String line = "";
-			while((line = reader.readLine()) != null)
+			while((line = reader.readLine()) != null) {
+				if(ignore && (line.isEmpty() || line.startsWith("#"))) continue;
 				list.add(line);
+			}
 		} 
 		catch(Exception e) {
 			e.printStackTrace();

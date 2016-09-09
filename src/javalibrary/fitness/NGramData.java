@@ -11,19 +11,29 @@ public class NGramData {
 
 	//public HashMap<String, Double> mapping;
 	public double[] valueMapping;
+	public int nGram;
+	public int[] powValues;
 	public double floor;
 	public double fitnessPerChar;
 
-	public NGramData(HashMap<String, Double> mapping, double floor, double fitnessPerChar) {
+	public NGramData(HashMap<String, Double> mapping, double floor, double fitnessPerChar, int nGram) {
 		//this.mapping = mapping;
 		this.floor = floor;
 		this.fitnessPerChar = fitnessPerChar;
-		this.valueMapping = new double[456976];
+		this.nGram = nGram;
+		this.powValues = new int[nGram + 1];
+		for(int i = 0; i < this.powValues.length; i++)
+			this.powValues[i] = (int)Math.pow(26, i);
+		
+		this.valueMapping = new double[this.powValues[nGram]];
 		Arrays.fill(this.valueMapping, floor);
 		
 		for(String key : mapping.keySet()) {
 
-			int value = (key.charAt(0) - 'A') * 17576 + (key.charAt(1) - 'A') * 676 + (key.charAt(2) - 'A') * 26 + key.charAt(3) - 'A';
+			int value = 0;
+			for(int i = 0; i < this.nGram; i++)
+				value += (key.charAt(i) - 'A') * this.powValues[this.powValues.length - 2 - i];
+			
 			if(value < 0 || value > this.valueMapping.length - 1)
 				continue;
 		
@@ -37,8 +47,10 @@ public class NGramData {
 
 	
 	public double getValue(char[] gram, int startIndex) {
-		int intConversion = (gram[startIndex] - 65) * 17576 + (gram[startIndex + 1] - 65) * 676 + (gram[startIndex + 2] - 65) * 26 + gram[startIndex + 3] - 65;
-		
+		int intConversion = 0;
+		for(int i = startIndex; i < startIndex + this.nGram; i++)
+			intConversion += (gram[i] - 'A') * this.powValues[this.powValues.length - 2 - i + startIndex];
+
 		if(intConversion < 0 || intConversion > this.valueMapping.length - 1)
 			return this.floor;
 		return this.valueMapping[intConversion];

@@ -103,6 +103,6 @@ public class TextFitness {
 		}
 
 		
-		return new NGramData(mapping, floor, fitnessPerChar);
+		return new NGramData(mapping, floor, fitnessPerChar, 4);
 	}
 }
