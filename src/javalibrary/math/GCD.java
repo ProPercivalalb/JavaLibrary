@@ -21,4 +21,16 @@ public class GCD {
 		if(b == 0) return a;
 		return gcd(b, a % b);
 	}
+	
+	//Lowest Common Multiple
+	public static int lcm(int a, int b) {
+	    return (a * b) / gcd(a, b);
+	}
+	
+	public static int lcm(int... input) {
+	    int result = input[0];
+	    for(int i = 1; i < input.length; i++) 
+	    	result = lcm(result, input[i]);
+	    return result;
+	}
 }

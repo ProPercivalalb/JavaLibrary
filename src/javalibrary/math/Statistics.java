@@ -51,11 +51,18 @@ public class Statistics {
 		return this.variance.value;
 	}
 
-
 	public double getStandardDeviation() {
 		if(this.standardDeviation == null)
 			this.standardDeviation = new StatCache(Math.sqrt(this.getVariance()));
 		return this.standardDeviation.value;
+	}
+	
+	public double getMax() {
+		return MathHelper.findLargestDouble(this.data);
+	}
+	
+	public double getMin() {
+		return MathHelper.findSmallestDouble(this.data);
 	}
 
 	@Override 
