@@ -6,7 +6,7 @@ import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
 import javalibrary.lib.Timer;
-import javalibrary.math.MathHelper;
+import javalibrary.math.MathUtil;
 import javalibrary.string.StringTransformer;
 import javalibrary.string.ValueFormat;
 import javalibrary.util.ArrayUtil;
@@ -104,7 +104,7 @@ public class Matrix {
 		
 	    for(int r = 0; r < this.rows; r++)
 	        for(int c = 0; c < this.columns; c++)
-	        	result.data[r * result.columns + c] = MathHelper.wrap(this.data[r * result.columns + c], 0, mod);
+	        	result.data[r * result.columns + c] = MathUtil.wrap(this.data[r * result.columns + c], 0, mod);
 	    
 	    return result;
 	}

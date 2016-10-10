@@ -8,7 +8,7 @@ import java.util.List;
  * @author Alex Barter
  * @since 08 Oct 2013
  */
-public class MathHelper {
+public class MathUtil {
 
 	public static double PI =  Math.PI;
 	public static double E  =  Math.E;
@@ -175,6 +175,14 @@ public class MathHelper {
 		return list;
 	}
 	
+	public static int getMultiplicativeInverse(int a, int mod) {
+		return BigInteger.valueOf(a).modInverse(BigInteger.valueOf(mod)).intValue();
+	}
+	
+	public static boolean hasMultiplicativeInverse(int a, int mod) {
+		return GCD.gcd(a, mod) == 1;
+	}
+	
 	public static int factorial(int n) {
 		int fact = 1; 
 	    for(int i = 1; i <= n; i++) 
@@ -210,6 +218,10 @@ public class MathHelper {
 		return product;
 	}
 	
+	/**
+	 * Unlike traditional % mod this function will always return a
+	 * positive integer in the given modulo
+	 */
 	public static int mod(int number, int mod) {
 		return ((number % mod) + mod) % mod;
 	}

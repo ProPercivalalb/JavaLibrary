@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.swing.border.Border;
 
-import javalibrary.math.MathHelper;
+import javalibrary.math.MathUtil;
 
 /**
  * @author Alex Barter
@@ -76,7 +76,7 @@ public class JBarChart extends JChartBase {
 	    if(this.paintEmptyText(graphics, graphX, graphY, graphWidth, graphHeight, "Empty Bar Chart"))
 	    	return;
 	    
-	    double maxValue = MathHelper.findLargestDouble(this.values.getAllValues());
+	    double maxValue = MathUtil.findLargestDouble(this.values.getAllValues());
 	    
 	    int barWidth = graphWidth / this.values.size();
 	    int barGap = 4; //Should be a multiple of 2 to work well

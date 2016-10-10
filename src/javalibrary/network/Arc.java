@@ -3,7 +3,7 @@ package javalibrary.network;
 import java.util.ArrayList;
 import java.util.List;
 
-import javalibrary.math.MathHelper;
+import javalibrary.math.MathUtil;
 
 public class Arc {
 
@@ -57,7 +57,7 @@ public class Arc {
 	}
 	
 	public double getShortestDistance() {
-		return MathHelper.findSmallestDouble(this.distances);
+		return MathUtil.findSmallestDouble(this.distances);
 	}
 	
 	public int distanceCount() {

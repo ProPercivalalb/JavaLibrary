@@ -35,7 +35,7 @@ public class Statistics {
 	
 	public double getMean() {
 		if(this.mean == null)
-			this.mean = new StatCache(MathHelper.sumDouble(this.data) / this.valueCount);
+			this.mean = new StatCache(MathUtil.sumDouble(this.data) / this.valueCount);
 		return this.mean.value;
 	}
 	
@@ -58,11 +58,11 @@ public class Statistics {
 	}
 	
 	public double getMax() {
-		return MathHelper.findLargestDouble(this.data);
+		return MathUtil.findLargestDouble(this.data);
 	}
 	
 	public double getMin() {
-		return MathHelper.findSmallestDouble(this.data);
+		return MathUtil.findSmallestDouble(this.data);
 	}
 
 	@Override 

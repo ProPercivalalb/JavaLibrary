@@ -90,6 +90,10 @@ public class ArrayUtil {
 		return c;
 	}
 	
+	//TODO public static int[] concat(int[]... abc) {
+		//for(int[])
+	//}
+	
 	public static char[] copyOfRange(char[] array, int startIndex, int length) {
 		return Arrays.copyOfRange(array, startIndex, startIndex + length);
 	}

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javalibrary.math.MathHelper;
+import javalibrary.math.MathUtil;
 import javalibrary.network.Arc.ArcIndex;
 import javalibrary.network.algorithm.Algorithm;
 import javalibrary.network.algorithm.ChinesePostman;
@@ -258,7 +258,7 @@ public class NetworkBase {
 	}
 	
 	public int getSmallestNodeId() {
-		return MathHelper.findSmallestInt(this.NODES.keySet());
+		return MathUtil.findSmallestInt(this.NODES.keySet());
 	}
 	
 	public Node getLargestNode() {
@@ -266,7 +266,7 @@ public class NetworkBase {
 	}
 	
 	public int getLargestNodeId() {
-		return MathHelper.findLargestInt(this.NODES.keySet());
+		return MathUtil.findLargestInt(this.NODES.keySet());
 	}
 	
 	public NetworkBase combine(NetworkBase other) {

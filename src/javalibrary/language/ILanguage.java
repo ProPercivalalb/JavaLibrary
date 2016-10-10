@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javalibrary.fitness.NGramData;
-import javalibrary.math.MathHelper;
+import javalibrary.math.MathUtil;
 import javalibrary.util.MapHelper;
 
 /**
@@ -38,11 +38,11 @@ public abstract class ILanguage {
 	}
 
 	public double getMaxFrequency() {
-		return MathHelper.findLargestDouble(this.getCharacterFrequency().values());
+		return MathUtil.findLargestDouble(this.getCharacterFrequency().values());
 	}
 	
 	public double getMinFrequency() {
-		return MathHelper.findSmallestDouble(this.getCharacterFrequency().values());
+		return MathUtil.findSmallestDouble(this.getCharacterFrequency().values());
 	}
 	
 	public abstract void loadNGramData();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javalibrary.math.MathHelper;
+import javalibrary.math.MathUtil;
 import javalibrary.network.Arc;
 import javalibrary.network.Arc.ArcIndex;
 import javalibrary.network.NetworkBase;
@@ -175,7 +175,7 @@ public class ChinesePostman extends NetworkBase {
 	public static ArrayList<ArrayList<NodePair>> getPairs(ArrayList<Integer> oddNodes, int noNodes, ArrayList<NodePair> previousPairs) {
 		ArrayList<ArrayList<NodePair>> allCombos = new ArrayList<ArrayList<NodePair>>();
 		
-		int starter = MathHelper.findSmallestInt(oddNodes);
+		int starter = MathUtil.findSmallestInt(oddNodes);
 		
 		for(Integer j : oddNodes) {
 			if(j == starter) continue; //Miss out duplicate
