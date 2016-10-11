@@ -175,14 +175,6 @@ public class MathUtil {
 		return list;
 	}
 	
-	public static int getMultiplicativeInverse(int a, int mod) {
-		return BigInteger.valueOf(a).modInverse(BigInteger.valueOf(mod)).intValue();
-	}
-	
-	public static boolean hasMultiplicativeInverse(int a, int mod) {
-		return GCD.gcd(a, mod) == 1;
-	}
-	
 	public static int factorial(int n) {
 		int fact = 1; 
 	    for(int i = 1; i <= n; i++) 
@@ -216,6 +208,41 @@ public class MathUtil {
 		for(int i : values)
 			product *= i;
 		return product;
+	}
+	
+	//New functions
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Starts multiplying n by n-b increase b till b equals c
+	 * n = 6, c = 2 would return 6*5 = 30
+	 */
+	public static int factorial(int n, int c) {
+		int fact = n;
+		for(int i = 1; i < c; i++) {
+			fact *= (n - i);
+		}
+	    return fact;
+	}
+	
+	public static int getMultiplicativeInverse(int a, int mod) {
+		return BigInteger.valueOf(a).modInverse(BigInteger.valueOf(mod)).intValue();
+	}
+	
+	/**.
+	 * If a^-1 mod <code>mod</code> exists t
+	 */
+	public static boolean hasMultiplicativeInverse(int a, int mod) {
+		return GCD.gcd(a, mod) == 1;
 	}
 	
 	/**

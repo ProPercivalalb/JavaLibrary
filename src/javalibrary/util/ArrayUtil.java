@@ -90,6 +90,14 @@ public class ArrayUtil {
 		return c;
 	}
 	
+	public static int[] concat(int[] a, int b) {
+		int aLen = a.length;
+		int[] c = new int[aLen + 1];
+		System.arraycopy(a, 0, c, 0, aLen);
+		c[aLen] = b;
+		return c;
+	}
+	
 	//TODO public static int[] concat(int[]... abc) {
 		//for(int[])
 	//}
@@ -102,13 +110,7 @@ public class ArrayUtil {
 		return Arrays.copyOfRange(array, startIndex, endIndex);
 	}
 
-	public static int indexOf(int[] array, int length, int target) {
-		for(int i = 0; i < length; i++)
-	        if(array[i] == target) 
-	        	return i;
 
-	    return -1;
-	}
 
 	public static void shuffle(char[] key) {
 		int n = key.length;
@@ -134,8 +136,24 @@ public class ArrayUtil {
 		}
 	}
 
-	public static boolean contains(int[] arr, int i) {
-		return indexOf(arr, arr.length, i) != -1;
+	public static int indexOf(int[] array, int target) {
+		return indexOf(array, array.length, target);
+	}
+	
+	public static int indexOf(int[] array, int onlyBefore, int target) {
+		for(int i = 0; i < onlyBefore; i++)
+	        if(array[i] == target) 
+	        	return i;
+
+	    return -1;
+	}
+	
+	public static boolean contains(int[] arr, int onlyBefore, int target) {
+		return indexOf(arr, onlyBefore, target) != -1;
+	}
+	
+	public static boolean contains(int[] arr, int target) {
+		return indexOf(arr, arr.length, target) != -1;
 	}
 	
 	public static int[] toIndexedArray(int[] arr) {
@@ -153,6 +171,13 @@ public class ArrayUtil {
 		double[] output = new double[input.length];
 		for(int i = 0; i < input.length; i++)
 			output[i] = input[i];
+		return output;
+	}
+	
+	public static int[] convertNumType(double[] input) {
+		int[] output = new int[input.length];
+		for(int i = 0; i < input.length; i++)
+			output[i] = (int)Math.floor(input[i]);
 		return output;
 	}
 }

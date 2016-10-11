@@ -17,9 +17,31 @@ public class GCD {
 		}
 	}
 	
+	public static double hcf(double no1, double no2) {
+		double x = no1;
+		double y = no2;
+		while(true) {
+			int mutliplier = (int)Math.floor(x/y);
+			double rem = x - y * mutliplier;
+			if(rem == 0) {
+				
+				return y;
+			}
+			x = y;
+			y = rem;
+		}
+	}
+	
 	public static int gcd(int a, int b) {
 		if(b == 0) return a;
 		return gcd(b, a % b);
+	}
+	
+	public static int gcd(int[] input) {
+		int result = input[0];
+	    for(int i = 1; i < input.length; i++) 
+	    	result = gcd(result, input[i]);
+	    return result;
 	}
 	
 	//Lowest Common Multiple
