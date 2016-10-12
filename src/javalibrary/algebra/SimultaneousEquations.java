@@ -1,12 +1,61 @@
 package javalibrary.algebra;
 
+import java.util.Arrays;
+
+import javalibrary.exception.MatrixNoInverse;
 import javalibrary.math.ArrayOperations;
 import javalibrary.math.GCD;
+import javalibrary.math.matrics.Matrix;
 import javalibrary.util.ArrayUtil;
 
 public class SimultaneousEquations {
 
+	public static int[] solveSimEquationsMod(int[][] simEquations, int mod) {
+		int UNKNOWNS = simEquations.length;
+		
+		int[] matrixData = new int[0];
+		for(int i = 0; i < UNKNOWNS; i++) 
+			matrixData = ArrayUtil.concat(matrixData, ArrayUtil.trim(simEquations[i], 0, UNKNOWNS));
+		
+		Matrix matrix = new Matrix(matrixData, UNKNOWNS, UNKNOWNS);
+		Matrix invMatrix = matrix.inverseMod(mod);
+			
+		Matrix equalsMatrix = new Matrix(UNKNOWNS, 1);
+		for(int i = 0; i < UNKNOWNS; i++)
+			equalsMatrix.data[i] = simEquations[i][UNKNOWNS];
+
+			
+		return ArrayUtil.convertNumType(invMatrix.multiply(equalsMatrix).modular(mod).data);
+	}
+	
 	public static double[] solveSimEquations(double[][] simEquations) {
+		int UNKNOWNS = simEquations.length;
+		
+		double[] matrixData = new double[0];
+		for(int i = 0; i < UNKNOWNS; i++) 
+			matrixData = ArrayUtil.concat(matrixData, ArrayUtil.trim(simEquations[i], 0, UNKNOWNS));
+		
+		Matrix matrix = new Matrix(matrixData, UNKNOWNS, UNKNOWNS);
+		
+		Matrix equalsMatrix = new Matrix(UNKNOWNS, 1);
+		for(int i = 0; i < UNKNOWNS; i++)
+			equalsMatrix.data[i] = simEquations[i][UNKNOWNS];
+
+		return matrix.inverse().multiply(equalsMatrix).data;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static double[] solveSimEquationsNODecimal(double[][] simEquations) {
 		int UNKNOWNS = simEquations.length;
 		
 		int equatIndex = 0;
@@ -98,4 +147,44 @@ public class SimultaneousEquations {
 		
 		return finalSolution;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

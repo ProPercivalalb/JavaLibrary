@@ -8,7 +8,6 @@ import java.util.Arrays;
  */
 public class ArrayUtil {
 
-	
 	//Primitive array initializer
 	public static double[] createDouble(int length) {
 		return new double[length]; 
@@ -59,6 +58,20 @@ public class ArrayUtil {
 	    return -1;
 	}
 	
+	public static int[] trim(int[] array, int startIndex, int length) {
+		int[] newArray = new int[length];
+		for(int i = 0; i < length; i++)
+			newArray[i] = array[startIndex + i];
+		return newArray;
+	}
+	
+	public static double[] trim(double[] array, int startIndex, int length) {
+		double[] newArray = new double[length];
+		for(int i = 0; i < length; i++)
+			newArray[i] = array[startIndex + i];
+		return newArray;
+	}
+	
 	public static <T> T[] fill(T filler, int length){
 	    T[] arr = (T[])Array.newInstance(filler.getClass(), length);
 	    for(int i = 0; i < length; i++)
@@ -85,6 +98,15 @@ public class ArrayUtil {
 		int aLen = a.length;
 		int bLen = b.length;
 		int[] c = new int[aLen + bLen];
+		System.arraycopy(a, 0, c, 0, aLen);
+		System.arraycopy(b, 0, c, aLen, bLen);
+		return c;
+	}
+	
+	public static double[] concat(double[] a, double[] b) {
+		int aLen = a.length;
+		int bLen = b.length;
+		double[] c = new double[aLen + bLen];
 		System.arraycopy(a, 0, c, 0, aLen);
 		System.arraycopy(b, 0, c, aLen, bLen);
 		return c;
