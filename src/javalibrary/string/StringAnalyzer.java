@@ -1,9 +1,11 @@
 package javalibrary.string;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -147,8 +149,6 @@ public class StringAnalyzer {
 	}
 	
 	public static TreeMap<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength, boolean overlap) {
-		
-		
 		return getEmbeddedStrings(text.toCharArray(), minLength, maxLength, overlap);
 	}
 	
@@ -170,4 +170,37 @@ public class StringAnalyzer {
 		
 		return map;
 	}
+	
+	//A more direct and optimised character counter
+	public static TreeMap<Character, Integer> getCharacterCount(char[] text) {
+		TreeMap<Character, Integer> map = new TreeMap<Character, Integer>();
+		for(int k = 0; k < text.length; k++)
+			map.put(text[k], 1 + (map.containsKey(text[k]) ? map.get(text[k]) : 0));
+
+		return map;
+	}
+	
+	//Returns list of ordered character count in text from largest to smallest, counts of equal value are placed in ASCII value order
+	public static List<Character> getOrderedCharacterCount(char[] text) {
+		TreeMap<Character, Integer> map = getCharacterCount(text);
+		List<Character> sorted = new ArrayList<Character>(map.keySet());
+		Collections.sort(sorted, new SortCharacter(map));			
+		return sorted;
+	}
+	
+	public static class SortCharacter implements Comparator<Character> {
+		
+		private Map<Character, Integer> data;
+		
+	    public SortCharacter(Map<Character, Integer> data) {
+	        this.data = data;
+	    }
+	    
+	    @Override
+	    public int compare(Character x, Character y) {
+	    	int comp = this.data.get(y).compareTo(this.data.get(x));
+	        return comp == 0 ? Character.compare(x, y) : comp;
+	    }
+	}
+	
 }

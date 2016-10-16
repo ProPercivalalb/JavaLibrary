@@ -109,6 +109,7 @@ public class StringTransformer {
         }
         return accumulator;
     }
+ 
     
     public static String getEveryNthBlock(String text, int blockSize, int start, int n) {
     	String accumulator = "";
