@@ -54,5 +54,7 @@ public class ProgressValue {
 		this.progressBar.setIndeterminate(newValue);
 		if(newValue)
 			this.progressBar.setString("Searching...");
+		else
+			this.progressBar.setString("0.0%");
 	}
 }
