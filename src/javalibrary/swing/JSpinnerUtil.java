@@ -48,4 +48,11 @@ public class JSpinnerUtil {
 		
 		return new JSpinner[] {spinnerMin, spinnerMax};
 	}
+	
+	public static JSpinner createSpinner(int start, int min, int max, int step) {
+		SpinnerNumberModel model = new SpinnerNumberModel(start, min, max, step);
+		JSpinner spinner = new JSpinner(model);
+		((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setEditable(false);
+		return spinner;
+	}
 }
