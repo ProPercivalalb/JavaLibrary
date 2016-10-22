@@ -188,6 +188,10 @@ public class MathUtil {
 	    	fact = fact.multiply(BigInteger.valueOf(i));
 	    return fact;
 	}
+	
+	public static BigInteger pow(int val, int exponent) {
+		return BigInteger.valueOf(val).pow(exponent);
+	}
 
 	public static int sumInt(Iterable<Integer> values) {
 		int sum = 0;

@@ -16,27 +16,24 @@ public class TextFitness {
 	}
 	
 	public static double scoreFitnessQuadgrams(char[] text, ILanguage language) {
-		double fitness = 0.0D;
 		NGramData quadgramData = language.getQuadgramData();
 		
-		
-		for(int k = 0; k < (text.length - 4 + 1); k++) {
+		double fitness = 0.0D;
+		for(int k = 0; k < (text.length - 4 + 1); k++)
 				
 			fitness += scoreWord(text, k, quadgramData);
-		}
 
 		return fitness;
 	}
 	
-	public static double scoreFitnessQuadgrams(char[] text, ILanguage language, double currentLowest) {
-		double fitness = 0.0D;
+	public static double scoreFitnessQuadgrams(char[] text, ILanguage language, double bestScore) {
 		NGramData quadgramData = language.getQuadgramData();
 		
-		
+		double fitness = 0.0D;
 		for(int k = 0; k < (text.length - 4 + 1); k++) {
 			fitness += scoreWord(text, k, quadgramData);
-			if(fitness < currentLowest)
-				return currentLowest - 1D;
+			if(fitness < bestScore)
+				return bestScore - 1D;
 		}
 
 		return fitness;
