@@ -10,10 +10,14 @@ public class ChartData {
 	private double value;
 	private String toolTip;
 	
-	public ChartData(String name, double value) {
+	public ChartData(String name, double value, String toolTip) {
 		this.name = name;
 		this.value = value;
-		this.toolTip = name;
+		this.toolTip = toolTip;
+	}
+	
+	public ChartData(String name, double value) {
+		this(name, value, name);
 	}
 	
 	public ChartData setNoToolTip() {

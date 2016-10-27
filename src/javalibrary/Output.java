@@ -48,7 +48,7 @@ public interface Output {
 			this.pane = pane;
 			// Disable the auto scroll :
 		    ((DefaultCaret)textComponent.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-
+		    
 		    // Add a listener to the vertical scroll bar :
 		    pane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 
