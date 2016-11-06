@@ -103,6 +103,15 @@ public class ArrayUtil {
 		return c;
 	}
 	
+	public static byte[] concat(byte[] a, byte[] b) {
+		int aLen = a.length;
+		int bLen = b.length;
+		byte[] c = new byte[aLen + bLen];
+		System.arraycopy(a, 0, c, 0, aLen);
+		System.arraycopy(b, 0, c, aLen, bLen);
+		return c;
+	}
+	
 	public static double[] concat(double[] a, double[] b) {
 		int aLen = a.length;
 		int bLen = b.length;
@@ -120,11 +129,31 @@ public class ArrayUtil {
 		return c;
 	}
 	
+	public static char[] concat(char[] a, char b) {
+		int aLen = a.length;
+		char[] c = new char[aLen + 1];
+		System.arraycopy(a, 0, c, 0, aLen);
+		c[aLen] = b;
+		return c;
+	}
+	
+	public static byte[] concat(byte[] a, byte b) {
+		int aLen = a.length;
+		byte[] c = new byte[aLen + 1];
+		System.arraycopy(a, 0, c, 0, aLen);
+		c[aLen] = b;
+		return c;
+	}
+	
 	//TODO public static int[] concat(int[]... abc) {
 		//for(int[])
 	//}
 	
 	public static char[] copyOfRange(char[] array, int startIndex, int length) {
+		return Arrays.copyOfRange(array, startIndex, startIndex + length);
+	}
+	
+	public static byte[] copyOfRange(byte[] array, int startIndex, int length) {
 		return Arrays.copyOfRange(array, startIndex, startIndex + length);
 	}
 	
@@ -200,6 +229,13 @@ public class ArrayUtil {
 		int[] output = new int[input.length];
 		for(int i = 0; i < input.length; i++)
 			output[i] = (int)Math.floor(input[i]);
+		return output;
+	}
+
+	public static byte[] convertCharType(char[] input) {
+		byte[] output = new byte[input.length];
+		for(int i = 0; i < input.length; i++)
+			output[i] = (byte)input[i];
 		return output;
 	}
 }

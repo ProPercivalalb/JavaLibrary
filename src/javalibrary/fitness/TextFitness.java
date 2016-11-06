@@ -26,6 +26,19 @@ public class TextFitness {
 		return fitness;
 	}
 	
+	//Byte array version of method above
+	public static double scoreFitnessQuadgrams(byte[] text, ILanguage language) {
+		NGramData quadgramData = language.getQuadgramData();
+		
+		double fitness = 0.0D;
+		for(int k = 0; k < (text.length - 4 + 1); k++)
+				
+			fitness += scoreWord(text, k, quadgramData);
+
+		return fitness;
+	}
+	
+	/** Dynamicly checking if it better score
 	public static double scoreFitnessQuadgrams(char[] text, ILanguage language, double bestScore) {
 		NGramData quadgramData = language.getQuadgramData();
 		
@@ -37,30 +50,17 @@ public class TextFitness {
 		}
 
 		return fitness;
-	}
-	
-	
-	public static double scoreWord(char[] s, int startIndex, NGramData quadgramData) {
-		return quadgramData.getValue(s, startIndex);
-	}
-
-/**	
-	public static double scoreFitnessDiagrams(String text, ILanguage language) {
-		double fitness = 0.0D;
-		char[] characters = text.toCharArray();
-
-		for(int k = 0; k < (text.length() - 2 + 1); k++) {
-			String s = new String(characters, k, 2);
-			NGramData digramData = language.getDiagramData();
-			
-			if(digramData.mapping.containsKey(s))
-				fitness += digramData.mapping.get(s);
-			else
-				fitness += digramData.floor;
-		}
-
-		return fitness;
 	}**/
+	
+	
+	public static double scoreWord(char[] s, int startIndex, NGramData nGramData) {
+		return nGramData.getValue(s, startIndex);
+	}
+	
+	//Byte array version of method above
+	public static double scoreWord(byte[] s, int startIndex, NGramData nGramData) {
+		return nGramData.getValue(s, startIndex);
+	}
 	
 	public static double getEstimatedFitness(String text, ILanguage language) {
 		return getEstimatedFitness(text.length(), language);
