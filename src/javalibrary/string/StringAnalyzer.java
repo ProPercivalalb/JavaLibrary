@@ -171,6 +171,10 @@ public class StringAnalyzer {
 		return map;
 	}
 	
+	public static TreeMap<Character, Integer> getCharacterCount(String text) {
+		return getCharacterCount(text.toCharArray());
+	}
+	
 	//A more direct and optimised character counter
 	public static TreeMap<Character, Integer> getCharacterCount(char[] text) {
 		TreeMap<Character, Integer> map = new TreeMap<Character, Integer>();
