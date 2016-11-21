@@ -20,6 +20,10 @@ public abstract class ILanguage {
 		return this.getCharacterFrequency().get(character);
 	}
 	
+	public char[] getFrequencyLargest() {
+		return new char[0];
+	}
+	
 	public List<Character> getLetterLargestFirst() {
 		Map<Character, Double> order = MapHelper.sortMapByValue(this.getCharacterFrequency(), false);
 		return new ArrayList<Character>(order.keySet());

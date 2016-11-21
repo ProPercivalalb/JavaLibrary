@@ -9,13 +9,34 @@ public class Prime {
 
 	public static void main(String[] args) {
 		Timer timer = new Timer();
+		
+		for(int number = 0; number < 100; number++)
+			System.out.println(number + " " + isPrime(number));
 		int number = 421412412;
-		System.out.println(number + " " + isPrime(number));
 		timer.displayTime();
 		BigInteger.ZERO.isProbablePrime(1);
 	}
 	
+	//Trial division
 	public static boolean isPrime(int number) {
+		if(number % 2 == 0 || number % 3 == 0)
+			return false;
+		
+		int i = 6;
+		
+		do {
+			if((int)(number / (i - 1)) * (i - 1) == number || (int)(number / (i + 1)) * (i + 1) == number)
+				return false;
+			i += 6;
+		}
+		while(i < Math.sqrt(number));
+
+		
+		return true;
+	}
+	
+	//Miller-Rabin test
+	public static boolean isPrimeRqab(int number) {
 		int s = number - 1;
 		int t = 0;
 		

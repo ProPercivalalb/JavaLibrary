@@ -166,10 +166,10 @@ public class StringTransformer {
     	return total;
     }
     
-    public static List<String> splitInto(String text, int size) {
-    	List<String> list = new ArrayList<String>();
+    public static String[] splitInto(String text, int size) {
+    	String[] list = new String[(int)Math.ceil(text.length() / (double)size)];
     	for(int i = 0; i < text.length(); i += size)
-    		list.add(text.substring(i, Math.min(i + size, text.length())));
+    		list[i / 3] = text.substring(i, Math.min(i + size, text.length()));
     	return list;
     }
     

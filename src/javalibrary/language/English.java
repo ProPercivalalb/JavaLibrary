@@ -6,14 +6,22 @@ import java.util.Map;
 import javalibrary.fitness.NGramData;
 import javalibrary.fitness.TextFitness;
 
-/**
- * @author Alex Barter
- */
 public class English extends ILanguage {
 
 	public static NGramData quadgramData;
 	public static NGramData diagramData;
 	public static Map<Character, Double> frequencyMap;
+	
+	public char[] frequencyLargest;
+	
+	public English() {
+		this.frequencyLargest = "ETAOINSHRDLCUMWFGYPBVKJXQZ".toCharArray();
+	}
+	
+	@Override
+	public char[] getFrequencyLargest() {
+		return this.frequencyLargest;
+	}
 	
 	@Override
 	public Map<Character, Double> getCharacterFrequency() {

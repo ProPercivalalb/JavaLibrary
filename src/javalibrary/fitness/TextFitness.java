@@ -78,7 +78,8 @@ public class TextFitness {
 		double fitnessPerChar = 0.0D;
 		
 		List<String> list = FileReader.compileTextFromResource(resourcePath);
-
+		int length = -1;
+		
 		for(String line : list) {
 			String[] str = line.split(" ");
 					
@@ -87,6 +88,7 @@ public class TextFitness {
 			int count = Integer.valueOf(str[1]);
 			total += count;
 			mapping.put(str[0], (double)count);
+			length = str[0].length();
 		}
 			
 		floor = Math.log10(0.01D / total);
@@ -100,6 +102,6 @@ public class TextFitness {
 		}
 
 		
-		return new NGramData(mapping, floor, fitnessPerChar, 4);
+		return new NGramData(mapping, floor, fitnessPerChar, length);
 	}
 }
