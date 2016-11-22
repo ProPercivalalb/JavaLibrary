@@ -192,6 +192,7 @@ public class StringTransformer {
 		text = text.replaceAll("[0-9a-zA-Z\\s+]", "");
     	return text.length();
 	}
+	
 	public static int countUniqueChars(String inputText) {
 		char[] chars = inputText.toCharArray();
 		
