@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
 import javalibrary.exception.MatrixNotSquareException;
-import javalibrary.lib.Timer;
 import javalibrary.math.MathUtil;
 import javalibrary.string.StringTransformer;
 import javalibrary.string.ValueFormat;
@@ -242,7 +241,7 @@ public class Matrix {
 	
 	@Override
 	public String toString() {
-		return "[" + StringTransformer.joinWithClean(this.data, ", ") + "] " + rows + "x" + columns;
+		return String.format("[%s] %dx%d", StringTransformer.joinWithClean(this.data, ", "), this.rows, this.columns);
 	}
 	
 	//Small internally used function that returns 1 when i is even and -1 when odd

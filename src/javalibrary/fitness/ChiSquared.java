@@ -4,12 +4,17 @@ import java.util.TreeMap;
 
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringAnalyzer;
+import javalibrary.util.ArrayUtil;
 
 /**
  * @author Alex Barter (10AS)
  */
 public class ChiSquared {
 
+	public static double calculate(byte[] text, ILanguage language) {
+		return calculate(ArrayUtil.convertCharType(text), language);
+	}
+	
 	public static double calculate(char[] text, ILanguage language) {
 		TreeMap<String, Integer> letters = StringAnalyzer.getEmbeddedStrings(text, 1, 1);
 		

@@ -238,4 +238,11 @@ public class ArrayUtil {
 			output[i] = (byte)input[i];
 		return output;
 	}
+	
+	public static char[] convertCharType(byte[] input) {
+		char[] output = new char[input.length];
+		for(int i = 0; i < input.length; i++)
+			output[i] = (char)input[i];
+		return output;
+	}
 }
