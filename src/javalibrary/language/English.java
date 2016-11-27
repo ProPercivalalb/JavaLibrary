@@ -9,7 +9,8 @@ import javalibrary.fitness.TextFitness;
 public class English extends ILanguage {
 
 	public static NGramData quadgramData;
-	public static NGramData diagramData;
+	public static NGramData trigramData;
+	public static NGramData bigramData;
 	public static Map<Character, Double> frequencyMap;
 	
 	public char[] frequencyLargest;
@@ -60,7 +61,8 @@ public class English extends ILanguage {
 	@Override
 	public void loadNGramData() {
 		quadgramData = TextFitness.loadFile("/javalibrary/fitness/english_quadgrams.txt");
-		//diagramData = TextFitness.loadFile("/javalibrary/fitness/english_bigrams_1.txt");
+		trigramData = TextFitness.loadFile("/javalibrary/fitness/english_trigrams.txt");
+		bigramData = TextFitness.loadFile("/javalibrary/fitness/english_bigrams_1.txt");
 	}
 	
 	@Override
@@ -69,8 +71,13 @@ public class English extends ILanguage {
 	}
 	
 	@Override
+	public NGramData getTrigramData() {
+		return trigramData;
+	}
+	
+	@Override
 	public NGramData getDiagramData() {
-		return diagramData;
+		return bigramData;
 	}
 	
 	@Override

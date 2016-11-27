@@ -21,6 +21,15 @@ public class Matrix {
 		this(ArrayUtil.convertNumType(data), rows, columns);
 	}
 	
+	//Square matrix
+	public Matrix(int[] data, int size) {
+		this(data, size, size);
+	}
+	
+	public Matrix(double[] data, int size) {
+		this(data, size, size);
+	}
+	
 	public Matrix(double[] data, int rows, int columns) {
 		this.data = data;
 		this.rows = rows;
@@ -56,6 +65,26 @@ public class Matrix {
 		System.out.println(" Y Order: " + this.rows);
 		System.out.println(" X Order: " + this.columns);
 		System.out.println("");
+	}
+	
+	public Matrix add(Matrix parent) {
+		Matrix result = new Matrix(this.rows, this.columns);
+		
+		for(int r = 0; r < this.rows; ++r)
+			for(int c = 0; c < this.columns; ++c)
+				result.data[r * result.columns + c] = this.data[r * this.columns + c] + parent.data[r * this.columns + c];
+		
+		return result;
+	}
+	
+	public Matrix subtract(Matrix parent) {
+		Matrix result = new Matrix(this.rows, this.columns);
+		
+		for(int r = 0; r < this.rows; ++r)
+			for(int c = 0; c < this.columns; ++c)
+				result.data[r * result.columns + c] = this.data[r * this.columns + c] - parent.data[r * this.columns + c];
+		
+		return result;
 	}
 	
 	public Matrix multiply(double scalar) {
@@ -118,6 +147,18 @@ public class Matrix {
 			throw new MatrixNoInverse("Matrix has no inverse, determinant is 0.");
 		
 	    return this.minors().cofactor().adjugate().divide(determinant);
+	}
+	
+	public boolean hasInverseMod(int mod) {
+		double determinant = this.determinant();
+
+		try {
+			BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValue();
+			return true;
+		}
+		catch(ArithmeticException e) {
+			return false;
+		}
 	}
 	
 	/**

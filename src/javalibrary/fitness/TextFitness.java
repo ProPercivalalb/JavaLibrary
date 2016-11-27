@@ -1,5 +1,6 @@
 package javalibrary.fitness;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +39,16 @@ public class TextFitness {
 		return fitness;
 	}
 	
+	public static double scoreFitness(byte[] text, NGramData ngramData) {
+
+		double fitness = 0.0D;
+		for(int k = 0; k < (text.length - ngramData.nGram + 1); k++)
+				
+			fitness += scoreWord(text, k, ngramData);
+
+		return fitness;
+	}
+	
 	/** Dynamicly checking if it better score
 	public static double scoreFitnessQuadgrams(char[] text, ILanguage language, double bestScore) {
 		NGramData quadgramData = language.getQuadgramData();
@@ -63,18 +74,17 @@ public class TextFitness {
 	}
 	
 	public static double getEstimatedFitness(String text, ILanguage language) {
-		return getEstimatedFitness(text.length(), language);
+		return getEstimatedFitness(text.length(), language.getQuadgramData());
 	}
 	
-	public static double getEstimatedFitness(int length, ILanguage language) {
-		NGramData quadgramData = language.getQuadgramData();
-		return quadgramData.fitnessPerChar * Math.max(0, length - 3);
+	public static double getEstimatedFitness(int length, NGramData nGramData) {
+		return nGramData.fitnessPerChar * Math.max(0, length - nGramData.nGram - 1);
 	}
 	
 	public static NGramData loadFile(String resourcePath) {
 		HashMap<String, Double> mapping = new HashMap<String, Double>();
 		double floor = 0.0D;
-		double total = 0.0D;
+		BigInteger total = BigInteger.ZERO;
 		double fitnessPerChar = 0.0D;
 		
 		List<String> list = FileReader.compileTextFromResource(resourcePath);
@@ -86,19 +96,19 @@ public class TextFitness {
 			if(str.length < 2) continue;
 					
 			int count = Integer.valueOf(str[1]);
-			total += count;
+			total = total.add(BigInteger.valueOf(count));
 			mapping.put(str[0], (double)count);
 			length = str[0].length();
 		}
 			
-		floor = Math.log10(0.01D / total);
+		floor = Math.log10(0.01D / total.doubleValue());
 			
 		for(String gram : mapping.keySet()) {
 			double count = mapping.get(gram);
-			double log = Math.log10(count / total);
+			double log = Math.log10(count / total.doubleValue());
 
 			mapping.put(gram, log);
-			fitnessPerChar += (count / total) * log;
+			fitnessPerChar += (count / total.doubleValue()) * log;
 		}
 
 		

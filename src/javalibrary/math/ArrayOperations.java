@@ -16,7 +16,7 @@ public class ArrayOperations {
 	
 	public static int[] mod(int[] array, int mod) {
 		for(int i = 0; i < array.length; i++)
-			array[i] = (array[i] % mod + mod) % 26;
+			array[i] = (array[i] % mod + mod) % mod;
 		return array;
 	}
 	

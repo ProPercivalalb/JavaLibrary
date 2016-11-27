@@ -55,6 +55,10 @@ public abstract class ILanguage {
 	
 	public abstract NGramData getDiagramData();
 	
+	public NGramData getTrigramData() {
+		return null;
+	}
+	
 	public abstract double getNormalCoincidence();
 	
 	public abstract String getName();

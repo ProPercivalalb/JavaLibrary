@@ -3,6 +3,7 @@ package javalibrary.string;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -163,7 +164,7 @@ public class StringAnalyzer {
 			for(int length = minLength; length <= maxLength; ++length) {
 				for(int k = 0; k < (text.length - length + 1); k += (overlap ? 1 : length)) {
 					String s = new String(text, k, length);
-					map.put(s, 1 + (map.containsKey(s) ? map.get(s) : 0));
+					map.put(s, map.containsKey(s) ? map.get(s) + 1 : 1);
 				}
 			}
 		}
@@ -171,22 +172,45 @@ public class StringAnalyzer {
 		return map;
 	}
 	
-	public static TreeMap<Character, Integer> getCharacterCount(String text) {
+	public static Map<String, Integer> getEmbeddedStrings(byte[] text, int minLength, int maxLength, boolean overlap) {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+		if(text.length >= minLength) {
+			for(int length = minLength; length <= maxLength; ++length) {
+				for(int k = 0; k < (text.length - length + 1); k += (overlap ? 1 : length)) {
+					String s = new String(text, k, length);
+					map.put(s, map.containsKey(s) ? map.get(s) + 1 : 1);
+				}
+			}
+		}
+		
+		return map;
+	}
+	
+	public static HashMap<Character, Integer> getCharacterCount(String text) {
 		return getCharacterCount(text.toCharArray());
 	}
 	
 	//A more direct and optimised character counter
-	public static TreeMap<Character, Integer> getCharacterCount(char[] text) {
-		TreeMap<Character, Integer> map = new TreeMap<Character, Integer>();
+	public static HashMap<Character, Integer> getCharacterCount(char[] text) {
+		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
 		for(int k = 0; k < text.length; k++)
-			map.put(text[k], 1 + (map.containsKey(text[k]) ? map.get(text[k]) : 0));
+			map.put(text[k], map.containsKey(text[k]) ? map.get(text[k]) + 1 : 1);
+
+		return map;
+	}
+	
+	public static HashMap<Byte, Integer> getCharacterCount(byte[] text) {
+		HashMap<Byte, Integer> map = new HashMap<Byte, Integer>();
+		for(int k = 0; k < text.length; k++)
+			map.put(text[k], map.containsKey(text[k]) ? map.get(text[k]) + 1 : 1);
 
 		return map;
 	}
 	
 	//Returns list of ordered character count in text from largest to smallest, counts of equal value are placed in ASCII value order
 	public static List<Character> getOrderedCharacterCount(char[] text) {
-		TreeMap<Character, Integer> map = getCharacterCount(text);
+		HashMap<Character, Integer> map = getCharacterCount(text);
 		List<Character> sorted = new ArrayList<Character>(map.keySet());
 		Collections.sort(sorted, new SortCharacter(map));			
 		return sorted;

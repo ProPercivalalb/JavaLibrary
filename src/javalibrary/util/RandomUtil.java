@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class RandomUtil {
 
-	private static Random DEFAULT_RAND = new Random();
+	private static Random DEFAULT_RAND = new Random(System.currentTimeMillis());
 	
 	public static double pickDouble() {
 		return pickDouble(DEFAULT_RAND);

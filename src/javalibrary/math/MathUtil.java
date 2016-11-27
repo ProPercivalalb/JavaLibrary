@@ -238,6 +238,10 @@ public class MathUtil {
 	    return fact;
 	}
 	
+	public static int choose(int n, int c) {
+	    return factorialBig(n).divide(factorialBig(c).multiply(factorialBig(n - c))).intValue();
+	}
+	
 	public static int getMultiplicativeInverse(int a, int mod) {
 		return BigInteger.valueOf(a).modInverse(BigInteger.valueOf(mod)).intValue();
 	}
