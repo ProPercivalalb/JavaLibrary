@@ -1,6 +1,5 @@
 package javalibrary.string;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -193,7 +192,7 @@ public class StringTransformer {
     	return text.length();
 	}
 	
-	public static int countUniqueChars(String inputText) {
+	public static Set<Character> getUniqueCharSet(String inputText) {
 		char[] chars = inputText.toCharArray();
 		
 		int end = chars.length;
@@ -202,6 +201,6 @@ public class StringTransformer {
 		for(int i = 0; i < end; i++)
 			set.add(chars[i]);
 		
-		return set.size();
+		return set;
 	}
 }

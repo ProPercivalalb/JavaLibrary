@@ -6,18 +6,24 @@ import java.util.LinkedList;
 public class DynamicResultList<T extends Result> {
 
 	private int size;
+	private boolean duplicates; //TODO
 	private LinkedList<T> results;
 	private int worstSolutionIndex;
 	private Result worstResult;
 	
 	public DynamicResultList(int size) {
+		this(size, true);
+	}
+	
+	public DynamicResultList(int size, boolean duplicates) {
 		this.size = size;
+		this.duplicates = duplicates;
 		this.results = new LinkedList<T>();
 		this.worstResult = Result.UNIVERSAL_BEST;
 	}
 	
 	public boolean addResult(T result) {
-		if(!result.isResultBetter(this.worstResult)) {
+		if(result.isResultWorseOrEqual(this.worstResult)) {
 			if(this.results.size() < this.size) {//Is not at is max capacity yet
 				this.worstResult = result;
 				this.results.add(result);
@@ -25,7 +31,7 @@ public class DynamicResultList<T extends Result> {
 				return true;
 			}
 		}
-		else {
+		else { //Given result is better than worst
 			this.results.add(result);
 			if(this.results.size() > this.size) { //In adding this result has overflowed its capacity
 				this.results.remove(this.worstSolutionIndex);
@@ -36,7 +42,7 @@ public class DynamicResultList<T extends Result> {
 				
 				for(int i = 1; i < this.results.size(); i++) {
 					T possibleResult = this.results.get(i);
-					if(!possibleResult.isResultBetter(this.worstResult)) {
+					if(possibleResult.isResultWorse(this.worstResult)) {
 						this.worstResult = possibleResult;
 						this.worstSolutionIndex = i;
 					}

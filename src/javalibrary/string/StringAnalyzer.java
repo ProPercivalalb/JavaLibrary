@@ -209,11 +209,14 @@ public class StringAnalyzer {
 	}
 	
 	//Returns list of ordered character count in text from largest to smallest, counts of equal value are placed in ASCII value order
-	public static List<Character> getOrderedCharacterCount(char[] text) {
-		HashMap<Character, Integer> map = getCharacterCount(text);
+	public static List<Character> getOrderedCharacterCount(Map<Character, Integer> map) {
 		List<Character> sorted = new ArrayList<Character>(map.keySet());
 		Collections.sort(sorted, new SortCharacter(map));			
 		return sorted;
+	}
+	
+	public static List<Character> getOrderedCharacterCount(char[] text) {			
+		return getOrderedCharacterCount(getCharacterCount(text));
 	}
 	
 	public static class SortCharacter implements Comparator<Character> {
