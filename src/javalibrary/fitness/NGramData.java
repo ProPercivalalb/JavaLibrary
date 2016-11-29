@@ -3,6 +3,8 @@ package javalibrary.fitness;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javalibrary.math.MathUtil;
+
 /**
  * @author Alex Barter (10AS)
  */
@@ -13,6 +15,7 @@ public class NGramData {
 	public int[] powValues;
 	public double floor;
 	public double fitnessPerChar;
+	public double maxValue;
 
 	public NGramData(HashMap<String, Double> mapping, double floor, double fitnessPerChar, int nGram) {
 		this.floor = floor;
@@ -21,6 +24,7 @@ public class NGramData {
 		this.powValues = new int[nGram + 1];
 		for(int i = 0; i < this.powValues.length; i++)
 			this.powValues[i] = (int)Math.pow(26, i);
+		this.maxValue = MathUtil.findSmallestDouble(mapping.values());
 		
 		this.valueMapping = new double[this.powValues[nGram]];
 		Arrays.fill(this.valueMapping, floor);
