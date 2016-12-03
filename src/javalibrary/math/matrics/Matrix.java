@@ -279,6 +279,15 @@ public class Matrix {
 		return this.rows;
 	}
 	
+	public Matrix copy() {
+		Matrix copy = new Matrix(this.rows, this.columns);
+		
+		for(int r = 0; r < this.rows; ++r)
+			for(int c = 0; c < this.columns; ++c)
+				copy.data[r * copy.columns + c] = this.data[r * this.columns + c];
+		
+		return copy;
+	}
 	
 	@Override
 	public String toString() {
