@@ -199,12 +199,28 @@ public class ArrayUtil {
 	    return -1;
 	}
 	
+	public static int indexOf(char[] array, int onlyBefore, char target) {
+		for(int i = 0; i < onlyBefore; i++)
+	        if(array[i] == target) 
+	        	return i;
+
+	    return -1;
+	}
+	
 	public static boolean contains(int[] arr, int onlyBefore, int target) {
 		return indexOf(arr, onlyBefore, target) != -1;
 	}
 	
 	public static boolean contains(int[] arr, int target) {
 		return indexOf(arr, arr.length, target) != -1;
+	}
+	
+	public static boolean contains(char[] arr, int onlyBefore, char target) {
+		return indexOf(arr, onlyBefore, target) != -1;
+	}
+	
+	public static boolean contains(char[] arr, char target) {
+		return contains(arr, arr.length, target);
 	}
 	
 	public static int[] toIndexedArray(int[] arr) {

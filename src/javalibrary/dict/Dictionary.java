@@ -7,14 +7,15 @@ import java.util.List;
 
 public class Dictionary {
 
-	public static List<String> words = new ArrayList<String>();
+	public static List<String> WORDS = new ArrayList<String>();
+	public static List<char[]> WORDS_CHAR = new ArrayList<char[]>();
 	
 	public static boolean containsWord(String word) {
-		return words.contains(word);
+		return WORDS.contains(word);
 	}
 	
 	public static int wordCount() {
-		return words.size();
+		return WORDS.size();
 	}
 	
 	public static void onLoad() {
@@ -25,7 +26,9 @@ public class Dictionary {
 				if(line == null) break;
 				if(line.isEmpty() || line.startsWith("#")) continue;
 	
-				words.add(line.split(" ")[0].toUpperCase());
+				String word = line.split(" ")[0].toUpperCase();
+				WORDS.add(word);
+				WORDS_CHAR.add(word.toCharArray());
 			}
 		}
 		catch(Exception e) {
