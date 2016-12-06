@@ -19,12 +19,18 @@ public class DynamicResultList<T extends Result> {
 		this.size = size;
 		this.duplicates = duplicates;
 		this.results = new LinkedList<T>();
-		this.worstResult = Result.UNIVERSAL_BEST;
+		this.worstResult = null;
 	}
 	
 	public boolean addResult(T result) {
-		if(result.isResultWorseOrEqual(this.worstResult)) {
-			if(this.results.size() < this.size) {//Is not at is max capacity yet
+		if(this.worstResult == null) { //First item being added
+			this.worstResult = result;
+			this.results.add(result);
+			this.worstSolutionIndex = this.results.size() - 1;
+			return true;
+		}
+		else if(result.isResultWorseOrEqual(this.worstResult)) { //New result is worse or equal to current worst result
+			if(this.results.size() < this.size) { //Is not at is max capacity yet
 				this.worstResult = result;
 				this.results.add(result);
 				this.worstSolutionIndex = this.results.size() - 1;
@@ -69,7 +75,7 @@ public class DynamicResultList<T extends Result> {
 	
 	public void clear() {
 		this.results.clear();
-		this.worstResult = Result.UNIVERSAL_BEST;
+		this.worstResult = null;
 		this.worstSolutionIndex = 0;
 	}
 	

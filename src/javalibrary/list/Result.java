@@ -3,11 +3,12 @@ package javalibrary.list;
 public abstract class Result implements Comparable<Result> {
 
 	public final double score;
-	public final static Result UNIVERSAL_BEST = new Result(0.0D) {};
 	
 	public Result(double score) {
 		this.score = score;
 	}
+	
+	//If other is null it is better
 	
 	public boolean isResultBetter(Result other) { return false; }
 	public boolean isResultWorse(Result other)  { return false; }
@@ -19,4 +20,9 @@ public abstract class Result implements Comparable<Result> {
 
 	@Override
 	public int compareTo(Result other)  { return 0; }
+	
+	@Override
+	public String toString() {
+		return String.format("Result = [%f]", this.score);
+	}
 }
