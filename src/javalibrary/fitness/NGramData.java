@@ -47,22 +47,22 @@ public class NGramData {
 	
 	public double getValue(char[] gram, int startIndex) {
 		int intConversion = 0;
-		for(int i = startIndex; i < startIndex + this.nGram; i++)
+		for(int i = startIndex; i < startIndex + this.nGram; i++) {
+			if(gram[i] < 'A' || gram[i] > 'Z') return this.floor;
 			intConversion += (gram[i] - 'A') * this.powValues[this.powValues.length - 2 - i + startIndex];
-
-		if(intConversion < 0 || intConversion > this.valueMapping.length - 1)
-			return this.floor;
+		}
+		
 		return this.valueMapping[intConversion];
 	}
 	
 	//Byte array version of method above
 	public double getValue(byte[] gram, int startIndex) {
 		int intConversion = 0;
-		for(int i = startIndex; i < startIndex + this.nGram; i++)
+		for(int i = startIndex; i < startIndex + this.nGram; i++) {
+			if(gram[i] < 'A' || gram[i] > 'Z') return this.floor;
 			intConversion += (gram[i] - 'A') * this.powValues[this.powValues.length - 2 - i + startIndex];
-
-		if(intConversion < 0 || intConversion > this.valueMapping.length - 1)
-			return this.floor;
+		}
+		
 		return this.valueMapping[intConversion];
 	}
 }

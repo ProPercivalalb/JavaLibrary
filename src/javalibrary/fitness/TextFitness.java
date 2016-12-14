@@ -33,7 +33,6 @@ public class TextFitness {
 		
 		double fitness = 0.0D;
 		for(int k = 0; k < (text.length - 4 + 1); k++)
-				
 			fitness += scoreWord(text, k, quadgramData);
 
 		return fitness;
