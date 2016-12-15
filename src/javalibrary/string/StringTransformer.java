@@ -168,7 +168,7 @@ public class StringTransformer {
     public static String[] splitInto(String text, int size) {
     	String[] list = new String[(int)Math.ceil(text.length() / (double)size)];
     	for(int i = 0; i < text.length(); i += size)
-    		list[i / 3] = text.substring(i, Math.min(i + size, text.length()));
+    		list[i / size] = text.substring(i, Math.min(i + size, text.length()));
     	return list;
     }
     
