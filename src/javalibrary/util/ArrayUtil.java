@@ -42,22 +42,6 @@ public class ArrayUtil {
 	    return arr;
 	}
 	
-	public static <T> int indexOf(T[] array, T target) {
-		for(int i = 0; i < array.length; i++)
-	        if(array[i] != null && array[i].equals(target) || target == null && array[i] == null) 
-	        	return i;
-
-	    return -1;
-	}
-	
-	public static int indexOf(char[] array, char target) {
-		for(int i = 0; i < array.length; i++)
-	        if(array[i] == target) 
-	        	return i;
-
-	    return -1;
-	}
-	
 	public static int[] trim(int[] array, int startIndex, int length) {
 		int[] newArray = new int[length];
 		for(int i = 0; i < length; i++)
@@ -186,18 +170,59 @@ public class ArrayUtil {
 		
 		}
 	}
+	
+	public static <T> int indexOf(T[] array, int a, int b, T t) {
+		for(int i = a; i < b; i++)
+	        if(array[i] != null && array[i].equals(t) || t == null && array[i] == null) 
+	        	return i;
+
+	    return -1;
+	}
+	
+	/**
+	 * Checks if the target elements is contained within the given range.
+	 * Looks between the indexes a (inclusive) and b (exclusive)
+	 * @return If the target is found within the given range it returns it index if it is not found -1 is returned
+	 */
+	public static int indexOf(int[] arr, int a, int b, int t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
+	
+	public static int indexOf(char[] arr, int a, int b, char t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
+	
+	public static int indexOf(double[] arr, int a, int b, double t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
+	
+	public static int indexOf(float[] arr, int a, int b, float t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
+	
+	public static int indexOf(byte[] arr, int a, int b, byte t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
+	
+	public static int indexOf(long[] arr, int a, int b, long t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
+	
 
 	public static int indexOf(int[] array, int target) {
 		return indexOf(array, array.length, target);
 	}
 	
 	public static int indexOf(int[] array, int onlyBefore, int target) {
-		for(int i = 0; i < onlyBefore; i++)
-	        if(array[i] == target) 
-	        	return i;
-
-	    return -1;
+		return indexOf(array, 0, onlyBefore, target);
 	}
+	
 	
 	public static int indexOf(char[] array, int onlyBefore, char target) {
 		for(int i = 0; i < onlyBefore; i++)
@@ -211,6 +236,10 @@ public class ArrayUtil {
 		return indexOf(arr, onlyBefore, target) != -1;
 	}
 	
+	public static boolean contains(int[] arr, int onOrAfter, int onlyBefore, int target) {
+		return indexOf(arr, onOrAfter, onlyBefore, target) != -1;
+	}
+	
 	public static boolean contains(int[] arr, int target) {
 		return indexOf(arr, arr.length, target) != -1;
 	}
@@ -222,6 +251,8 @@ public class ArrayUtil {
 	public static boolean contains(char[] arr, char target) {
 		return contains(arr, arr.length, target);
 	}
+	
+	
 	
 	public static int[] toIndexedArray(int[] arr) {
 		int[] inArr = new int[arr.length];
