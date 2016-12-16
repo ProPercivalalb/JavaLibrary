@@ -171,11 +171,8 @@ public class ArrayUtil {
 		}
 	}
 	
-	public static <T> int indexOf(T[] array, int a, int b, T t) {
-		for(int i = a; i < b; i++)
-	        if(array[i] != null && array[i].equals(t) || t == null && array[i] == null) 
-	        	return i;
-
+	public static <T> int indexOf(T[] arr, int a, int b, T t) {
+		for(int i = a; i < b; i++) if(arr[i] != null && arr[i].equals(t) || t == null && arr[i] == null) return i;
 	    return -1;
 	}
 	
