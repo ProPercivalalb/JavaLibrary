@@ -49,6 +49,13 @@ public class ArrayUtil {
 		return newArray;
 	}
 	
+	public static char[] trim(char[] charArray, int startIndex, int length) {
+		char[] newArray = new char[length];
+		for(int i = 0; i < length; i++)
+			newArray[i] = charArray[startIndex + i];
+		return newArray;
+	}
+	
 	public static double[] trim(double[] array, int startIndex, int length) {
 		double[] newArray = new double[length];
 		for(int i = 0; i < length; i++)
@@ -172,13 +179,15 @@ public class ArrayUtil {
 	}
 	
 	public static <T> int indexOf(T[] arr, int a, int b, T t) {
-		for(int i = a; i < b; i++) if(arr[i] != null && arr[i].equals(t) || t == null && arr[i] == null) return i;
+		for(int i = a; i < b; i++) if(t == null ? arr[i] == null : arr[i].equals(t)) return i;
 	    return -1;
 	}
 	
 	/**
 	 * Checks if the target elements is contained within the given range.
 	 * Looks between the indexes a (inclusive) and b (exclusive)
+	 * a should be a minimum of 0 and b a maximum of the length of the array
+	 * parameters are not checked to be valid they are assumed to be
 	 * @return If the target is found within the given range it returns it index if it is not found -1 is returned
 	 */
 	public static int indexOf(int[] arr, int a, int b, int t) {
@@ -210,46 +219,81 @@ public class ArrayUtil {
 		for(int i = a; i < b; i++) if(arr[i] == t) return i;
 	    return -1;
 	}
-	
 
-	public static int indexOf(int[] array, int target) {
-		return indexOf(array, array.length, target);
+	//Primitive type index of
+	public static int indexOf(int[] arr, int t) {
+		return indexOf(arr, 0, arr.length, t);
 	}
 	
-	public static int indexOf(int[] array, int onlyBefore, int target) {
-		return indexOf(array, 0, onlyBefore, target);
+	public static int indexOf(char[] arr, char t) {
+		return indexOf(arr, 0, arr.length, t);
 	}
-	
-	
-	public static int indexOf(char[] array, int onlyBefore, char target) {
-		for(int i = 0; i < onlyBefore; i++)
-	        if(array[i] == target) 
-	        	return i;
 
-	    return -1;
+	public static int indexOf(double[] arr, double t) {
+		return indexOf(arr, 0, arr.length, t);
 	}
 	
-	public static boolean contains(int[] arr, int onlyBefore, int target) {
-		return indexOf(arr, onlyBefore, target) != -1;
+	public static int indexOf(float[] arr, float t) {
+		return indexOf(arr, 0, arr.length, t);
 	}
 	
-	public static boolean contains(int[] arr, int onOrAfter, int onlyBefore, int target) {
-		return indexOf(arr, onOrAfter, onlyBefore, target) != -1;
+	public static int indexOf(byte[] arr, byte t) {
+		return indexOf(arr, 0, arr.length, t);
 	}
 	
-	public static boolean contains(int[] arr, int target) {
-		return indexOf(arr, arr.length, target) != -1;
+	public static int indexOf(long[] arr, long t) {
+		return indexOf(arr, 0, arr.length, t);
 	}
 	
-	public static boolean contains(char[] arr, int onlyBefore, char target) {
-		return indexOf(arr, onlyBefore, target) != -1;
+	//Primitive type contains with range parameters
+	public static boolean contains(int[] arr, int a, int b, int t) {
+		return indexOf(arr, a, b, t) != -1;
 	}
 	
-	public static boolean contains(char[] arr, char target) {
-		return contains(arr, arr.length, target);
+	public static boolean contains(char[] arr, int a, int b, char t) {
+		return indexOf(arr, a, b, t) != -1;
 	}
 	
+	public static boolean contains(double[] arr, int a, int b, double t) {
+		return indexOf(arr, a, b, t) != -1;
+	}
 	
+	public static boolean contains(float[] arr, int a, int b, float t) {
+		return indexOf(arr, a, b, t) != -1;
+	}
+	
+	public static boolean contains(byte[] arr, int a, int b, byte t) {
+		return indexOf(arr, a, b, t) != -1;
+	}
+	
+	public static boolean contains(long[] arr, int a, int b, long t) {
+		return indexOf(arr, a, b, t) != -1;
+	}
+	
+	//Primitive type contains
+	public static boolean contains(int[] arr, int t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+	public static boolean contains(char[] arr, char t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+	public static boolean contains(double[] arr, double t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+	public static boolean contains(float[] arr, float t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+	public static boolean contains(byte[] arr, byte t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+	public static boolean contains(long[] arr, long t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
 	
 	public static int[] toIndexedArray(int[] arr) {
 		int[] inArr = new int[arr.length];
