@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javalibrary.streams.FileReader;
+import javalibrary.file.OpenResource;
 
 public class ReadableText {
 	
@@ -98,29 +98,33 @@ public class ReadableText {
 	 */
 	public static void loadFile() {
 		double NO_TOKENS = 1024908267229.0D;
+		double LOG_NO_TOKENS = Math.log10(NO_TOKENS);
 		
-		List<String> fileLines = FileReader.compileTextFromResource("/javalibrary/dict/count_1w.txt");
-
-		for(String line : fileLines) {
+		OpenResource openResource = new OpenResource("/javalibrary/dict/count_1w.txt");
+		
+		String line;
+		while((line = openResource.nextLine()) != null) {
 			String[] parts = line.toUpperCase().split("\t");
 					
 			if(parts.length == 2)  {
 				double count = Double.valueOf(parts[1]);
-				ReadableText.MAPPING_MONOGRAM.put(parts[0], Math.log10(count / NO_TOKENS));
+				ReadableText.MAPPING_MONOGRAM.put(parts[0], Math.log10(count) - LOG_NO_TOKENS);
 			}
 			else
 				System.out.println(String.format("%s Format Error: %s", ReadableText.class.getSimpleName(), line));
 		}
 		
-		fileLines = FileReader.compileTextFromResource("/javalibrary/dict/count_2w.txt");
+		openResource.close();
+		
+		openResource = new OpenResource("/javalibrary/dict/count_2w.txt");
 
-		for(String line : fileLines) {
+		while((line = openResource.nextLine()) != null) {
 			String[] parts = line.toUpperCase().split("\t");
 					
 			if(parts.length == 2) {
 				String[] bigram = parts[0].split(" ");
 				double count = Double.valueOf(parts[1]);
-				double log = Math.log10(count / NO_TOKENS);
+				double log = Math.log10(count) - LOG_NO_TOKENS;
 				
 				if(ReadableText.MAPPING_MONOGRAM.containsKey(bigram[0]))
 					log -= ReadableText.MAPPING_MONOGRAM.get(bigram[0]);
@@ -132,8 +136,10 @@ public class ReadableText {
 	
 		}
 		
+		openResource.close();
+		
 		//Calculates the score given to words not in the trillion word list for various lengths
 		for(int i = 0; i < 50; i++)
-			ReadableText.LIST_UNSEEN.add(1 - i - Math.log10(NO_TOKENS));
+			ReadableText.LIST_UNSEEN.add(1 - i - LOG_NO_TOKENS);
 	}
 }
