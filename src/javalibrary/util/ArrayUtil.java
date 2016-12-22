@@ -1,6 +1,5 @@
 package javalibrary.util;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -10,7 +9,7 @@ public class ArrayUtil {
 	
 	public static int[] createRange(int end) {
 		return createRange(0, end);
-	}	
+	}
 	
 	public static int[] createRange(int start, int end) {
 	    int[] arr = new int[end - start];
@@ -20,80 +19,82 @@ public class ArrayUtil {
 	
 	public static Integer[] createRangeInteger(int end) {
 		return createRangeInteger(0, end);
-	}	
+	}
 	
 	public static Integer[] createRangeInteger(int start, int end) {
 		Integer[] arr = new Integer[end - start];
 	    for(int i = 0; i < arr.length; i++) arr[i] = i + start;
 	    return arr;
-	}	
+	}
 	
-	public static <T> T[] concat(T[] first, T[] second) {
-		T[] result = Arrays.copyOf(first, first.length + second.length);
-		System.arraycopy(second, 0, result, first.length, second.length);
-		return result;
+	public static Object[] concatMultiple(Object[]... arrs) {
+		int totalLength = 0;
+		for(Object[] arr : arrs) totalLength += arr.length;
+		Object[] mergedArr = new Object[totalLength];
+		int destPos = 0;
+		for(Object[] arr : arrs) {
+			System.arraycopy(arr, 0, mergedArr, destPos, arr.length);
+			destPos += arr.length;
+		}
+		return mergedArr;
+	}
+	
+	public static Object[] concat(Object[] arrA, Object[] arrB) {
+		Object[] mergedArr = new Object[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 
-	public static char[] concat(char[] a, char[] b) {
-		int aLen = a.length;
-		int bLen = b.length;
-		char[] c = new char[aLen + bLen];
-		System.arraycopy(a, 0, c, 0, aLen);
-		System.arraycopy(b, 0, c, aLen, bLen);
-		return c;
+	public static int[] concat(int[] arrA, int[] arrB) {
+		int[] mergedArr = new int[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 	
-	public static int[] concat(int[] a, int[] b) {
-		int aLen = a.length;
-		int bLen = b.length;
-		int[] c = new int[aLen + bLen];
-		System.arraycopy(a, 0, c, 0, aLen);
-		System.arraycopy(b, 0, c, aLen, bLen);
-		return c;
+	public static char[] concat(char[] arrA, char[] arrB) {
+		char[] mergedArr = new char[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 	
-	public static byte[] concat(byte[] a, byte[] b) {
-		int aLen = a.length;
-		int bLen = b.length;
-		byte[] c = new byte[aLen + bLen];
-		System.arraycopy(a, 0, c, 0, aLen);
-		System.arraycopy(b, 0, c, aLen, bLen);
-		return c;
+	public static double[] concat(double[] arrA, double[] arrB) {
+		double[] mergedArr = new double[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 	
-	public static double[] concat(double[] a, double[] b) {
-		int aLen = a.length;
-		int bLen = b.length;
-		double[] c = new double[aLen + bLen];
-		System.arraycopy(a, 0, c, 0, aLen);
-		System.arraycopy(b, 0, c, aLen, bLen);
-		return c;
+	public static float[] concat(float[] arrA, float[] arrB) {
+		float[] mergedArr = new float[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 	
-	public static int[] concat(int[] a, int b) {
-		int aLen = a.length;
-		int[] c = new int[aLen + 1];
-		System.arraycopy(a, 0, c, 0, aLen);
-		c[aLen] = b;
-		return c;
+	public static byte[] concat(byte[] arrA, byte[] arrB) {
+		byte[] mergedArr = new byte[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 	
-	public static char[] concat(char[] a, char b) {
-		int aLen = a.length;
-		char[] c = new char[aLen + 1];
-		System.arraycopy(a, 0, c, 0, aLen);
-		c[aLen] = b;
-		return c;
+	public static long[] concat(long[] arrA, long[] arrB) {
+		long[] mergedArr = new long[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
 	
-	public static byte[] concat(byte[] a, byte b) {
-		int aLen = a.length;
-		byte[] c = new byte[aLen + 1];
-		System.arraycopy(a, 0, c, 0, aLen);
-		c[aLen] = b;
-		return c;
+	public static boolean[] concat(boolean[] arrA, boolean[] arrB) {
+		boolean[] mergedArr = new boolean[arrA.length + arrB.length];
+		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+		return mergedArr;
 	}
-
+	
 	public static <T> T[] copyRange(T[] arr, int a, int b) {
 		return Arrays.copyOfRange(arr, a, b);
 	}
