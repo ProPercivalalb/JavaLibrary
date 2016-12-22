@@ -7,75 +7,33 @@ import java.util.Arrays;
  * @author Alex Barter (10AS)
  */
 public class ArrayUtil {
-
-	//Primitive array initializer
-	public static double[] createDouble(int length) {
-		return new double[length]; 
-	}
 	
-	public static int[] createInteger(int length) {
-		return new int[length];
-	}
+	public static int[] createRange(int end) {
+		return createRange(0, end);
+	}	
 	
-	public static char[] createCharacter(int length) {
-		return new char[length];
-	}
-	
-	public static int[] range(int start, int end){
+	public static int[] createRange(int start, int end) {
 	    int[] arr = new int[end - start];
-	    for(int i = 0; i < end - start; i++)
-	        arr[i] = start + i;
+	    for(int i = 0; i < arr.length; i++) arr[i] = i + start;
 	    return arr;
 	}
 	
-	public static Integer[] rangeInt(int start, int end){
+	public static Integer[] createRangeInteger(int end) {
+		return createRangeInteger(0, end);
+	}	
+	
+	public static Integer[] createRangeInteger(int start, int end) {
 		Integer[] arr = new Integer[end - start];
-	    for(int i = 0; i < end - start; i++)
-	        arr[i] = start + i;
+	    for(int i = 0; i < arr.length; i++) arr[i] = i + start;
 	    return arr;
-	}
-	
-	public static char[] charRange(char start, char end){
-		char[] arr = new char[end - start];
-	    for(int i = 0; i < end - start; i++)
-	        arr[i] = (char)(start + i);
-	    return arr;
-	}
-	
-	public static int[] trim(int[] array, int startIndex, int length) {
-		int[] newArray = new int[length];
-		for(int i = 0; i < length; i++)
-			newArray[i] = array[startIndex + i];
-		return newArray;
-	}
-	
-	public static char[] trim(char[] charArray, int startIndex, int length) {
-		char[] newArray = new char[length];
-		for(int i = 0; i < length; i++)
-			newArray[i] = charArray[startIndex + i];
-		return newArray;
-	}
-	
-	public static double[] trim(double[] array, int startIndex, int length) {
-		double[] newArray = new double[length];
-		for(int i = 0; i < length; i++)
-			newArray[i] = array[startIndex + i];
-		return newArray;
-	}
-	
-	public static <T> T[] fill(T filler, int length){
-	    T[] arr = (T[])Array.newInstance(filler.getClass(), length);
-	    for(int i = 0; i < length; i++)
-	        arr[i] = filler;
-	    return arr;
-	}
+	}	
 	
 	public static <T> T[] concat(T[] first, T[] second) {
 		T[] result = Arrays.copyOf(first, first.length + second.length);
 		System.arraycopy(second, 0, result, first.length, second.length);
 		return result;
 	}
-	
+
 	public static char[] concat(char[] a, char[] b) {
 		int aLen = a.length;
 		int bLen = b.length;
@@ -135,61 +93,84 @@ public class ArrayUtil {
 		c[aLen] = b;
 		return c;
 	}
-	
-	//TODO public static int[] concat(int[]... abc) {
-		//for(int[])
-	//}
-	
-	public static char[] copyOfRange(char[] array, int startIndex, int length) {
-		return Arrays.copyOfRange(array, startIndex, startIndex + length);
-	}
-	
-	public static byte[] copyOfRange(byte[] array, int startIndex, int length) {
-		return Arrays.copyOfRange(array, startIndex, startIndex + length);
-	}
-	
-	public static int[] copyOfRange(int[] array, int startIndex, int endIndex) {
-		return Arrays.copyOfRange(array, startIndex, endIndex);
-	}
 
-
-
-	public static void shuffle(char[] key) {
-		int n = key.length;
-		for(int i = 0; i < key.length; i++) {
-		    int random = i + (int) (Math.random() * (n - i));
-		    
-		    char randomElement = key[random];
-		    key[random] = key[i];
-		    key[i] = randomElement;	
-		
-		}
+	public static <T> T[] copyRange(T[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
 	}
 	
-	public static void shuffle(int[] key) {
-		int n = key.length;
-		for(int i = 0; i < key.length; i++) {
-		    int random = i + (int) (Math.random() * (n - i));
-		    
-		    int randomElement = key[random];
-		    key[random] = key[i];
-		    key[i] = randomElement;	
-		
-		}
+	public static int[] copyRange(int[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
 	}
 	
-	public static <T> int indexOf(T[] arr, int a, int b, T t) {
-		for(int i = a; i < b; i++) if(t == null ? arr[i] == null : arr[i].equals(t)) return i;
-	    return -1;
+	public static char[] copyRange(char[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
+	}
+	
+	public static double[] copyRange(double[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
+	}
+	
+	public static float[] copyRange(float[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
+	}
+	
+	public static byte[] copyRange(byte[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
+	}
+	
+	public static long[] copyRange(long[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
+	}
+	
+	public static boolean[] copyRange(boolean[] arr, int a, int b) {
+		return Arrays.copyOfRange(arr, a, b);
+	}
+	
+	public static <T> T[] copy(T[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static int[] copy(int[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static char[] copy(char[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static double[] copy(double[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static float[] copy(float[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static byte[] copy(byte[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static long[] copy(long[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
+	}
+	
+	public static boolean[] copy(boolean[] arr) {
+		return Arrays.copyOfRange(arr, 0, arr.length);
 	}
 	
 	/**
 	 * Checks if the target elements is contained within the given range.
 	 * Looks between the indexes a (inclusive) and b (exclusive)
 	 * a should be a minimum of 0 and b a maximum of the length of the array
-	 * parameters are not checked to be valid they are assumed to be
+	 * The number of indexes check is equal b - a
+	 * Parameters are not checked to be valid they are assumed to be
 	 * @return If the target is found within the given range it returns it index if it is not found -1 is returned
 	 */
+	public static int indexOf(Object[] arr, int a, int b, Object t) {
+		for(int i = a; i < b; i++) if(t == null ? arr[i] == null : t.equals(arr[i])) return i;
+	    return -1;
+	}
+	
 	public static int indexOf(int[] arr, int a, int b, int t) {
 		for(int i = a; i < b; i++) if(arr[i] == t) return i;
 	    return -1;
@@ -219,8 +200,17 @@ public class ArrayUtil {
 		for(int i = a; i < b; i++) if(arr[i] == t) return i;
 	    return -1;
 	}
+	
+	public static int indexOf(boolean[] arr, int a, int b, boolean t) {
+		for(int i = a; i < b; i++) if(arr[i] == t) return i;
+	    return -1;
+	}
 
 	//Primitive type index of
+	public static int indexOf(Object[] arr, Object t) {
+		return indexOf(arr, 0, arr.length, t);
+	}
+	
 	public static int indexOf(int[] arr, int t) {
 		return indexOf(arr, 0, arr.length, t);
 	}
@@ -245,7 +235,15 @@ public class ArrayUtil {
 		return indexOf(arr, 0, arr.length, t);
 	}
 	
+	public static int indexOf(boolean[] arr, boolean t) {
+		return indexOf(arr, 0, arr.length, t);
+	}
+	
 	//Primitive type contains with range parameters
+	public static boolean contains(Object[] arr, int a, int b, Object t) {
+		return indexOf(arr, a, b, t) != -1;
+	}
+	
 	public static boolean contains(int[] arr, int a, int b, int t) {
 		return indexOf(arr, a, b, t) != -1;
 	}
@@ -270,7 +268,15 @@ public class ArrayUtil {
 		return indexOf(arr, a, b, t) != -1;
 	}
 	
+	public static boolean contains(boolean[] arr, int a, int b, boolean t) {
+		return indexOf(arr, a, b, t) != -1;
+	}
+	
 	//Primitive type contains
+	public static boolean contains(Object[] arr, Object t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
 	public static boolean contains(int[] arr, int t) {
 		return indexOf(arr, 0, arr.length, t) != -1;
 	}
@@ -293,6 +299,94 @@ public class ArrayUtil {
 	
 	public static boolean contains(long[] arr, long t) {
 		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+	public static boolean contains(boolean[] arr, boolean t) {
+		return indexOf(arr, 0, arr.length, t) != -1;
+	}
+	
+
+	/**
+	 * Shuffles the given array and returns the same object
+	 */
+	public static Object[] shuffle(Object[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+		    Object randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static int[] shuffle(int[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+			int randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static char[] shuffle(char[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+		    char randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static double[] shuffle(double[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+			double randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static float[] shuffle(float[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+			float randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static byte[] shuffle(byte[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+			byte randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static long[] shuffle(long[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+			long randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
+	}
+	
+	public static boolean[] shuffle(boolean[] arr) {
+		for(int i = 0; i < arr.length; i++) {
+			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
+			boolean randElement = arr[randIndex];
+		    arr[randIndex] = arr[i];
+		    arr[i] = randElement;	
+		}
+		return arr;
 	}
 	
 	public static int[] toIndexedArray(int[] arr) {

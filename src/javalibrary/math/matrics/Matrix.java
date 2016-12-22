@@ -44,7 +44,7 @@ public class Matrix {
 	 * Creates a blank matrix -- MUST BE POPULATED --
 	 */
 	public Matrix(int rows, int columns) {
-		this(ArrayUtil.createDouble(rows * columns), rows, columns);
+		this(new double[rows * columns], rows, columns);
 	}
 	
 	public Matrix(int size) {

@@ -15,7 +15,7 @@ public class SimultaneousEquations {
 		
 		int[] matrixData = new int[0];
 		for(int i = 0; i < UNKNOWNS; i++) 
-			matrixData = ArrayUtil.concat(matrixData, ArrayUtil.trim(simEquations[i], 0, UNKNOWNS));
+			matrixData = ArrayUtil.concat(matrixData, ArrayUtil.copyRange(simEquations[i], 0, UNKNOWNS));
 		
 		Matrix matrix = new Matrix(matrixData, UNKNOWNS, UNKNOWNS);
 		Matrix invMatrix = matrix.inverseMod(mod);
@@ -24,7 +24,7 @@ public class SimultaneousEquations {
 		for(int i = 0; i < UNKNOWNS; i++)
 			equalsMatrix.data[i] = simEquations[i][UNKNOWNS];
 
-			
+		
 		return ArrayUtil.convertNumType(invMatrix.multiply(equalsMatrix).modular(mod).data);
 	}
 	
@@ -33,7 +33,7 @@ public class SimultaneousEquations {
 		
 		double[] matrixData = new double[0];
 		for(int i = 0; i < UNKNOWNS; i++) 
-			matrixData = ArrayUtil.concat(matrixData, ArrayUtil.trim(simEquations[i], 0, UNKNOWNS));
+			matrixData = ArrayUtil.concat(matrixData, ArrayUtil.copyRange(simEquations[i], 0, UNKNOWNS));
 		
 		Matrix matrix = new Matrix(matrixData, UNKNOWNS, UNKNOWNS);
 		
