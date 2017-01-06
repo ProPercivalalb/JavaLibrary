@@ -21,19 +21,19 @@ public class NGramData {
 		this.floor = floor;
 		this.fitnessPerChar = fitnessPerChar;
 		this.nGram = nGram;
-		this.powValues = new int[nGram + 1];
+		this.powValues = new int[nGram];
 		for(int i = 0; i < this.powValues.length; i++)
-			this.powValues[i] = (int)Math.pow(26, i);
+			this.powValues[this.powValues.length - i - 1] = (int)Math.pow(26, i);
 		this.maxValue = MathUtil.findSmallestDouble(mapping.values());
 		
-		this.valueMapping = new double[this.powValues[nGram]];
+		this.valueMapping = new double[(int)Math.pow(26, nGram)];
 		Arrays.fill(this.valueMapping, floor);
 		
 		for(String key : mapping.keySet()) {
 
 			int value = 0;
 			for(int i = 0; i < this.nGram; i++)
-				value += (key.charAt(i) - 'A') * this.powValues[this.powValues.length - 2 - i];
+				value += (key.charAt(i) - 'A') * this.powValues[i];
 			
 			if(value < 0 || value > this.valueMapping.length - 1)
 				continue;
@@ -49,7 +49,7 @@ public class NGramData {
 		int intConversion = 0;
 		for(int i = startIndex; i < startIndex + this.nGram; i++) {
 			if(gram[i] < 'A' || gram[i] > 'Z') return this.floor;
-			intConversion += (gram[i] - 'A') * this.powValues[this.powValues.length - 2 - i + startIndex];
+			intConversion += (gram[i] - 'A') * this.powValues[i - startIndex];
 		}
 		
 		return this.valueMapping[intConversion];
@@ -60,7 +60,7 @@ public class NGramData {
 		int intConversion = 0;
 		for(int i = startIndex; i < startIndex + this.nGram; i++) {
 			if(gram[i] < 'A' || gram[i] > 'Z') return this.floor;
-			intConversion += (gram[i] - 'A') * this.powValues[this.powValues.length - 2 - i + startIndex];
+			intConversion += (gram[i] - 'A') * this.powValues[i - startIndex];
 		}
 		
 		return this.valueMapping[intConversion];

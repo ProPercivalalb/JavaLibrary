@@ -77,7 +77,7 @@ public class TextFitness {
 	}
 	
 	public static double getEstimatedFitness(int length, NGramData nGramData) {
-		return nGramData.fitnessPerChar * Math.max(0, length - nGramData.nGram - 1);
+		return nGramData.fitnessPerChar * Math.max(0, length - nGramData.nGram + 1);
 	}
 	
 	public static NGramData loadFile(String resourcePath) {

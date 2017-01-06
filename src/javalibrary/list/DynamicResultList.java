@@ -31,6 +31,8 @@ public class DynamicResultList<T extends Result> {
 		}
 		else if(result.isResultWorseOrEqual(this.worstResult)) { //New result is worse or equal to current worst result
 			if(this.results.size() < this.size) { //Is not at is max capacity yet
+				//if(!this.duplicates && this.containsResult(result))
+				//	return false;
 				this.worstResult = result;
 				this.results.add(result);
 				this.worstSolutionIndex = this.results.size() - 1;
@@ -38,6 +40,8 @@ public class DynamicResultList<T extends Result> {
 			}
 		}
 		else { //Given result is better than worst
+			//if(!this.duplicates && this.containsResult(result))
+			//	return false;
 			this.results.add(result);
 			if(this.results.size() > this.size) { //In adding this result has overflowed its capacity
 				this.results.remove(this.worstSolutionIndex);
@@ -60,8 +64,20 @@ public class DynamicResultList<T extends Result> {
 		return false;
 	}
 	
+	public boolean containsResult(T result) {
+		return this.results.contains(result);
+	}
+	
 	public T get(int index) {
 		return this.results.get(index);
+	}
+	
+	public LinkedList<T> copyList() {
+		return (LinkedList<T>)this.results.clone();
+	}
+	
+	public LinkedList<T> getList() {
+		return this.results;
 	}
 	
 	public void sort() {
