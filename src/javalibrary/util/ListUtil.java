@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ListUtil {
 
-	public static List<Integer> range(int start, int end){
+	public static List<Integer> range(int start, int end) {
 		List<Integer> range = new ArrayList<Integer>();
 	    for(int i = 0; i < end - start + 1; i++)
 	    	range.add(start + i);

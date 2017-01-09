@@ -38,6 +38,24 @@ public interface Output {
 		}
 	}
 	
+	public static class Silent implements Output {
+
+		@Override
+		public void print(String text, Object... format) {
+			
+		}
+
+		@Override
+		public void println(String text, Object... format) {
+			
+		}
+
+		@Override
+		public boolean clear() {
+			return true;
+		}
+	}
+	
 	public static class TextComponent implements Output {
 
 		public JTextArea textComponent;
