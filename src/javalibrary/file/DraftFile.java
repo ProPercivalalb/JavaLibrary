@@ -23,6 +23,7 @@ public class DraftFile {
 	public void write(String line) {
 		try {
 			this.bw.write(line);
+			this.bw.flush();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
