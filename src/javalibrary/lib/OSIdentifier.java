@@ -22,26 +22,11 @@ public class OSIdentifier {
     }
     
     public static File getMyDataFolder(String module) {
-    	String userHome = System.getProperty("user.home", ".");
-        File localFile;
-        switch (getPlatform()) {
-        	case LINUX:
-        	case SOLARIS:
-        		localFile = new File(userHome, "percivalalb/" + module + "/");
-        		break;
-	        case WINDOWS:
-	        	String appdata = System.getenv("APPDATA");
-	        	String finalPath = appdata != null ? appdata : userHome;
-	        	localFile = new File(finalPath, "percivalalb/" + module + "/");
-	        	break;
-	        case MACOS:
-	        	localFile = new File(userHome, "Library/Application Support/percivalalb/" + module + "/");
-	        	break;
-	        default:
-	        	localFile = new File(userHome, "percivalalb/" + module + "/");
-        }
+    	File appdataFolder = OSIdentifier.getAppdataFolder();
+    	
+    	File localFile = new File(appdataFolder, "percivalalb/" + module + "/");
         
-        if (!localFile.exists() && !localFile.mkdirs())
+        if(!localFile.exists() && !localFile.mkdirs())
         	throw new RuntimeException("The module directory could not be created: " + localFile);
         
         return localFile;
@@ -50,7 +35,7 @@ public class OSIdentifier {
     public static File getAppdataFolder() {
     	String userHome = System.getProperty("user.home", ".");
         File localFile;
-        switch (getPlatform()) {
+        switch(OSIdentifier.getPlatform()) {
         	case LINUX:
         	case SOLARIS:
         		localFile = new File(userHome);
@@ -67,7 +52,7 @@ public class OSIdentifier {
 	        	localFile = new File(userHome);
         }
         
-        if (!localFile.exists() && !localFile.mkdirs())
+        if(!localFile.exists() && !localFile.mkdirs())
         	throw new RuntimeException("The appdata directory could not be created: " + localFile);
         
         return localFile;
@@ -76,7 +61,7 @@ public class OSIdentifier {
     public static File getMinecraftFolder() {
     	String userHome = System.getProperty("user.home", ".");
         File localFile;
-        switch (getPlatform()) {
+        switch(OSIdentifier.getPlatform()) {
         	case LINUX:
         	case SOLARIS:
         		localFile = new File(userHome, ".minecraft/");
@@ -93,7 +78,7 @@ public class OSIdentifier {
 	        	localFile = new File(userHome, "minecraft/");
         }
         
-        if (!localFile.exists() && !localFile.mkdirs())
+        if(!localFile.exists() && !localFile.mkdirs())
         	throw new RuntimeException("The minecraft directory could not be created: " + localFile);
         
         return localFile;
