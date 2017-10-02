@@ -6,9 +6,9 @@ import java.util.List;
 
 import javalibrary.math.MathUtil;
 import javalibrary.network.Arc;
-import javalibrary.network.Arc.ArcIndex;
 import javalibrary.network.NetworkBase;
 import javalibrary.network.Node;
+import javalibrary.network.Arc.ArcIndex;
 import javalibrary.util.RandomUtil;
 
 public class ChinesePostman extends NetworkBase {

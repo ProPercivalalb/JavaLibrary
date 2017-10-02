@@ -8,15 +8,15 @@ import java.util.List;
  */
 public class Languages {
 
-	public static Danish danish = new Danish();
-	public static English english = new English();
-	public static Finnish finnish = new Finnish();
-	public static French french = new French();
-	public static German german = new German();
-	public static Icelandic icelandic = new Icelandic();
-	public static Polish polish = new Polish();
-	public static Spanish spanish = new Spanish();
-	public static Swedish swedish = new Swedish();
+	public static Danish DANISH = new Danish();
+	public static English ENLGISH = new English();
+	public static Finnish FINNISH = new Finnish();
+	public static French FRENCH = new French();
+	public static German GERMAN = new German();
+	public static Icelandic ICELANDIC = new Icelandic();
+	public static Polish POLISH = new Polish();
+	public static Spanish SPANISH = new Spanish();
+	public static Swedish SWEDISH = new Swedish();
 	
 	public static List<ILanguage> languages = new ArrayList<ILanguage>();
 	
@@ -34,7 +34,7 @@ public class Languages {
 	
 	static {
 		//languages.add(danish);
-		languages.add(english);
+		languages.add(ENLGISH);
 		//languages.add(finnish);
 		//languages.add(french);
 		//languages.add(german);
