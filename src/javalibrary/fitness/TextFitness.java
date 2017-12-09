@@ -97,7 +97,8 @@ public class TextFitness {
 			int count = Integer.valueOf(str[1]);
 			total = total.add(BigInteger.valueOf(count));
 			mapping.put(str[0], (double)count);
-			length = str[0].length();
+			if(length == -1)
+				length = str[0].length();
 		}
 			
 		floor = Math.log10(0.01D / total.doubleValue());

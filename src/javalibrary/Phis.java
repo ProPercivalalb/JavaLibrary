@@ -1,23 +1,19 @@
 package javalibrary;
 
-import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.xml.bind.DatatypeConverter;
 
 import javalibrary.file.DraftFile;
-import javalibrary.file.FileCompression;
 import javalibrary.file.FileUtil;
 import javalibrary.file.IterateDirectory;
 import javalibrary.streams.FileReader;

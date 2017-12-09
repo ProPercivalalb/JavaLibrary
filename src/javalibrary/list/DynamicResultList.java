@@ -31,8 +31,8 @@ public class DynamicResultList<T extends Result> {
 		}
 		else if(result.isResultWorseOrEqual(this.worstResult)) { //New result is worse or equal to current worst result
 			if(this.results.size() < this.size) { //Is not at is max capacity yet
-				//if(!this.duplicates && this.containsResult(result))
-				//	return false;
+				if(!this.duplicates && this.containsResult(result))
+					return false;
 				this.worstResult = result;
 				this.results.add(result);
 				this.worstSolutionIndex = this.results.size() - 1;
@@ -40,8 +40,8 @@ public class DynamicResultList<T extends Result> {
 			}
 		}
 		else { //Given result is better than worst
-			//if(!this.duplicates && this.containsResult(result))
-			//	return false;
+			if(!this.duplicates && this.containsResult(result))
+				return false;
 			this.results.add(result);
 			if(this.results.size() > this.size) { //In adding this result has overflowed its capacity
 				this.results.remove(this.worstSolutionIndex);

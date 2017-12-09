@@ -30,7 +30,11 @@ public class NGramData {
 		Arrays.fill(this.valueMapping, floor);
 		
 		for(String key : mapping.keySet()) {
-
+			if(key.length() != this.nGram) break;
+			for(int i = 0; i < this.nGram; i++)
+				if(key.charAt(i) < 'A' || key.charAt(i) > 'Z')
+					break;
+			
 			int value = 0;
 			for(int i = 0; i < this.nGram; i++)
 				value += (key.charAt(i) - 'A') * this.powValues[i];

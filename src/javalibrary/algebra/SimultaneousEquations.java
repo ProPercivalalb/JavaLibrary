@@ -1,8 +1,5 @@
 package javalibrary.algebra;
 
-import java.util.Arrays;
-
-import javalibrary.exception.MatrixNoInverse;
 import javalibrary.math.ArrayOperations;
 import javalibrary.math.GCD;
 import javalibrary.math.matrics.Matrix;

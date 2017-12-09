@@ -3,8 +3,6 @@ package javalibrary.string;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import javalibrary.util.ArrayUtil;
-
 public class MorseCode {
 
 	//Defines the size of 

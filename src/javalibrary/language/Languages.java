@@ -9,7 +9,7 @@ import java.util.List;
 public class Languages {
 
 	public static Danish DANISH = new Danish();
-	public static English ENLGISH = new English();
+	public static English ENGLISH = new English();
 	public static Finnish FINNISH = new Finnish();
 	public static French FRENCH = new French();
 	public static German GERMAN = new German();
@@ -34,9 +34,9 @@ public class Languages {
 	
 	static {
 		//languages.add(danish);
-		languages.add(ENLGISH);
+		languages.add(ENGLISH);
 		//languages.add(finnish);
-		//languages.add(french);
+		languages.add(FRENCH);
 		//languages.add(german);
 		//languages.add(icelandic);
 		//languages.add(polish);

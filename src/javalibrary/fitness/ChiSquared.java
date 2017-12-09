@@ -1,11 +1,9 @@
 package javalibrary.fitness;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 import javalibrary.language.ILanguage;
 import javalibrary.string.StringAnalyzer;
-import javalibrary.util.ArrayUtil;
 
 /**
  * @author Alex Barter (10AS)
