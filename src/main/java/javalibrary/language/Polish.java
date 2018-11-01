@@ -51,7 +51,7 @@ public class Polish extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/polish_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/polish_quadgrams.txt");
 	}
 	
 	@Override

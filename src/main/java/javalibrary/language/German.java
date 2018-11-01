@@ -51,7 +51,7 @@ public class German extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/german_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/german_quadgrams.txt");
 	}
 	
 	@Override

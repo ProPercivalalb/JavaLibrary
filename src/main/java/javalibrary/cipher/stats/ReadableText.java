@@ -100,7 +100,7 @@ public class ReadableText {
 		double NO_TOKENS = 1024908267229.0D;
 		double LOG_NO_TOKENS = Math.log10(NO_TOKENS);
 		
-		OpenResource openResource = new OpenResource("/javalibrary/dict/count_1w.txt");
+		OpenResource openResource = new OpenResource("/files/count_1w.txt");
 		
 		String line;
 		while((line = openResource.nextLine()) != null) {
@@ -116,7 +116,7 @@ public class ReadableText {
 		
 		openResource.close();
 		
-		openResource = new OpenResource("/javalibrary/dict/count_2w.txt");
+		openResource = new OpenResource("/files/count_2w.txt");
 
 		while((line = openResource.nextLine()) != null) {
 			String[] parts = line.toUpperCase().split("\t");

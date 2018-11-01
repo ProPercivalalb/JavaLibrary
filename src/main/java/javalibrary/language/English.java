@@ -60,9 +60,9 @@ public class English extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/english_quadgrams.txt");
-		trigramData = TextFitness.loadFile("/javalibrary/fitness/english_trigrams.txt");
-		bigramData = TextFitness.loadFile("/javalibrary/fitness/english_bigrams_1.txt");
+		quadgramData = TextFitness.loadFile("/files/english_quadgrams.txt");
+		trigramData = TextFitness.loadFile("/files/english_trigrams.txt");
+		bigramData = TextFitness.loadFile("/files/english_bigrams_1.txt");
 	}
 	
 	@Override

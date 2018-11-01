@@ -51,7 +51,7 @@ public class Finnish extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/finnish_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/finnish_quadgrams.txt");
 	}
 	
 	@Override

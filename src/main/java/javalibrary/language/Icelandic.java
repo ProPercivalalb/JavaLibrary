@@ -51,7 +51,7 @@ public class Icelandic extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/icelandic_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/icelandic_quadgrams.txt");
 	}
 	
 	@Override

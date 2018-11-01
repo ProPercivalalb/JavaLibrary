@@ -51,8 +51,8 @@ public class Danish extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/danish_quadgrams.txt");
-		//trigramData = TextFitness.loadFile("/javalibrary/fitness/danish_trigrams.txt");
+		quadgramData = TextFitness.loadFile("/files/danish_quadgrams.txt");
+		//trigramData = TextFitness.loadFile("/files/danish_trigrams.txt");
 	}
 	
 	@Override

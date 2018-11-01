@@ -51,7 +51,7 @@ public class Swedish extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/swedish_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/swedish_quadgrams.txt");
 	}
 	
 	@Override

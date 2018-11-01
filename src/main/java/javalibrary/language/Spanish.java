@@ -51,7 +51,7 @@ public class Spanish extends ILanguage {
 	
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/spanish_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/spanish_quadgrams.txt");
 	}
 	
 	@Override

@@ -51,7 +51,7 @@ public class French extends ILanguage {
 
 	@Override
 	public void loadNGramData() {
-		quadgramData = TextFitness.loadFile("/javalibrary/fitness/french_quadgrams.txt");
+		quadgramData = TextFitness.loadFile("/files/french_quadgrams.txt");
 	}
 	
 	@Override

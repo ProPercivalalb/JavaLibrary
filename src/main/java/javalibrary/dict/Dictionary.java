@@ -20,7 +20,7 @@ public class Dictionary {
 	
 	public static void onLoad() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Dictionary.class.getResourceAsStream("/javalibrary/dict/english_words.txt")));
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Dictionary.class.getResourceAsStream("/files/english_words.txt")));
 			while(true) {
 				String line = bufferedReader.readLine();
 				if(line == null) break;
