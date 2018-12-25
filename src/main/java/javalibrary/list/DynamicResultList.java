@@ -1,6 +1,7 @@
 package javalibrary.list;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class DynamicResultList<T extends Result> {
@@ -50,12 +51,16 @@ public class DynamicResultList<T extends Result> {
 				this.worstResult = this.results.get(0);
 				this.worstSolutionIndex = 0;
 				
-				for(int i = 1; i < this.results.size(); i++) {
-					T possibleResult = this.results.get(i);
+				Iterator<T> iterator = this.results.iterator();
+				int index = 0;
+				
+				while(iterator.hasNext()) {
+					T possibleResult = iterator.next();
 					if(possibleResult.isResultWorse(this.worstResult)) {
 						this.worstResult = possibleResult;
-						this.worstSolutionIndex = i;
+						this.worstSolutionIndex = index;
 					}
+					index++;
 				}
 			}
 			return true;
