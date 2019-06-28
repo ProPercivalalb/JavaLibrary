@@ -19,15 +19,19 @@ public class ListUtil {
 		return range;
 	}
 	
-	public static void removeAll(List<Integer> list, int[] toRemove) {
+	public static void removeAll(List<Integer> list, Integer[] toRemove) {
 		for(int o : toRemove) list.remove((Integer)o);
+	}
+	
+	public static Integer[] toArrayInteger(List<Integer> list) {
+		return list.stream().toArray(size -> new Integer[size]);
 	}
 	
 	public static int[] toArray(List<Integer> list) {
 		int[] array = new int[list.size()];
 		
-		for(int i = 0; i < list.size(); i++) 
-			array[i] = list.get(i);
+		for(int i = 0; i < array.length; i++) 
+			list.add(array[i]);
 		
 		return array;
 	}
@@ -59,11 +63,11 @@ public class ListUtil {
 		return list;
 	}
 
-	public static String toString(int[] order) {
+	public static String toString(Integer[] order) {
 		return toString(order, 0);
 	}
 	
-	public static String toString(int[] order, int add) {
+	public static String toString(Integer[] order, int add) {
 		String total = "[";
 		for(int i = 0; i < order.length; ++i) {
 			String bit = "" + (order[i] + add);
@@ -73,7 +77,7 @@ public class ListUtil {
 		return total + "]";
 	}
 	
-	public static String toCardString2(int[] order, int add) {
+	public static String toCardString2(Integer[] order, int add) {
 		String total = "[";
 		for(int i = 0; i < order.length; ++i) {
 			String bit = "" + (order[i] + add);
@@ -83,7 +87,7 @@ public class ListUtil {
 		return total + "]";
 	}
 	
-	public static String toCardString(int[] order, int add) {
+	public static String toCardString(Integer[] order, int add) {
 		String total = "[";
 		for(int i = 0; i < order.length; ++i) {
 			String bit = "" + (order[i] + add);
@@ -101,7 +105,7 @@ public class ListUtil {
 		return newUnknowns;
 	}
 
-	public static int[] removeFromCopy(int[] array, int target) {
+	public static int[] removeFromCopy(Integer[] array, int target) {
 
 		int len = array.length - 1;
 		int[] c = new int[len];
@@ -115,7 +119,7 @@ public class ListUtil {
 		return c;
 	}
 	
-	public static int[] removeFromCopy(int[] array, int target, int target2) {
+	public static int[] removeFromCopy(Integer[] array, int target, int target2) {
 	
 		int len = array.length - 2;
 		int[] c = new int[len];

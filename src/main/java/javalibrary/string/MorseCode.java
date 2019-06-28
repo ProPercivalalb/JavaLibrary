@@ -2,6 +2,7 @@ package javalibrary.string;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.StringJoiner;
 
 public class MorseCode {
 
@@ -14,12 +15,20 @@ public class MorseCode {
 	public static char[] morseCharMap = new char[(int)Math.pow(3, MAX_MORSE_LENGTH)];
 	
 	public static String getMorseEquivalent(String text) {
-		String morseText = "";
+	    StringJoiner joiner = new StringJoiner("X");
 		for(char character : text.toCharArray()) {
-			morseText += charMap.get(character) + "X";
+		    joiner.add(charMap.get(character));
 		}
-		return morseText.substring(0, morseText.length() - 1);
+		return joiner.toString();
 	}
+	
+	public static String getMorseEquivalent(Character[] text) {
+	    StringJoiner joiner = new StringJoiner("X");
+        for(char character : text) {
+            joiner.add(charMap.get(character));
+        }
+        return joiner.toString();
+    }
 	
 	public static char getCharFromMorse(String morse) throws NullPointerException {
 		return morseMap.get(morse);
@@ -65,7 +74,7 @@ public class MorseCode {
 		for(int i = morse.length(); i < MAX_MORSE_LENGTH; i++)
 			lookup += 2 * Math.pow(3, i);
 		
-		System.out.println(lookup + " " + morse + " " + character);
+		//System.out.println(lookup + " " + morse + " " + character);
 		if(lookup != -1)
 			morseCharMap[lookup] = character;
 	}

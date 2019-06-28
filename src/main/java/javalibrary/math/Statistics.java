@@ -2,15 +2,16 @@ package javalibrary.math;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Statistics {
 
 	private final List<Double> data;
 	private final int valueCount;
 	
-	private StatCache mean;
-	private StatCache variance;
-	private StatCache standardDeviation;
+	private Optional<Double> mean;
+	private Optional<Double> variance;
+	private Optional<Double> standardDeviation;
 	
 	
 	public <T> Statistics(Iterable<T> data) {
@@ -34,27 +35,27 @@ public class Statistics {
 	}
 	
 	public double getMean() {
-		if(this.mean == null)
-			this.mean = new StatCache(MathUtil.sumDouble(this.data) / this.valueCount);
-		return this.mean.value;
+		if(!this.mean.isPresent())
+			this.mean = Optional.of(MathUtil.sumDouble(this.data) / this.valueCount);
+		return this.mean.get();
 	}
 	
 	public double getVariance() {
-		if(this.variance == null) {
+		if(!this.variance.isPresent()) {
 			double mean = this.getMean();
 			double variance = 0.0D;
 			
 			for(double d : this.data) variance += Math.pow(mean - d, 2);
 			
-			this.variance = new StatCache(variance / this.valueCount);
+			this.variance = Optional.of(variance / this.valueCount);
 		}
-		return this.variance.value;
+		return this.variance.get();
 	}
 
 	public double getStandardDeviation() {
-		if(this.standardDeviation == null)
-			this.standardDeviation = new StatCache(Math.sqrt(this.getVariance()));
-		return this.standardDeviation.value;
+		if(!this.standardDeviation.isPresent())
+			this.standardDeviation = Optional.of(Math.sqrt(this.getVariance()));
+		return this.standardDeviation.get();
 	}
 	
 	public double getMax() {
@@ -68,12 +69,5 @@ public class Statistics {
 	@Override 
 	public String toString() {
 		return String.format("Mean: %f, SD: %f ", this.getMean(), this.getStandardDeviation());
-	}
-	
-	private class StatCache {
-		public double value;
-		public StatCache(double value) {
-			this.value = value;
-		}
 	}
 }

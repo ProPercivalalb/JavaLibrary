@@ -21,8 +21,17 @@ public class Matrix {
 		this(ArrayUtil.convertNumType(data), rows, columns);
 	}
 	
+	public Matrix(Integer[] data, int rows, int columns) {
+		this(ArrayUtil.convertNumType(data), rows, columns);
+	}
+	
 	//Square matrix
 	public Matrix(int[] data, int size) {
+		this(data, size, size);
+	}
+	
+	//Square matrix
+	public Matrix(Integer[] data, int size) {
 		this(data, size, size);
 	}
 	

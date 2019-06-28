@@ -49,6 +49,11 @@ public class Timer {
 		System.out.println("Milliseconds: " + this.getTimeRunning(Time.MILLISECOND));
 	}
 	
+	public void call() {
+		this.displayTime();
+		this.restart();
+	}
+	
 	/**
 	 * @return The time in milliseconds since the object was created or startTime reset 
 	 */

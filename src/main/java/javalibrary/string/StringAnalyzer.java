@@ -116,6 +116,7 @@ public class StringAnalyzer {
 	    }
 	}
 	
+	// Todo
 	public static List<String> orderByCount(Map<String, Integer> map) {
 		List<String> sortedItems = new ArrayList<String>();
 		
@@ -144,19 +145,19 @@ public class StringAnalyzer {
   		return sortedItems;
 	}
 	
-	public static TreeMap<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength) {
+	public static Map<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength) {
 		return getEmbeddedStrings(text, minLength, maxLength, true);
 	}
 	
-	public static TreeMap<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength, boolean overlap) {
+	public static Map<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength, boolean overlap) {
 		return getEmbeddedStrings(text.toCharArray(), minLength, maxLength, overlap);
 	}
 	
-	public static TreeMap<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength) {
+	public static Map<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength) {
 		return getEmbeddedStrings(text, minLength, maxLength, true);
 	}
 	
-	public static TreeMap<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength, boolean overlap) {
+	public static Map<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength, boolean overlap) {
 		TreeMap<String, Integer> map = new TreeMap<String, Integer>();
 
 		if(text.length >= minLength) {
@@ -186,12 +187,12 @@ public class StringAnalyzer {
 		return map;
 	}
 	
-	public static HashMap<Character, Integer> getCharacterCount(String text) {
+	public static Map<Character, Integer> getCharacterCount(String text) {
 		return getCharacterCount(text.toCharArray());
 	}
 	
 	//A more direct and optimised character counter
-	public static HashMap<Character, Integer> getCharacterCount(char[] text) {
+	public static Map<Character, Integer> getCharacterCount(char[] text) {
 		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
 		for(int k = 0; k < text.length; k++)
 			map.put(text[k], map.containsKey(text[k]) ? map.get(text[k]) + 1 : 1);
@@ -199,8 +200,8 @@ public class StringAnalyzer {
 		return map;
 	}
 	
-	public static HashMap<Byte, Integer> getCharacterCount(byte[] text) {
-		HashMap<Byte, Integer> map = new HashMap<Byte, Integer>();
+	public static Map<Byte, Integer> getCharacterCount(byte[] text) {
+		Map<Byte, Integer> map = new HashMap<Byte, Integer>();
 		for(int k = 0; k < text.length; k++)
 			map.put(text[k], map.containsKey(text[k]) ? map.get(text[k]) + 1 : 1);
 

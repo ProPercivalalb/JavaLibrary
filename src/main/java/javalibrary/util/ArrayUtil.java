@@ -172,6 +172,11 @@ public class ArrayUtil {
 	    return -1;
 	}
 	
+	public static int indexOf(String arr, int a, int b, char t) {
+        for(int i = a; i < b; i++) if(arr.charAt(i) == t) return i;
+        return -1;
+    }
+	
 	public static int indexOf(int[] arr, int a, int b, int t) {
 		for(int i = a; i < b; i++) if(arr[i] == t) return i;
 	    return -1;
@@ -212,6 +217,10 @@ public class ArrayUtil {
 		return indexOf(arr, 0, arr.length, t);
 	}
 	
+	public static int indexOf(String arr, char t) {
+        return indexOf(arr, 0, arr.length(), t);
+    }
+	
 	public static int indexOf(int[] arr, int t) {
 		return indexOf(arr, 0, arr.length, t);
 	}
@@ -244,6 +253,10 @@ public class ArrayUtil {
 	public static boolean contains(Object[] arr, int a, int b, Object t) {
 		return indexOf(arr, a, b, t) != -1;
 	}
+	
+	public static boolean contains(String arr, int a, int b, char t) {
+        return indexOf(arr, a, b, t) != -1;
+    }
 	
 	public static boolean contains(int[] arr, int a, int b, int t) {
 		return indexOf(arr, a, b, t) != -1;
@@ -310,10 +323,10 @@ public class ArrayUtil {
 	/**
 	 * Shuffles the given array and returns the same object
 	 */
-	public static Object[] shuffle(Object[] arr) {
+	public static <T> T[] shuffle(T[] arr) {
 		for(int i = 0; i < arr.length; i++) {
 			int randIndex = i + RandomUtil.pickRandomInt(arr.length - i);
-		    Object randElement = arr[randIndex];
+		    T randElement = arr[randIndex];
 		    arr[randIndex] = arr[i];
 		    arr[i] = randElement;	
 		}
@@ -397,6 +410,14 @@ public class ArrayUtil {
 		return inArr;
 	
 	}
+	
+	public static Integer[] toIndexedArray(Integer[] arr) {
+		Integer[] inArr = new Integer[arr.length];
+		for(int i = 0; i < arr.length; i++)
+			inArr[arr[i]] = i;
+		return inArr;
+	
+	}
 
 	/**
 	 * Converts an integer array to an identical array but in double type
@@ -405,6 +426,13 @@ public class ArrayUtil {
 		double[] output = new double[input.length];
 		for(int i = 0; i < input.length; i++)
 			output[i] = input[i];
+		return output;
+	}
+	
+	public static double[] convertNumType(Integer[] data) {
+		double[] output = new double[data.length];
+		for(int i = 0; i < data.length; i++)
+			output[i] = data[i];
 		return output;
 	}
 	
@@ -422,10 +450,24 @@ public class ArrayUtil {
 		return output;
 	}
 	
+	public static byte[] convertCharType(Character[] input) {
+        byte[] output = new byte[input.length];
+        for(int i = 0; i < input.length; i++)
+            output[i] = (byte)(char)input[i];
+        return output;
+    }
+	
 	public static char[] convertCharType(byte[] input) {
 		char[] output = new char[input.length];
 		for(int i = 0; i < input.length; i++)
 			output[i] = (char)input[i];
 		return output;
 	}
+	
+	public static Character[] convertCharObj(byte[] input) {
+	    Character[] output = new Character[input.length];
+        for(int i = 0; i < input.length; i++)
+            output[i] = (char)input[i];
+        return output;
+    }
 }
