@@ -6,6 +6,9 @@ import java.util.List;
 
 public class ListUtil {
 
+    /**
+     * Creates Integer array from start (inclusive) to end (inclusive)
+     */
 	public static List<Integer> range(int start, int end) {
 		List<Integer> range = new ArrayList<Integer>();
 	    for(int i = 0; i < end - start + 1; i++)
@@ -31,7 +34,7 @@ public class ListUtil {
 		int[] array = new int[list.size()];
 		
 		for(int i = 0; i < array.length; i++) 
-			list.add(array[i]);
+		    array[i] = list.get(i);
 		
 		return array;
 	}

@@ -8,18 +8,13 @@ public abstract class Result implements Comparable<Result> {
 		this.score = score;
 	}
 	
-	//If other is null it is better
+	public abstract boolean isBetterThan(Result other);
+	public abstract boolean isWorseThan(Result other);
 	
-	public boolean isResultBetter(Result other) { return false; }
-	public boolean isResultWorse(Result other)  { return false; }
+	public abstract boolean isEqualTo(Result other);
 	
-	public boolean isResultEqual(Result other)  { return false; }
-	
-	public boolean isResultBetterOrEqual(Result other)  { return false; }
-	public boolean isResultWorseOrEqual(Result other)  { return false; }
-
-	@Override
-	public int compareTo(Result other)  { return 0; }
+	public abstract boolean isBetterOrEqual(Result other);
+	public abstract boolean isWorseOrEqual(Result other);
 	
 	@Override
 	public String toString() {

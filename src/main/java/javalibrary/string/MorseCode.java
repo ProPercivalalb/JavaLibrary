@@ -14,10 +14,10 @@ public class MorseCode {
 	
 	public static char[] morseCharMap = new char[(int)Math.pow(3, MAX_MORSE_LENGTH)];
 	
-	public static String getMorseEquivalent(String text) {
+	public static String getMorseEquivalent(CharSequence text) {
 	    StringJoiner joiner = new StringJoiner("X");
-		for(char character : text.toCharArray()) {
-		    joiner.add(charMap.get(character));
+		for(int i = 0; i < text.length(); i++) {
+		    joiner.add(charMap.get(text.charAt(i)));
 		}
 		return joiner.toString();
 	}
@@ -30,7 +30,7 @@ public class MorseCode {
         return joiner.toString();
     }
 	
-	public static char getCharFromMorse(String morse) throws NullPointerException {
+	public static Character getCharFromMorse(String morse) throws NullPointerException {
 		return morseMap.get(morse);
 	}
 	
@@ -40,7 +40,7 @@ public class MorseCode {
 	 * @param length The length of the morse character
 	 * @return The character associated with the string of morse characters, ' ' if morse in not recognised
 	 */
-	public static char getCharFromMorse(char[] morse, int index, int length) {
+	public static Character getCharFromMorse(char[] morse, int index, int length) {
 		int lookup = 0;
 		for(int i = 0; i < length; i++) {
 			char ch = morse[index + i];
@@ -53,7 +53,7 @@ public class MorseCode {
 			lookup += 2 * Math.pow(3, i);
 
 		if(lookup < 0 || lookup >= morseCharMap.length)
-			return ' ';
+			return null;
 		
 		return morseCharMap[lookup];
 	}

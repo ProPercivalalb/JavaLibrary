@@ -85,6 +85,14 @@ public class RandomUtil {
 	public static char pickRandomChar(char[] array, Random random) {
 		return array[pickRandomInt(array.length, random)];
 	}
+
+	public static char pickRandomChar(CharSequence seq) {
+        return pickRandomChar(seq, DEFAULT_RAND);
+    }
+    
+    public static char pickRandomChar(CharSequence seq, Random random) {
+        return seq.charAt(pickRandomInt(seq.length(), random));
+    }
 	
 	public static <T> T pickRandomElement(Random random, T... array) {
 		return array[pickRandomInt(array.length, random)];

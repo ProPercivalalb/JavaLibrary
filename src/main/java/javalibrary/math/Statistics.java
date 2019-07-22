@@ -9,9 +9,9 @@ public class Statistics {
 	private final List<Double> data;
 	private final int valueCount;
 	
-	private Optional<Double> mean;
-	private Optional<Double> variance;
-	private Optional<Double> standardDeviation;
+	private Optional<Double> mean = Optional.empty();
+	private Optional<Double> variance = Optional.empty();
+	private Optional<Double> standardDeviation = Optional.empty();
 	
 	
 	public <T> Statistics(Iterable<T> data) {

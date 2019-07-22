@@ -27,18 +27,7 @@ public class TextFitness {
 		return fitness;
 	}
 	
-	//Byte array version of method above
-	public static double scoreFitnessQuadgrams(byte[] text, ILanguage language) {
-		NGramData quadgramData = language.getQuadgramData();
-		
-		double fitness = 0.0D;
-		for(int k = 0; k < (text.length - 4 + 1); k++)
-			fitness += scoreWord(text, k, quadgramData);
-
-		return fitness;
-	}
-	
-	public static double scoreFitness(byte[] text, NGramData ngramData) {
+	public static double scoreFitness(char[] text, NGramData ngramData) {
 
 		double fitness = 0.0D;
 		for(int k = 0; k < (text.length - ngramData.nGram + 1); k++)
@@ -64,11 +53,6 @@ public class TextFitness {
 	
 	
 	public static double scoreWord(char[] s, int startIndex, NGramData nGramData) {
-		return nGramData.getValue(s, startIndex);
-	}
-	
-	//Byte array version of method above
-	public static double scoreWord(byte[] s, int startIndex, NGramData nGramData) {
 		return nGramData.getValue(s, startIndex);
 	}
 	

@@ -1,6 +1,9 @@
 package javalibrary.util;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author Alex Barter (10AS)
@@ -21,6 +24,9 @@ public class ArrayUtil {
 		return createRangeInteger(0, end);
 	}
 	
+	/**
+	 * Creates Integer array from start (inclusive) to end (exclusive)
+	 */
 	public static Integer[] createRangeInteger(int start, int end) {
 		Integer[] arr = new Integer[end - start];
 	    for(int i = 0; i < arr.length; i++) arr[i] = i + start;
@@ -469,5 +475,13 @@ public class ArrayUtil {
         for(int i = 0; i < input.length; i++)
             output[i] = (char)input[i];
         return output;
+    }
+
+    public static <T> T[] fill(T[] cipherText, Supplier<T> supp) {
+        for(int i = 0; i < cipherText.length; ++i) {
+            cipherText[i] = supp.get();
+        }
+        
+        return cipherText;
     }
 }

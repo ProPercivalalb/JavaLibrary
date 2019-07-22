@@ -11,27 +11,27 @@ public class ResultNegative extends Result {
 	}
 	
 	@Override
-	public boolean isResultBetter(Result other) {
+	public boolean isBetterThan(Result other) {
 		return this.score > other.score;
 	}
 	
 	@Override
-	public boolean isResultWorse(Result other) {
+	public boolean isWorseThan(Result other) {
 		return this.score < other.score;
 	}
 	
 	@Override
-	public boolean isResultEqual(Result other) {
+	public boolean isEqualTo(Result other) {
 		return this.score == other.score;
 	}
 	
 	@Override
-	public boolean isResultBetterOrEqual(Result other) {
+	public boolean isBetterOrEqual(Result other) {
 		return this.score >= other.score;
 	}
 	
 	@Override
-	public boolean isResultWorseOrEqual(Result other) {
+	public boolean isWorseOrEqual(Result other) {
 		return this.score <= other.score;
 	}
 

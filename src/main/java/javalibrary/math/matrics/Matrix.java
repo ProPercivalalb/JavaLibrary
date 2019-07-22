@@ -300,7 +300,7 @@ public class Matrix {
 	
 	@Override
 	public String toString() {
-		return String.format("[%s] %dx%d", StringTransformer.joinWithClean(this.data, ", "), this.rows, this.columns);
+		return String.format("%dx%d [%s]", this.rows, this.columns, StringTransformer.joinWithClean(this.data, ", "));
 	}
 	
 	//Small internally used function that returns 1 when i is even and -1 when odd

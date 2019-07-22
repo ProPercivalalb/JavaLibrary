@@ -145,25 +145,17 @@ public class StringAnalyzer {
   		return sortedItems;
 	}
 	
-	public static Map<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength) {
+	public static Map<String, Integer> getEmbeddedStrings(CharSequence text, int minLength, int maxLength) {
 		return getEmbeddedStrings(text, minLength, maxLength, true);
 	}
 	
-	public static Map<String, Integer> getEmbeddedStrings(String text, int minLength, int maxLength, boolean overlap) {
-		return getEmbeddedStrings(text.toCharArray(), minLength, maxLength, overlap);
-	}
-	
-	public static Map<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength) {
-		return getEmbeddedStrings(text, minLength, maxLength, true);
-	}
-	
-	public static Map<String, Integer> getEmbeddedStrings(char[] text, int minLength, int maxLength, boolean overlap) {
+	public static Map<String, Integer> getEmbeddedStrings(CharSequence text, int minLength, int maxLength, boolean overlap) {
 		TreeMap<String, Integer> map = new TreeMap<String, Integer>();
 
-		if(text.length >= minLength) {
+		if(text.length() >= minLength) {
 			for(int length = minLength; length <= maxLength; ++length) {
-				for(int k = 0; k < (text.length - length + 1); k += (overlap ? 1 : length)) {
-					String s = new String(text, k, length);
+				for(int k = 0; k < (text.length() - length + 1); k += (overlap ? 1 : length)) {
+					String s = text.subSequence(k, k + length).toString();
 					map.put(s, map.containsKey(s) ? map.get(s) + 1 : 1);
 				}
 			}

@@ -12,6 +12,8 @@ public class MathUtil {
 
 	public static double PI =  Math.PI;
 	public static double E  =  Math.E;
+	public static BigInteger ONE = BigInteger.ONE;
+	public static BigInteger TWO = BigInteger.valueOf(2);
 	
 	public static int findLargestInt(Iterable<Integer> numberArray) {	
 		int largest = Integer.MIN_VALUE;
@@ -237,10 +239,45 @@ public class MathUtil {
 		}
 	    return fact;
 	}
-	
-	public static int choose(int n, int c) {
-	    return factorialBig(n).divide(factorialBig(c).multiply(factorialBig(n - c))).intValue();
+
+	public static BigInteger factorialBig(BigInteger s) {
+	    return factorialBound(s, BigInteger.ONE);
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static BigInteger factorialBound(BigInteger s, BigInteger e) {
+        BigInteger fact = BigInteger.ONE;
+        while (s.compareTo(e) >= 0) {
+            fact = fact.multiply(s);
+            s = s.subtract(BigInteger.ONE);
+        }
+        return fact;
+    }
+	
+	public static BigInteger factorialLength(BigInteger s, BigInteger count) {
+	    return factorialBound(s, s.subtract(count.subtract(ONE)));
+    }
+	
+	public static BigInteger choose(int n, int c) {
+	    return factorialBound(BigInteger.valueOf(n), BigInteger.valueOf(n - c + 1)).divide(factorialBig(c));
+	}
+	
+    public static BigInteger sumNaturalNumbers(BigInteger n) {
+        return n.multiply(n.add(ONE)).divide(TWO);
+    }
+    
+    public static BigInteger sumSquareNumbers(BigInteger n) {
+        return n.multiply(n.add(ONE)).multiply(n.multiply(TWO).add(ONE)).divide(BigInteger.valueOf(6));
+    }
+
+    public static BigInteger chooseNumPairs(BigInteger numPairs, BigInteger numTotal) {
+        return factorialBig(numTotal).divide(factorialBig(numTotal.subtract(TWO.multiply(numPairs))).multiply(numPairs).multiply(TWO.pow(numPairs.intValue())));
+    }
+	
+	
 	
 	public static int getMultiplicativeInverse(int a, int mod) {
 		return BigInteger.valueOf(a).modInverse(BigInteger.valueOf(mod)).intValue();
@@ -253,6 +290,10 @@ public class MathUtil {
 		return GCD.gcd(a, mod) == 1;
 	}
 	
+	public static boolean hasMultiplicativeInverseMod26(int a) {
+        return hasMultiplicativeInverse(a, 26);
+    }
+	
 	/**
 	 * Unlike traditional % mod this function will always return a
 	 * positive integer in the given modulo
@@ -260,4 +301,23 @@ public class MathUtil {
 	public static int mod(int number, int mod) {
 		return ((number % mod) + mod) % mod;
 	}
+	
+	/**
+     * Checks if every entry from start (inclusive) to end (exclusive) is divisible
+     * by a divisor.
+     */
+    public static boolean allDivisibleBy(Integer[] row, int start, int end, int...divisors) {
+        nextDivisor:
+        for (int d : divisors) {
+            for (int i = start; i < end; i++) {
+                if (row[i] % d != 0) {
+                    continue nextDivisor;
+                }
+            }
+
+            return true;
+        }
+        
+        return false;
+    }
 }

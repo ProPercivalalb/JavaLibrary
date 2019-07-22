@@ -2,7 +2,7 @@ package javalibrary.streams;
 
 public class PrimTypeUtil {
 
-	public static Character[] toCharacterArray(String str) {
+	public static Character[] toCharacterArray(CharSequence str) {
 	    Character[] chars = new Character[str.length()];
 	    for(int i = 0; i < str.length(); i++) {
 	        chars[i] = str.charAt(i);
@@ -11,12 +11,21 @@ public class PrimTypeUtil {
 		return chars;
 	}
 
-	public static String toString(Character[] characterArray) {
-	    StringBuilder builder = new StringBuilder(characterArray.length);
-	    for(int i = 0; i < characterArray.length; i++) {
-	        builder.append((char)characterArray[i]);
+	public static String toString(CharSequence characterArray) {
+	    char[] builder = new char[characterArray.length()];
+	    for(int i = 0; i < characterArray.length(); i++) {
+	        builder[i] = characterArray.charAt(i);
         }
 	    
-		return builder.toString();
+		return new String(builder);
 	}
+	
+	public static String toString(Character[] characterArray) {
+        char[] builder = new char[characterArray.length];
+        for(int i = 0; i < characterArray.length; i++) {
+            builder[i] = characterArray[i];
+        }
+        
+        return new String(builder);
+    }
 }

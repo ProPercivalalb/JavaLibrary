@@ -89,7 +89,7 @@ public class StringTransformer {
 		return newString.toString();
 	}
 	
-    public static String getEveryNthChar(String text, int start, int n) {
+    public static String getEveryNthChar(CharSequence text, int start, int n) {
     	String accumulator = "";
         for(int i = 0; i < text.length(); ++i) {
             if((i % n) == start) {
