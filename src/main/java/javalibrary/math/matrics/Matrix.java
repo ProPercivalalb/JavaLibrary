@@ -1,6 +1,7 @@
 package javalibrary.math.matrics;
 
 import java.math.BigInteger;
+import java.util.function.BiFunction;
 
 import javalibrary.exception.MatrixMutiplyException;
 import javalibrary.exception.MatrixNoInverse;
@@ -48,6 +49,22 @@ public class Matrix {
 		if(rows * columns != data.length)
 			throw new IllegalArgumentException("Matrix data array len doesn't match specified args.");
 	}
+	
+	public Matrix(BiFunction<Integer, Integer, Double> dataFunc, int rows, int columns) {
+        this.rows = rows;
+        this.columns = columns;
+        
+        //Some error checking
+        if(rows * columns != data.length)
+            throw new IllegalArgumentException("Matrix data array len doesn't match specified args.");
+        
+        this.data = new double[this.rows * this.columns];
+        for (int r = 0; r < this.rows; r++) {
+            for (int c = 0; c < this.columns; c++) {
+                this.data[r * this.columns + c] = dataFunc.apply(r, c);
+            }  
+        }
+    }
 	
 	/**
 	 * Creates a blank matrix -- MUST BE POPULATED --
@@ -159,10 +176,11 @@ public class Matrix {
 	}
 	
 	public boolean hasInverseMod(int mod) {
-		double determinant = this.determinant();
-
+		int determinant = (int) this.determinant();
+		
+		//Other Option: return MathUtil.hasMultiplicativeInverse(determinant, mod);
 		try {
-			BigInteger.valueOf((int)determinant).modInverse(BigInteger.valueOf(mod)).intValue();
+			BigInteger.valueOf(determinant).modInverse(BigInteger.valueOf(mod)).intValue();
 			return true;
 		}
 		catch(ArithmeticException e) {

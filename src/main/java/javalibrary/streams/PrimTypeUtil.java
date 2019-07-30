@@ -22,10 +22,7 @@ public class PrimTypeUtil {
 	
 	public static String toString(Character[] characterArray) {
         char[] builder = new char[characterArray.length];
-        for(int i = 0; i < characterArray.length; i++) {
-            builder[i] = characterArray[i];
-        }
-        
+        System.arraycopy(characterArray, 0, builder, 0, characterArray.length);
         return new String(builder);
     }
 }

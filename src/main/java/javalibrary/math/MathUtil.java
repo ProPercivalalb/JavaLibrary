@@ -218,7 +218,16 @@ public class MathUtil {
 	
 	//New functions
 	
-	
+	public static boolean isPerfectSquare(int n) {
+	    if (n > 1) {
+	        int sqrt = (int) Math.floor(Math.sqrt(n));
+	        return sqrt * sqrt == n;
+	    } else if (n >= 0) {
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
 	
 	
 	

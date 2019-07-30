@@ -34,6 +34,9 @@ public class RandomUtil {
 		return random.nextInt(range);
 	}
 	
+	/**
+	 * Picks random number between minValue (inclusive) and maxValue (inclusive)
+	 */
 	public static int pickRandomInt(int minValue, int maxValue) {
 		return pickRandomInt(minValue, maxValue, DEFAULT_RAND);
 	}

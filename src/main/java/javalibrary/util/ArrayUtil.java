@@ -1,5 +1,6 @@
 package javalibrary.util;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -45,12 +46,20 @@ public class ArrayUtil {
 		return mergedArr;
 	}
 	
-	public static Object[] concat(Object[] arrA, Object[] arrB) {
-		Object[] mergedArr = new Object[arrA.length + arrB.length];
+	@SuppressWarnings("unchecked")
+    public static <T> T[] concatGeneric(T[] arrA, T[] arrB) {
+		T[] mergedArr = (T[]) Array.newInstance(arrA.getClass().getComponentType(), arrA.length + arrB.length);
 		System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
 		System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
 		return mergedArr;
 	}
+	
+	public static Object[] concat(Object[] arrA, Object[] arrB) {
+        Object[] mergedArr = new Object[arrA.length + arrB.length];
+        System.arraycopy(arrA, 0, mergedArr, 0, arrA.length);
+        System.arraycopy(arrB, 0, mergedArr, arrA.length, arrB.length);
+        return mergedArr;
+    }
 
 	public static int[] concat(int[] arrA, int[] arrB) {
 		int[] mergedArr = new int[arrA.length + arrB.length];

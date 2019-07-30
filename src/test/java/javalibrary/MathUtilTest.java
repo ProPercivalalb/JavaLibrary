@@ -37,12 +37,21 @@ public class MathUtilTest {
         Assert.assertEquals(BigInteger.valueOf(6201), MathUtil.sumSquareNumbers(BigInteger.valueOf(26)));
         
         
-        
+    }
+    
+    @Test
+    public void testMath() {
         Assert.assertTrue(MathUtil.allDivisibleBy(new Integer[] { 12, 6, 4, 10 }, 0, 4, 2));
         Assert.assertFalse(MathUtil.allDivisibleBy(new Integer[] { 12, 6, 4, 7 }, 0, 4, 2));
         Assert.assertTrue(MathUtil.allDivisibleBy(new Integer[] { 12, 6, 4, 7 }, 0, 3, 2));
         Assert.assertTrue(MathUtil.allDivisibleBy(new Integer[] { 12, 6, 4, 8 }, 0, 4, 2, 3));
         Assert.assertTrue(MathUtil.allDivisibleBy(new Integer[] { 12, 6, 4, 7 }, 0, 2, 3, 2));
         Assert.assertTrue(MathUtil.allDivisibleBy(new Integer[] { }, 0, 0, 2, 3));
+        
+        Assert.assertTrue(MathUtil.isPerfectSquare(1));
+        Assert.assertFalse(MathUtil.isPerfectSquare(2));
+        Assert.assertTrue(MathUtil.isPerfectSquare(0));
+        Assert.assertFalse(MathUtil.isPerfectSquare(-16));
+        Assert.assertTrue(MathUtil.isPerfectSquare(169));
     }
 }

@@ -1,6 +1,8 @@
 package javalibrary.swing;
 
 import java.math.BigInteger;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.JProgressBar;
 
@@ -13,6 +15,8 @@ public class ProgressValue {
 	private int breakCount = 0;
 	private int progCount = 1;
 	private BigInteger progCountBig = BigInteger.ONE;
+	private long startTime = System.currentTimeMillis();
+	public int timeLeft;
 
 	public ProgressValue(int precision, JProgressBar progressBar) {
 		this.scale = BigInteger.valueOf(precision);
@@ -25,17 +29,27 @@ public class ProgressValue {
 	}
 	
 	public void addMaxValue(BigInteger add) {
-		this.maxValue = this.maxValue.add(add);
-		this.progCountBig = this.maxValue.divide(BigInteger.valueOf(8)).min(BigInteger.valueOf(100000).max(BigInteger.ONE));
+	    this.setMaxValue(this.maxValue.add(add));
+	}
+	
+	public void setMaxValue(BigInteger maxValue) {
+		this.maxValue = maxValue;
+		this.progCountBig = this.maxValue.divide(BigInteger.valueOf(8)).min(BigInteger.valueOf(400000).max(BigInteger.ONE));
 		this.progCount = this.progCountBig.intValue();
 		this.recalculatePercentage();
 	}
 	
-	public void setValue(long value) {
-		this.value = BigInteger.valueOf(value);
-		this.breakCount = (int) (value % this.progCount);
+	public void setValue(BigInteger value) {
+		this.value = value;
+		this.breakCount = value.mod(this.progCountBig).intValue();
 		this.recalculatePercentage();
 	}
+	
+	public void setValue(long value) {
+        this.value = BigInteger.valueOf(value);
+        this.breakCount = (int) (value % this.progCount);
+        this.recalculatePercentage();
+    }
 	
 	public boolean addValue(int add) {
 	    if (this.progressBar.isIndeterminate()) {
@@ -51,8 +65,9 @@ public class ProgressValue {
     	        this.breakCount -= this.progCount;
     	        times++;
     	    }
+    	    long timeNow = System.currentTimeMillis();
     	    
-    	    if (times > 0) {
+    	    if (times > 0) {//timeNow - lastTime > 1000) {
     	        this.value = this.value.add(this.progCountBig.multiply(BigInteger.valueOf(times)));
                 this.recalculatePercentage();
                 return true;
@@ -60,6 +75,10 @@ public class ProgressValue {
 	    }
 	    
         return false;
+	}
+	
+	public void start() {
+	    this.startTime = System.currentTimeMillis();
 	}
 	
     public void finish() {
@@ -71,12 +90,35 @@ public class ProgressValue {
 	    return this.addValue(1);
 	}
 	
+	public void reset() {
+	    this.setValue(0);
+	    this.maxValue = BigInteger.ZERO;
+	    this.recalculatePercentage();
+	}
+	
 	public void recalculatePercentage() {
-		this.progressBar.setValue(this.getPercentageDone());
+	    BigInteger percentage = this.getPercentageDoneBig();
+		this.progressBar.setValue(percentage.intValue());
+		if (percentage.equals(BigInteger.ZERO)) {
+		    this.timeLeft = -1;
+		} else {
+		    BigInteger timeDiff = BigInteger.valueOf(System.currentTimeMillis() - this.startTime);
+		    this.timeLeft = timeDiff.multiply(this.scale).divide(percentage).subtract(timeDiff).divide(this.scale).intValue();
+		}
+	}
+	
+	private static final NumberFormat numFormatter = NumberFormat.getNumberInstance(Locale.UK);
+	public static String formatBigInteger(BigInteger value) {
+	    return numFormatter.format(value);
 	}
 	
 	public int getPercentageDone() {
-		return this.maxValue == BigInteger.ZERO ? this.scale.intValue() : this.value.multiply(this.scale).divide(this.maxValue).intValue();
+        return this.getPercentageDoneBig().intValue();
+    }
+	
+	// 0-100
+	public BigInteger getPercentageDoneBig() {
+		return this.maxValue == BigInteger.ZERO ? this.scale : this.value.multiply(this.scale).divide(this.maxValue);
 	}
 	
 	public void setIndeterminate(boolean newValue) {

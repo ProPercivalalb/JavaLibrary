@@ -22,6 +22,10 @@ public class MorseCode {
 		return joiner.toString();
 	}
 	
+	public static String getMorse(char ch) {
+        return charMap.get(ch);
+    }
+	
 	public static String getMorseEquivalent(Character[] text) {
 	    StringJoiner joiner = new StringJoiner("X");
         for(char character : text) {

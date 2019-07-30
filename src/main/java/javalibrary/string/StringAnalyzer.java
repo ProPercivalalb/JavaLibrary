@@ -164,24 +164,14 @@ public class StringAnalyzer {
 		return map;
 	}
 	
-	public static Map<String, Integer> getEmbeddedStrings(byte[] text, int minLength, int maxLength, boolean overlap) {
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
+	public static Map<Character, Integer> getCharacterCount(CharSequence text) {
+        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+        for(int k = 0; k < text.length(); k++) {
+            map.put(text.charAt(k), map.getOrDefault(text.charAt(k), 0) + 1);
+        }
 
-		if(text.length >= minLength) {
-			for(int length = minLength; length <= maxLength; ++length) {
-				for(int k = 0; k < (text.length - length + 1); k += (overlap ? 1 : length)) {
-					String s = new String(text, k, length);
-					map.put(s, map.containsKey(s) ? map.get(s) + 1 : 1);
-				}
-			}
-		}
-		
-		return map;
-	}
-	
-	public static Map<Character, Integer> getCharacterCount(String text) {
-		return getCharacterCount(text.toCharArray());
-	}
+        return map;
+    }
 	
 	//A more direct and optimised character counter
 	public static Map<Character, Integer> getCharacterCount(char[] text) {
@@ -210,6 +200,10 @@ public class StringAnalyzer {
 	public static List<Character> getOrderedCharacterCount(char[] text) {			
 		return getOrderedCharacterCount(getCharacterCount(text));
 	}
+	
+	public static List<Character> getOrderedCharacterCount(CharSequence text) {          
+        return getOrderedCharacterCount(getCharacterCount(text));
+    }
 	
 	public static class SortCharacter implements Comparator<Character> {
 		
